@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AppColors {
   static const Color darkBlueBackground = Color(0xFF050A14);
   static const Color cardSurface = Color(0xFF111C2E);
+  static const Color surface = Color(0xFF0F1623); // Added from HTML design
   static const Color neonGreen = Color(0xFFA4F40B);
   static const Color neonCyan = Color(0xFF00F0FF);
   static const Color textWhite = Color(0xFFF2F6FF);

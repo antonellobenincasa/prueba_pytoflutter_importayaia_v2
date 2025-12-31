@@ -11,6 +11,8 @@ import 'presentation/screens/home_screen.dart';       // Tu Dashboard
 import 'presentation/screens/about_screen.dart';      // Pantalla Nosotros
 import 'presentation/screens/contact_screen.dart';    // Pantalla Contacto
 import 'presentation/screens/quote_form_screen.dart'; // Pantalla de Cotización
+import 'presentation/screens/onboarding_screen.dart';
+import 'presentation/screens/forgot_password_screen.dart';
 
 void main() {
   runApp(const ImportaYaApp());
@@ -31,7 +33,7 @@ class ImportaYaApp extends StatelessWidget {
       // --- DEFINICIÓN DE RUTAS Y NAVEGACIÓN ---
       
       // Definimos la Landing Page como la primera pantalla que ve el usuario
-      initialRoute: '/', 
+      initialRoute: '/onboarding', 
       
       // Mapa de rutas: Aquí le decimos a Flutter qué archivo abrir para cada nombre
       routes: {
@@ -42,6 +44,8 @@ class ImportaYaApp extends StatelessWidget {
         '/nosotros': (context) => const AboutScreen(), // Página "Nosotros"
         '/contacto': (context) => const ContactScreen(), // Página "Contacto"
         '/quote_form': (context) => const QuoteFormScreen(), // Formulario de cotización
+        '/onboarding': (context) => const OnboardingScreen(),
+        '/forgot_password': (context) => const ForgotPasswordScreen(),
       },
     );
   }

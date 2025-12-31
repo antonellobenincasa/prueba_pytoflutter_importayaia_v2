@@ -13,21 +13,21 @@ dependencies:
   # --- UI & Diseño (Versiones compatibles) ---
   cupertino_icons: ^1.0.2
   google_fonts: ^6.1.0
-  animate_do: ^3.0.0
+  animate_do: ^4.2.0
   
   # --- Lógica y Datos (Versiones compatibles con tu SDK) ---
-  flutter_secure_storage: ^8.0.0  # Bajamos de 9.0.0 a 8.0.0
+  flutter_secure_storage: ^10.0.0  # Bajamos de 9.0.0 a 8.0.0
   http: ^1.1.0
   shared_preferences: ^2.2.0
   dio: ^5.3.0
   url_launcher: ^6.1.14
-  flutter_bloc: ^8.1.3
+  flutter_bloc: ^9.1.1
   equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true

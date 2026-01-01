@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
@@ -20,48 +21,77 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
   final TextEditingController _weightController =
       TextEditingController(text: "45");
 
-  // State
+  // --- VARIABLES DE ESTADO (Production Ready) ---
   String _originCountry = "US";
   bool _insuranceEnabled = true;
   bool _isCalculating = false;
 
-  // Results
-  double _adValorem = 0.0;
-  double _fodinfa = 66.75; // Mock start
-  double _iva = 2012.51; // Mock start
-  double _total = 2079.26; // Mock start
+  // Inputs del Backend (Valores por defecto / Placeholders)
+  // TODO: Conectar con InventoryService para obtener tasas reales según HS Code
+  double _iceRate =
+      0.0; // Tasa ICE (Ej: 0.0 para celulares, variable para alcohol)
+  double _adValoremRate = 0.0; // Tasa Arancelaria (Ej: 0.0 para tecnología)
 
+  // Resultados Financieros
+  double _insuranceCost = 0.0;
+  double _adValorem = 0.0;
+  double _fodinfa = 0.0;
+  double _iceTax = 0.0;
+  double _iva = 0.0;
+  double _total = 0.0;
+
+  /// Calcula tributos aduaneros bajo normativa SENAE (Ecuador)
+  /// Referencia: Documento "Formulas, Calculos y Logica de Negocio.pdf"
   void _calculate() async {
     setState(() => _isCalculating = true);
 
-    // Simulate API delay
-    await Future.delayed(const Duration(milliseconds: 800));
+    // Simulación de delay de red (Reemplazar por llamada API real futuramente)
+    await Future.delayed(const Duration(milliseconds: 600));
 
-    // Simple Mock Logic for demonstration
-    double fob = double.tryParse(_fobController.text) ?? 0;
+    // 1. Obtener Inputs
+    final double fobValue = double.tryParse(_fobController.text) ?? 0;
+    final double freightValue = double.tryParse(_freightController.text) ?? 0;
 
-    // Example logic:
-    // Ad Valorem = 0% for this hs code mock
-    double adValoremRate = 0.0;
-    double fodinfaRate = 0.005; // 0.5%
-    double ivaRate = 0.15; // 15%
+    // 2. SEGURO INTERNACIONAL (Fix Crítico: Mínimo $70 o 0.35%)
+    final double cfr = fobValue + freightValue;
+    final double calculatedInsurance =
+        _insuranceEnabled ? math.max(cfr * 0.0035, 70.00) : 0.0;
 
-    double cif = fob +
-        (double.tryParse(_freightController.text) ?? 0) +
-        (fob * 0.01); // Approx CIF
+    // 3. CIF (Base Maestra)
+    final double cifValue = fobValue + freightValue + calculatedInsurance;
 
-    double adValoremVal = cif * adValoremRate;
-    double fodinfaVal = cif * fodinfaRate;
-    double ivaVal = (cif + adValoremVal + fodinfaVal) * ivaRate;
+    // 4. TASAS FIJAS & VARIABLES
+    const double fodinfaRate = 0.005; // 0.5% Fijo Ley
+    const double ivaRate = 0.15; // 15% IVA Actual
+
+    // 5. CÁLCULO DE TRIBUTOS
+    // A. Ad-Valorem (Arancel)
+    final double adValoremTax = cifValue * _adValoremRate;
+
+    // B. FODINFA
+    final double fodinfaTax = cifValue * fodinfaRate;
+
+    // C. ICE (Impuesto Consumos Especiales)
+    // CRÍTICO: Se calcula sobre (CIF + Arancel) según normativa de valoración en aduana
+    final double iceBase = cifValue + adValoremTax;
+    final double iceTax = _iceRate > 0 ? iceBase * _iceRate : 0.0;
+
+    // D. IVA (Impuesto al Valor Agregado)
+    // Base Imponible IVA = CIF + AdValorem + FODINFA + ICE
+    final double vatBase = cifValue + adValoremTax + fodinfaTax + iceTax;
+    final double ivaTax = vatBase * ivaRate;
+
+    // 6. TOTAL FINAL (Solo Tributos para esta vista)
+    final double totalTaxes = adValoremTax + fodinfaTax + iceTax + ivaTax;
 
     if (mounted) {
       setState(() {
-        _adValorem = adValoremVal;
-        _fodinfa = fodinfaVal;
-        _iva = ivaVal;
-        _total = adValoremVal +
-            fodinfaVal +
-            ivaVal; // Just taxes total for this view? HTML says "Total a Pagar" usually implies taxes.
+        _insuranceCost = calculatedInsurance;
+        _adValorem = adValoremTax;
+        _fodinfa = fodinfaTax;
+        _iceTax = iceTax;
+        _iva = ivaTax;
+        _total = totalTaxes;
         _isCalculating = false;
       });
     }
@@ -345,7 +375,7 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                                   color: Colors.white,
                                   fontSize: 16,
                                   fontWeight: FontWeight.w500)),
-                          Text("Calcular 1% automático presuntivo",
+                          Text('0.35% del CFR (mínimo \$70 USD)',
                               style: TextStyle(
                                   color: textSecondary, fontSize: 12)),
                         ],
@@ -412,8 +442,17 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
+                    // Seguro Internacional (informativo)
+                    _buildResultRow("Seguro Internacional", _insuranceCost),
+                    const Divider(color: Colors.white10, height: 16),
+                    // Tributos
                     _buildResultRow("Ad Valorem (0%)", _adValorem),
                     _buildResultRow("FODINFA (0.5%)", _fodinfa),
+                    // ICE solo se muestra si aplica
+                    if (_iceTax > 0)
+                      _buildResultRow(
+                          "ICE (${(_iceRate * 100).toStringAsFixed(0)}%)",
+                          _iceTax),
                     _buildResultRow("IVA (15%)", _iva),
                     const Divider(color: Colors.white10, height: 24),
                     Row(

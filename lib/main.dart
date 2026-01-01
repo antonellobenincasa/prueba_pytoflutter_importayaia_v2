@@ -10,7 +10,7 @@ import 'presentation/screens/register_screen.dart';
 import 'presentation/screens/home_screen.dart'; // Tu Dashboard
 import 'presentation/screens/about_us_screen.dart'; // Pantalla Nosotros (Versión Correcta)
 import 'presentation/screens/contact_screen.dart'; // Pantalla Contacto
-import 'presentation/screens/quote_form_screen.dart'; // Pantalla de Cotización
+import 'presentation/screens/cost_simulator_screen.dart'; // Nuevo formulario de cotización
 import 'presentation/screens/onboarding_screen.dart';
 import 'presentation/screens/forgot_password_screen.dart';
 
@@ -46,7 +46,9 @@ class ImportaYaApp extends StatelessWidget {
         '/nosotros': (context) => const AboutUsScreen(), // Página "Nosotros"
         '/contacto': (context) => const ContactScreen(), // Página "Contacto"
         '/quote_form': (context) =>
-            const QuoteFormScreen(), // Formulario de cotización
+            const CostSimulatorScreen(), // Nuevo formulario de cotización
+        '/cost_simulator': (context) =>
+            const CostSimulatorScreen(), // Ruta alternativa
         '/onboarding': (context) => const OnboardingScreen(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
       },

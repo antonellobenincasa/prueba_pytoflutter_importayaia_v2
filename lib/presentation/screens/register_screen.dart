@@ -58,7 +58,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = false);
 
     if (result.success) {
-      setState(() => _registrationSuccess = true);
+      // Usuario auto-logueado - redirigir al dashboard
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/home');
+      }
     } else {
       setState(() => _errorMessage = result.message);
     }

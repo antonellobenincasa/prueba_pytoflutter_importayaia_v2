@@ -8,11 +8,16 @@ import 'presentation/screens/landing_screen.dart';
 import 'presentation/screens/login_screen.dart';
 import 'presentation/screens/register_screen.dart';
 import 'presentation/screens/home_screen.dart'; // Tu Dashboard
-import 'presentation/screens/about_us_screen.dart'; // Pantalla Nosotros (Versión Correcta)
+import 'presentation/screens/about_us_screen.dart'; // Pantalla Nosotros
 import 'presentation/screens/contact_screen.dart'; // Pantalla Contacto
-import 'presentation/screens/cost_simulator_screen.dart'; // Nuevo formulario de cotización
+import 'presentation/screens/cost_simulator_screen.dart'; // Formulario de cotización
 import 'presentation/screens/onboarding_screen.dart';
 import 'presentation/screens/forgot_password_screen.dart';
+import 'presentation/screens/profile_screen.dart'; // Perfil de usuario
+import 'presentation/screens/notifications_screen.dart'; // Notificaciones
+import 'presentation/screens/tracking_screen.dart'; // Tracking de embarques
+import 'presentation/screens/quote_history_screen.dart'; // Historial de cotizaciones
+import 'presentation/screens/tax_calculator_screen.dart'; // Calculadora de impuestos
 
 void main() {
   runApp(const ImportaYaApp());
@@ -24,33 +29,32 @@ class ImportaYaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'ImportaYa.ia', // Nombre de la App en el gestor de tareas
-      debugShowCheckedModeBanner:
-          false, // Quita la etiqueta "Debug" de la esquina
+      title: 'ImportaYa.ia',
+      debugShowCheckedModeBanner: false,
 
       // Aplicamos el tema personalizado (Oscuro y Verde Neón)
       theme: appTheme(),
 
       // --- DEFINICIÓN DE RUTAS Y NAVEGACIÓN ---
+      initialRoute: '/',
 
-      // Definimos la Landing Page como la primera pantalla que ve el usuario
-      initialRoute: '/', // Pantalla de inicio (Landing)
-
-      // Mapa de rutas: Aquí le decimos a Flutter qué archivo abrir para cada nombre
+      // Mapa de rutas
       routes: {
-        '/': (context) => const LandingScreen(), // Pantalla de Inicio (Landing)
-        '/login': (context) => const LoginScreen(), // Iniciar Sesión
-        '/registro': (context) => const RegisterScreen(), // Crear Cuenta
-        '/home': (context) =>
-            const HomeScreen(), // Dashboard Principal (después de loguearse)
-        '/nosotros': (context) => const AboutUsScreen(), // Página "Nosotros"
-        '/contacto': (context) => const ContactScreen(), // Página "Contacto"
-        '/quote_form': (context) =>
-            const CostSimulatorScreen(), // Nuevo formulario de cotización
-        '/cost_simulator': (context) =>
-            const CostSimulatorScreen(), // Ruta alternativa
+        '/': (context) => const LandingScreen(),
+        '/login': (context) => const LoginScreen(),
+        '/registro': (context) => const RegisterScreen(),
+        '/home': (context) => const HomeScreen(),
+        '/nosotros': (context) => const AboutUsScreen(),
+        '/contacto': (context) => const ContactScreen(),
+        '/quote_form': (context) => const CostSimulatorScreen(),
+        '/cost_simulator': (context) => const CostSimulatorScreen(),
         '/onboarding': (context) => const OnboardingScreen(),
         '/forgot_password': (context) => const ForgotPasswordScreen(),
+        '/profile': (context) => const ProfileScreen(),
+        '/notifications': (context) => const NotificationsScreen(),
+        '/tracking': (context) => const TrackingScreen(),
+        '/quote_history': (context) => const QuoteHistoryScreen(),
+        '/tax_calculator': (context) => const TaxCalculatorScreen(),
       },
     );
   }

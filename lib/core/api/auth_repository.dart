@@ -7,8 +7,9 @@ class AuthRepository {
   final ApiClient _client = ApiClient();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  static const String _loginEndpoint = 'api/token/';
-  static const String _profileEndpoint = 'api/quotes/me/'; // Endpoint del perfil
+  static const String _loginEndpoint = 'accounts/login/';
+  static const String _profileEndpoint =
+      'accounts/profile/'; // Endpoint del perfil
 
   // Función para iniciar sesión
   Future<bool> login(String username, String password) async {
@@ -20,10 +21,10 @@ class AuthRepository {
 
       if (response != null && response.containsKey('access')) {
         await _storage.write(key: 'auth_token', value: response['access']);
-        
+
         // Descargar datos del perfil inmediatamente
-        await _fetchAndStoreUserProfile(); 
-        return true; 
+        await _fetchAndStoreUserProfile();
+        return true;
       } else {
         return false;
       }
@@ -39,14 +40,16 @@ class AuthRepository {
       if (token == null) return;
 
       // Hacemos la petición al backend
-      final response = await _client.get(_profileEndpoint); 
-      
+      final response = await _client.get(_profileEndpoint);
+
       if (response != null) {
         // Guardamos los datos
-        await _storage.write(key: 'user_full_name', value: response['full_name']);
+        await _storage.write(
+            key: 'user_full_name', value: response['full_name']);
         await _storage.write(key: 'user_email', value: response['email']);
         await _storage.write(key: 'user_ruc', value: response['ruc']);
-        await _storage.write(key: 'user_company', value: response['company_name']);
+        await _storage.write(
+            key: 'user_company', value: response['company_name']);
       }
     } catch (e) {
       // Usamos debugPrint para evitar la advertencia de 'print'

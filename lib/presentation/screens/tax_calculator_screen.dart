@@ -28,9 +28,10 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
 
   // Inputs del Backend (Valores por defecto / Placeholders)
   // TODO: Conectar con InventoryService para obtener tasas reales según HS Code
-  double _iceRate =
+  final double _iceRate =
       0.0; // Tasa ICE (Ej: 0.0 para celulares, variable para alcohol)
-  double _adValoremRate = 0.0; // Tasa Arancelaria (Ej: 0.0 para tecnología)
+  final double _adValoremRate =
+      0.0; // Tasa Arancelaria (Ej: 0.0 para tecnología)
 
   // Resultados Financieros
   double _insuranceCost = 0.0;

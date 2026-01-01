@@ -3,13 +3,11 @@ import 'package:http/http.dart' as http;
 
 class ApiClient {
   // ---------------------------------------------------------
-  // CONFIGURACIÓN DE CONEXIÓN (Bypass Antigravity/Túneles)
+  // CONFIGURACIÓN DE CONEXIÓN
   // ---------------------------------------------------------
 
-  // Reemplaza los números de abajo con la IP que obtuviste en ipconfig.
-  // Mantén el puerto :8000 y el http:// al inicio.
-  static const String baseUrl =
-      'http://192.168.68.69:8000'; // <--- ¡EDITA ESTA LÍNEA!
+  // Usamos 127.0.0.1 y el puerto 8001/api como confirmamos antes.
+  static const String baseUrl = 'http://127.0.0.1:8001/api';
 
   // ---------------------------------------------------------
 
@@ -22,7 +20,7 @@ class ApiClient {
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     try {
-      print('Intentando POST a: $url'); // Log para depurar
+      print('Intentando POST a: $url');
       final response = await http.post(
         url,
         headers: headers,
@@ -32,7 +30,7 @@ class ApiClient {
     } catch (e) {
       print('Error POST: $e');
       throw Exception(
-          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo y la IP sea correcta.');
+          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
     }
   }
 
@@ -40,13 +38,13 @@ class ApiClient {
   Future<dynamic> get(String endpoint) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     try {
-      print('Intentando GET a: $url'); // Log para depurar
+      print('Intentando GET a: $url');
       final response = await http.get(url, headers: headers);
       return _handleResponse(response);
     } catch (e) {
       print('Error GET: $e');
       throw Exception(
-          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo y la IP sea correcta.');
+          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
     }
   }
 

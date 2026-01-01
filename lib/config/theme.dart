@@ -8,6 +8,9 @@ class AppColors {
   static const Color neonCyan = Color(0xFF00F0FF);
   static const Color textWhite = Color(0xFFF2F6FF);
   static const Color textGrey = Color(0xFF94A3B8);
+  static const Color surfaceDark = Color(0xFF111826);
+  static const Color cardColor = Color(0xFF1E293B);
+  static const Color primaryTeal = Color(0xFF00Cba9);
 }
 
 ThemeData appTheme() {
@@ -16,5 +19,10 @@ ThemeData appTheme() {
     brightness: Brightness.dark,
     scaffoldBackgroundColor: AppColors.darkBlueBackground,
     primaryColor: AppColors.darkBlueBackground,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.neonGreen,
+      secondary: AppColors.neonCyan,
+      surface: AppColors.cardSurface,
+    ),
   );
 }

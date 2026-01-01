@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
+import '../../core/services/auth_service.dart';
 import '../widgets/main_drawer.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -10,11 +12,12 @@ class LandingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.darkBlueBackground,
-      endDrawer: const MainDrawer(), // Drawer on the right as per HTML menu position implying typical right-side menu or just hamburger
-      // Actually standard Scaffold drawer is left, endDrawer is right. 
+      endDrawer:
+          const MainDrawer(), // Drawer on the right as per HTML menu position implying typical right-side menu or just hamburger
+      // Actually standard Scaffold drawer is left, endDrawer is right.
       // HTML has menu on right. Let's use endDrawer for the menu button action.
       // But MainDrawer might be designed for left. Let's check MainDrawer later or just assume standard drawer.
-      // If I use 'drawer', it opens from left. HTML Header has button on right. 
+      // If I use 'drawer', it opens from left. HTML Header has button on right.
       // I can open the 'drawer' (left) from a button on the right, that's fine.
       drawer: const MainDrawer(),
       body: Stack(
@@ -29,18 +32,18 @@ class LandingScreen extends StatelessWidget {
               height: 500,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonGreen.withOpacity(0.05),
+                color: AppColors.neonGreen.withValues(alpha: 0.05),
               ),
               child: ClipOval(
                 child: Container(
-                  color: AppColors.neonGreen.withOpacity(0.05),
-                ).animate(onPlay: (controller) => controller.repeat()).blur(radius: 120),
-                // Using BackdropFilter or just blur? Flutter containers don't blur themselves easily without BackdropFilter.
-                // A simpler way for blobs is a Container with BoxShadow or a radial gradient.
+                  color: AppColors.neonGreen.withValues(alpha: 0.05),
+                )
+                    .animate(onPlay: (controller) => controller.repeat())
+                    .blur(begin: const Offset(120, 120)),
               ),
             ),
           ),
-          // I will use a simpler blob approach that works reliably without extra packages (blur is tricky on containers directly)
+
           Positioned(
             top: -250,
             right: -150,
@@ -48,16 +51,16 @@ class LandingScreen extends StatelessWidget {
               width: 500,
               height: 500,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.neonGreen.withOpacity(0.05), // bg-primary/5
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.neonGreen.withOpacity(0.1),
-                    blurRadius: 120,
-                    spreadRadius: 50,
-                  )
-                ]
-              ),
+                  shape: BoxShape.circle,
+                  color: AppColors.neonGreen
+                      .withValues(alpha: 0.05), // bg-primary/5
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.neonGreen.withValues(alpha: 0.1),
+                      blurRadius: 120,
+                      spreadRadius: 50,
+                    )
+                  ]),
             ),
           ),
           // Bottom Left
@@ -68,23 +71,24 @@ class LandingScreen extends StatelessWidget {
               width: 300,
               height: 300,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.blue.withOpacity(0.05), // bg-blue-500/5
-                 boxShadow: [
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(0.1),
-                    blurRadius: 100,
-                    spreadRadius: 20,
-                  )
-                ]
-              ),
+                  shape: BoxShape.circle,
+                  color: Colors.blue.withValues(alpha: 0.05), // bg-blue-500/5
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withValues(alpha: 0.1),
+                      blurRadius: 100,
+                      spreadRadius: 20,
+                    )
+                  ]),
             ),
           ),
 
           SafeArea(
             child: Column(
               children: [
-                _buildHeader(context),
+                Builder(
+                    builder: (scaffoldContext) =>
+                        _buildHeader(scaffoldContext)),
                 Expanded(
                   child: SingleChildScrollView(
                     child: Padding(
@@ -119,11 +123,13 @@ class LandingScreen extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: AppColors.neonGreen.withOpacity(0.2),
+                  color: AppColors.neonGreen.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+                  border: Border.all(
+                      color: AppColors.neonGreen.withValues(alpha: 0.3)),
                 ),
-                child: const Icon(Icons.inventory_2_outlined, color: AppColors.neonGreen, size: 20),
+                child: const Icon(Icons.inventory_2_outlined,
+                    color: AppColors.neonGreen, size: 20),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -157,7 +163,8 @@ class LandingScreen extends StatelessWidget {
 
   Widget _buildHeroImage() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // mb-6 px-4 -> approx
+      padding: const EdgeInsets.symmetric(
+          horizontal: 16.0, vertical: 8.0), // mb-6 px-4 -> approx
       child: SizedBox(
         height: 256, // h-64 -> 16rem -> 256px
         width: double.infinity,
@@ -167,7 +174,8 @@ class LandingScreen extends StatelessWidget {
             // Dark Overlay Gradient
             Container(
               decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(24)), // rounded-3xl
+                borderRadius:
+                    BorderRadius.all(Radius.circular(24)), // rounded-3xl
               ),
               clipBehavior: Clip.hardEdge,
               child: Stack(
@@ -179,31 +187,33 @@ class LandingScreen extends StatelessWidget {
                   ),
                   // Primary Overlay mix-blend-overlay (approx with alpha)
                   Container(
-                    color: AppColors.neonGreen.withOpacity(0.1),
+                    color: AppColors.neonGreen.withValues(alpha: 0.1),
                   ),
                   // Gradient Overlay
-                   Container(
+                  Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
                         colors: [
-                          AppColors.darkBlueBackground.withOpacity(0.8),
+                          AppColors.darkBlueBackground.withValues(alpha: 0.8),
                           Colors.transparent,
                         ],
                       ),
                     ),
                   ),
-                   // Top Gradient
-                   Container(
+                  // Top Gradient
+                  Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                         colors: [
+                        colors: [
                           Colors.transparent,
-                          AppColors.darkBlueBackground.withOpacity(0.3), // via
-                          AppColors.darkBlueBackground.withOpacity(0.9), // to
+                          AppColors.darkBlueBackground
+                              .withValues(alpha: 0.3), // via
+                          AppColors.darkBlueBackground
+                              .withValues(alpha: 0.9), // to
                         ],
                         stops: const [0.0, 0.7, 1.0],
                       ),
@@ -213,10 +223,10 @@ class LandingScreen extends StatelessWidget {
               ),
             ),
             // Border
-             Container(
+            Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(24)),
-                 border: Border.all(color: Colors.white.withOpacity(0.05)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
               ),
             ),
           ],
@@ -239,7 +249,7 @@ class LandingScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withOpacity(0.1)),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -269,13 +279,14 @@ class LandingScreen extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // H1 Title
           FadeInUp(
             child: RichText(
               text: const TextSpan(
                 style: TextStyle(
-                  fontFamily: 'Space Grotesk', // Assuming system fallback or will work if setup
+                  fontFamily:
+                      'Space Grotesk', // Assuming system fallback or will work if setup
                   fontSize: 36, // 4xl
                   fontWeight: FontWeight.bold,
                   height: 1.1,
@@ -283,11 +294,12 @@ class LandingScreen extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(text: "Importa fácil, \n"),
-                   TextSpan(
+                  TextSpan(
                     text: "sin complicaciones!",
                     style: TextStyle(
-                      color: AppColors.neonGreen, // Gradient effect simplistic fallback
-                      // For true gradient text we need ShaderMask, which is complex. 
+                      color: AppColors
+                          .neonGreen, // Gradient effect simplistic fallback
+                      // For true gradient text we need ShaderMask, which is complex.
                       // Using neonGreen is a good faithful fallback for "primary" gradient
                     ),
                   ),
@@ -295,9 +307,9 @@ class LandingScreen extends StatelessWidget {
               ),
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Description
           FadeInUp(
             delay: const Duration(milliseconds: 200),
@@ -324,8 +336,24 @@ class LandingScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/quote_form');
+                    onPressed: () async {
+                      // Verificar si hay sesión almacenada antes de decidir
+                      final authService = AuthService();
+                      await authService.checkStoredSession();
+
+                      if (!context.mounted) return;
+
+                      if (authService.isLoggedIn) {
+                        // Usuario autenticado - ir al formulario de cotización
+                        Navigator.pushNamed(context, '/quote_form');
+                      } else {
+                        // Redirigir a login - pasando parámetro para volver al quote form
+                        Navigator.pushNamed(
+                          context,
+                          '/login',
+                          arguments: {'redirectTo': '/quote_form'},
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.neonGreen,
@@ -334,7 +362,7 @@ class LandingScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      // shadowColor: AppColors.neonGreen.withOpacity(0.3), // Manual shadow via container usually
+                      // shadowColor: AppColors.neonGreen.withValues(alpha: 0.3), // Manual shadow via container usually
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -353,27 +381,29 @@ class LandingScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Login Button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login'); // "Ya tengo Cuenta" -> Login
+                      Navigator.pushNamed(
+                          context, '/login'); // "Ya tengo Cuenta" -> Login
                     },
                     style: OutlinedButton.styleFrom(
                       backgroundColor: AppColors.surface,
                       foregroundColor: AppColors.textWhite,
-                      side: BorderSide(color: Colors.white.withOpacity(0.1)),
+                      side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.1)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
                     ),
                     child: const Row(
-                       mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "Ya tengo Cuenta",
@@ -382,8 +412,9 @@ class LandingScreen extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                         SizedBox(width: 8),
-                        Icon(Icons.chevron_right, size: 20, color: AppColors.textGrey),
+                        SizedBox(width: 8),
+                        Icon(Icons.chevron_right,
+                            size: 20, color: AppColors.textGrey),
                       ],
                     ),
                   ),
@@ -393,7 +424,7 @@ class LandingScreen extends StatelessWidget {
           ),
 
           const SizedBox(height: 40),
-          Divider(color: Colors.white.withOpacity(0.05)),
+          Divider(color: Colors.white.withValues(alpha: 0.05)),
           const SizedBox(height: 24),
 
           // Footer / App Stores
@@ -419,7 +450,7 @@ class LandingScreen extends StatelessWidget {
                       bottomText: "App Store",
                     ),
                     const SizedBox(width: 16),
-                     _buildStoreButton(
+                    _buildStoreButton(
                       icon: Icons.android, // Google Play
                       topText: "Disponible en",
                       bottomText: "Google Play",
@@ -434,13 +465,17 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildStoreButton({required IconData icon, required String topText, required String bottomText}) {
+  Widget _buildStoreButton(
+      {required IconData icon,
+      required String topText,
+      required String bottomText}) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // px-4 py-2
+      padding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 12), // px-4 py-2
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -449,8 +484,14 @@ class LandingScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(topText, style: const TextStyle(color: AppColors.textGrey, fontSize: 10, height: 1.0)),
-              Text(bottomText, style: const TextStyle(color: AppColors.textWhite, fontSize: 12, fontWeight: FontWeight.bold)),
+              Text(topText,
+                  style: const TextStyle(
+                      color: AppColors.textGrey, fontSize: 10, height: 1.0)),
+              Text(bottomText,
+                  style: const TextStyle(
+                      color: AppColors.textWhite,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold)),
             ],
           )
         ],

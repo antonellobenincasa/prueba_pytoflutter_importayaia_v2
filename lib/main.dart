@@ -4,28 +4,33 @@ import 'package:provider/provider.dart';
 // 1. Importamos la configuración del Tema y Providers
 import 'core/services/theme_provider.dart';
 import 'core/services/navigation_sound_service.dart';
+import 'core/services/auth_service.dart';
 
 // 2. Importamos TODAS tus pantallas existentes según tu estructura de carpetas
 import 'presentation/screens/landing_screen.dart';
 import 'presentation/screens/login_screen.dart';
 import 'presentation/screens/register_screen.dart';
 import 'presentation/screens/home_screen.dart'; // Tu Dashboard
-import 'presentation/screens/about_us_screen.dart'; // Pantalla Nosotros
 import 'presentation/screens/contact_screen.dart'; // Pantalla Contacto
 import 'presentation/screens/quote_request_screen.dart'; // Formulario de cotización
 import 'presentation/screens/onboarding_screen.dart';
-import 'presentation/screens/forgot_password_screen.dart';
 import 'presentation/screens/profile_screen.dart'; // Perfil de usuario
 import 'presentation/screens/notifications_screen.dart'; // Notificaciones
 import 'presentation/screens/tracking_screen.dart'; // Tracking de embarques
 import 'presentation/screens/quote_history_screen.dart'; // Historial de cotizaciones
-import 'presentation/screens/tax_calculator_screen.dart'; // Calculadora de impuestos
-import 'presentation/screens/aduana_experto_screen.dart'; // AduanaExpertoIA
 import 'presentation/screens/admin_dashboard_screen.dart'; // Master Admin
 import 'presentation/screens/admin_usuarios_screen.dart'; // Admin Users
 import 'presentation/screens/admin_arancel_screen.dart'; // Admin Arancel
 import 'presentation/screens/admin_tarifas_base_screen.dart'; // Admin Tarifas Base
 import 'presentation/screens/admin_proveedores_screen.dart'; // Admin Proveedores
+import 'presentation/screens/admin_puertos_screen.dart';
+import 'presentation/screens/admin_aeropuertos_screen.dart';
+import 'presentation/screens/admin_profit_review_screen.dart';
+import 'presentation/screens/admin_logs_screen.dart';
+import 'presentation/screens/admin_tracking_ff_screen.dart';
+import 'presentation/screens/admin_portal_ff_screen.dart';
+import 'presentation/screens/admin_placeholder_screen.dart'; // Placeholder for new admin modules
+import 'presentation/widgets/admin_protected_route.dart'; // Protected Route Wrapper
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +39,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => NavigationSoundService()),
+        ChangeNotifierProvider(create: (_) => AuthService()),
       ],
       child: const ImportaYaApp(),
     ),
@@ -63,25 +69,72 @@ class ImportaYaApp extends StatelessWidget {
           routes: {
             '/': (context) => const LandingScreen(),
             '/login': (context) => const LoginScreen(),
-            '/registro': (context) => const RegisterScreen(),
-            '/home': (context) => const HomeScreen(),
-            '/nosotros': (context) => const AboutUsScreen(),
-            '/contacto': (context) => const ContactScreen(),
-            '/quote_form': (context) => const QuoteRequestScreen(),
-            '/cost_simulator': (context) => const QuoteRequestScreen(),
+            '/register': (context) => const RegisterScreen(),
             '/onboarding': (context) => const OnboardingScreen(),
-            '/forgot_password': (context) => const ForgotPasswordScreen(),
+            '/dashboard': (context) => const HomeScreen(),
             '/profile': (context) => const ProfileScreen(),
             '/notifications': (context) => const NotificationsScreen(),
+            '/quote_request': (context) => const QuoteRequestScreen(),
             '/tracking': (context) => const TrackingScreen(),
-            '/quote_history': (context) => const QuoteHistoryScreen(),
-            '/tax_calculator': (context) => const TaxCalculatorScreen(),
-            '/aduana_experto': (context) => const AduanaExpertoScreen(),
-            '/admin_dashboard': (context) => const AdminDashboardScreen(),
-            '/admin_usuarios': (context) => const AdminUsuariosScreen(),
-            '/admin_arancel': (context) => const AdminArancelScreen(),
-            '/admin_tarifas_base': (context) => const AdminTarifasBaseScreen(),
-            '/admin_proveedores': (context) => const AdminProveedoresScreen(),
+            '/history': (context) => const QuoteHistoryScreen(),
+            '/support': (context) => const ContactScreen(),
+            // Admin Routes
+            '/admin_dashboard': (context) => const AdminProtectedRoute(
+                  child: AdminDashboardScreen(),
+                ),
+            '/admin_cotizaciones': (context) => const AdminProtectedRoute(
+                  child: AdminDashboardScreen(initialTab: 1),
+                ),
+            '/admin_usuarios': (context) => const AdminProtectedRoute(
+                  child: AdminUsuariosScreen(),
+                ),
+            '/admin_arancel': (context) => const AdminProtectedRoute(
+                  child: AdminArancelScreen(),
+                ),
+            '/admin_tarifas_base': (context) => const AdminProtectedRoute(
+                  child: AdminTarifasBaseScreen(),
+                ),
+            '/admin_proveedores': (context) => const AdminProtectedRoute(
+                  child: AdminProveedoresScreen(),
+                ),
+            // Nuevos Módulos de Admin Implementados
+            '/admin_puertos': (context) => const AdminProtectedRoute(
+                  child: AdminPuertosScreen(),
+                ),
+            '/admin_aeropuertos': (context) => const AdminProtectedRoute(
+                  child: AdminAeropuertosScreen(),
+                ),
+            '/admin_profit_review': (context) => const AdminProtectedRoute(
+                  child: AdminProfitReviewScreen(),
+                ),
+            '/admin_logs': (context) => const AdminProtectedRoute(
+                  child: AdminLogsScreen(),
+                ),
+            '/admin_tracking_ff': (context) => const AdminProtectedRoute(
+                  child: AdminTrackingFFScreen(),
+                ),
+            '/admin_portal_ff': (context) => const AdminProtectedRoute(
+                  child: AdminPortalFFScreen(),
+                ),
+            // Módulos pendientes (Placeholders)
+            '/admin_config_hitos': (context) => AdminProtectedRoute(
+                  child: AdminPlaceholderScreen(
+                    title: 'Configuración de Hitos',
+                    currentRoute: 'config_hitos',
+                  ),
+                ),
+            '/admin_cotizaciones_ff': (context) => AdminProtectedRoute(
+                  child: AdminPlaceholderScreen(
+                    title: 'Cotizaciones FF',
+                    currentRoute: 'cotizaciones_ff',
+                  ),
+                ),
+            '/admin_config_ff': (context) => AdminProtectedRoute(
+                  child: AdminPlaceholderScreen(
+                    title: 'Configuración FF',
+                    currentRoute: 'config_ff',
+                  ),
+                ),
           },
         );
       },

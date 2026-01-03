@@ -15,6 +15,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _apellidoController = TextEditingController();
   final _emailController = TextEditingController();
   final _empresaController = TextEditingController();
+  final _rucController = TextEditingController();
   final _telefonoController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -23,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String? _errorMessage;
-  bool _registrationSuccess = false;
+  final bool _registrationSuccess = false;
 
   @override
   void dispose() {
@@ -31,6 +32,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _apellidoController.dispose();
     _emailController.dispose();
     _empresaController.dispose();
+    _rucController.dispose();
     _telefonoController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -53,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       empresa: _empresaController.text.trim(),
       telefono: _telefonoController.text.trim(),
       password: _passwordController.text,
+      ruc: _rucController.text.trim(),
     );
 
     setState(() => _isLoading = false);
@@ -208,6 +211,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Ingresa el nombre de tu empresa';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // RUC Ecuador (13 dígitos)
+                      _buildTextField(
+                        controller: _rucController,
+                        hintText: "RUC (13 dígitos)",
+                        prefixIcon: Icons.badge_outlined,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Ingresa tu RUC';
+                          }
+                          if (value.length != 13) {
+                            return 'El RUC debe tener 13 dígitos';
+                          }
+                          if (!RegExp(r'^\d+$').hasMatch(value)) {
+                            return 'Solo números permitidos';
+                          }
+                          if (!value.endsWith('001')) {
+                            return 'RUC debe terminar en 001';
                           }
                           return null;
                         },

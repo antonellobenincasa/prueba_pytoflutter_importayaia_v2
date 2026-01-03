@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/api/auth_repository.dart';
 import 'home_screen.dart';
-import 'cost_simulator_screen.dart';
+import 'quote_request_screen.dart';
 import 'quote_detail_screen.dart';
 import 'tracking_screen.dart';
 
@@ -107,7 +107,7 @@ class _QuoteHistoryScreenState extends State<QuoteHistoryScreen> {
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => const CostSimulatorScreen())),
+                            builder: (_) => const QuoteRequestScreen())),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         foregroundColor: const Color(0xFF111827),

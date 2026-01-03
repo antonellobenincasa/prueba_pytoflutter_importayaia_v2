@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/authenticated_drawer.dart';
+import '../widgets/hover_card.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
 
@@ -12,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
+  bool _isLoadingProfile = true;
 
   @override
   void initState() {
@@ -21,6 +23,16 @@ class _HomeScreenState extends State<HomeScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacementNamed(context, '/login');
       });
+    } else {
+      // Fetch user profile from backend
+      _fetchUserProfile();
+    }
+  }
+
+  Future<void> _fetchUserProfile() async {
+    await _authService.fetchUserProfile();
+    if (mounted) {
+      setState(() => _isLoadingProfile = false);
     }
   }
 
@@ -33,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: bgDark,
       appBar: AppBar(
-        title: const Text("Mi Dashboard"),
+        title:
+            Text("Mi Dashboard", style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: bgDark,
         elevation: 0,
         actions: [
@@ -44,45 +57,102 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: const AuthenticatedDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Welcome Header
-            _buildWelcomeHeader(primaryColor),
-            const SizedBox(height: 24),
+      body: _isLoadingProfile
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.neonGreen),
+            )
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Verification Pending Banner
+                  if (!_authService.isRucApproved) _buildVerificationBanner(),
 
-            // Status Card (RUC Status)
-            _buildStatusCard(surfaceDark, primaryColor),
-            const SizedBox(height: 24),
+                  // Welcome Header
+                  _buildWelcomeHeader(primaryColor),
+                  const SizedBox(height: 24),
 
-            // Quick Actions Grid
-            const Text(
-              "Acciones Rápidas",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+                  // Status Card (RUC Status)
+                  _buildStatusCard(surfaceDark, primaryColor),
+                  const SizedBox(height: 24),
+
+                  // Quick Actions Grid
+                  Text(
+                    "Acciones Rápidas",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildQuickActionsGrid(context, surfaceDark, primaryColor),
+                  const SizedBox(height: 24),
+
+                  // Main Features
+                  Text(
+                    "Mis Herramientas",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  _buildFeatureCards(context, surfaceDark, primaryColor),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            _buildQuickActionsGrid(context, surfaceDark, primaryColor),
-            const SizedBox(height: 24),
+    );
+  }
 
-            // Main Features
-            const Text(
-              "Mis Herramientas",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            _buildFeatureCards(context, surfaceDark, primaryColor),
+  Widget _buildVerificationBanner() {
+    final isPending = _authService.rucStatus == 'pending';
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.orange.withValues(alpha: 0.2),
+            Colors.orange.withValues(alpha: 0.1),
           ],
         ),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            isPending ? Icons.hourglass_top : Icons.warning_amber,
+            color: Colors.orange,
+            size: 24,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  isPending ? "Verificación Pendiente" : "Completa tu Perfil",
+                  style: const TextStyle(
+                    color: Colors.orange,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  isPending
+                      ? "Tu RUC está siendo verificado. Te notificaremos pronto."
+                      : "Agrega tu RUC para acceder a todas las funciones.",
+                  style: TextStyle(
+                    color: Colors.orange.withValues(alpha: 0.8),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (!isPending)
+            TextButton(
+              onPressed: () => Navigator.pushNamed(context, '/profile'),
+              child: const Text("Completar"),
+            ),
+        ],
       ),
     );
   }
@@ -96,14 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            primaryColor.withOpacity(0.1),
-            primaryColor.withOpacity(0.05),
+            primaryColor.withValues(alpha: 0.1),
+            primaryColor.withValues(alpha: 0.05),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withOpacity(0.2)),
+        border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -111,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 60,
             height: 60,
             decoration: BoxDecoration(
-              color: primaryColor.withOpacity(0.2),
+              color: primaryColor.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -191,7 +261,7 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: surfaceDark,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: statusColor.withOpacity(0.3)),
+          border: Border.all(color: statusColor.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
@@ -226,6 +296,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildQuickActionsGrid(
       BuildContext context, Color surfaceDark, Color primaryColor) {
+    final isRucApproved = _authService.isRucApproved;
+
     return Row(
       children: [
         Expanded(
@@ -233,6 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.add_circle_outline,
             title: "Nueva\nCotización",
             color: primaryColor,
+            isLocked: !isRucApproved,
             onTap: () => _handleFeatureAccess(context, '/quote_form'),
           ),
         ),
@@ -242,6 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.history,
             title: "Mis\nCotizaciones",
             color: Colors.blue,
+            isLocked: !isRucApproved,
             onTap: () => _handleFeatureAccess(context, '/quote_history'),
           ),
         ),
@@ -251,6 +325,7 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icons.local_shipping,
             title: "Tracking\nEmbarques",
             color: Colors.purple,
+            isLocked: !isRucApproved,
             onTap: () => _handleFeatureAccess(context, '/tracking'),
           ),
         ),
@@ -263,31 +338,37 @@ class _HomeScreenState extends State<HomeScreen> {
     required String title,
     required Color color,
     required VoidCallback onTap,
+    bool isLocked = false,
   }) {
-    return GestureDetector(
+    return HoverCard(
+      glowColor: color,
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: color.withOpacity(0.2)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 32),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+      isLocked: isLocked,
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(icon, color: isLocked ? Colors.grey : color, size: 32),
+              if (isLocked)
+                Positioned(
+                  right: -8,
+                  bottom: -8,
+                  child: Icon(Icons.lock, color: Colors.grey[600], size: 14),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isLocked ? Colors.grey : Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -343,75 +424,32 @@ class _HomeScreenState extends State<HomeScreen> {
     required VoidCallback onTap,
     bool isLocked = false,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
+    return HoverListTile(
+      leading: Container(
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
-          color: const Color(0xFF0A101D),
+          color: color.withValues(alpha: isLocked ? 0.1 : 0.15),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isLocked
-                ? Colors.grey.withOpacity(0.2)
-                : color.withOpacity(0.3),
-          ),
         ),
-        child: Row(
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color.withOpacity(isLocked ? 0.1 : 0.15),
-                borderRadius: BorderRadius.circular(12),
+            Icon(icon, color: color.withValues(alpha: isLocked ? 0.5 : 1), size: 24),
+            if (isLocked)
+              Positioned(
+                right: 2,
+                bottom: 2,
+                child: Icon(Icons.lock, color: Colors.grey[600], size: 14),
               ),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Icon(icon,
-                      color: color.withOpacity(isLocked ? 0.5 : 1), size: 24),
-                  if (isLocked)
-                    Positioned(
-                      right: 2,
-                      bottom: 2,
-                      child:
-                          Icon(Icons.lock, color: Colors.grey[600], size: 14),
-                    ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: isLocked ? Colors.grey : Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      color: Colors.grey[isLocked ? 600 : 400],
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.grey[600],
-              size: 16,
-            ),
           ],
         ),
       ),
+      title: title,
+      subtitle: subtitle,
+      color: color,
+      isLocked: isLocked,
+      onTap: onTap,
     );
   }
 

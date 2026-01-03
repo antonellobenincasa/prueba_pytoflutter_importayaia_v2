@@ -1,7 +1,7 @@
-import 'dart:math' as math;
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
+import '../../core/api/client.dart';
 
 class TaxCalculatorScreen extends StatefulWidget {
   const TaxCalculatorScreen({super.key});
@@ -11,6 +11,9 @@ class TaxCalculatorScreen extends StatefulWidget {
 }
 
 class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
+  // API Client
+  final ApiClient _apiClient = ApiClient();
+
   // Controllers
   final TextEditingController _fobController =
       TextEditingController(text: "12500.00");
@@ -21,81 +24,101 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
   final TextEditingController _weightController =
       TextEditingController(text: "45");
 
-  // --- VARIABLES DE ESTADO (Production Ready) ---
+  // --- STATE ---
   String _originCountry = "US";
   bool _insuranceEnabled = true;
   bool _isCalculating = false;
 
-  // Inputs del Backend (Valores por defecto / Placeholders)
-  // TODO: Conectar con InventoryService para obtener tasas reales según HS Code
-  final double _iceRate =
-      0.0; // Tasa ICE (Ej: 0.0 para celulares, variable para alcohol)
-  final double _adValoremRate =
-      0.0; // Tasa Arancelaria (Ej: 0.0 para tecnología)
-
-  // Resultados Financieros
+  // Backend Response Values
+  double _cifValue = 0.0;
   double _insuranceCost = 0.0;
   double _adValorem = 0.0;
   double _fodinfa = 0.0;
   double _iceTax = 0.0;
+  double _iceRate = 0.0;
   double _iva = 0.0;
   double _total = 0.0;
 
-  /// Calcula tributos aduaneros bajo normativa SENAE (Ecuador)
-  /// Referencia: Documento "Formulas, Calculos y Logica de Negocio.pdf"
-  void _calculate() async {
-    setState(() => _isCalculating = true);
+  /// Calculate taxes by calling backend API
+  /// Sends data to POST /api/sales/pre-liquidations/
+  Future<void> _calculateFromBackend() async {
+    setState(() {
+      _isCalculating = true;
+    });
 
-    // Simulación de delay de red (Reemplazar por llamada API real futuramente)
-    await Future.delayed(const Duration(milliseconds: 600));
+    try {
+      // 1. Get input values
+      final double fobValue = double.tryParse(_fobController.text) ?? 0;
+      final double freightValue = double.tryParse(_freightController.text) ?? 0;
+      final String hsCode = _hsCodeController.text.trim();
 
-    // 1. Obtener Inputs
-    final double fobValue = double.tryParse(_fobController.text) ?? 0;
-    final double freightValue = double.tryParse(_freightController.text) ?? 0;
+      // Calculate insurance locally (0.35% of CFR, min $70)
+      final double cfr = fobValue + freightValue;
+      double insuranceValue = 0.0;
+      if (_insuranceEnabled) {
+        insuranceValue = cfr * 0.0035;
+        if (insuranceValue < 70.0) insuranceValue = 70.0;
+      }
 
-    // 2. SEGURO INTERNACIONAL (Fix Crítico: Mínimo $70 o 0.35%)
-    final double cfr = fobValue + freightValue;
-    final double calculatedInsurance =
-        _insuranceEnabled ? math.max(cfr * 0.0035, 70.00) : 0.0;
+      // 2. Prepare payload for backend
+      final payload = {
+        'fob_value_usd': fobValue,
+        'freight_usd': freightValue,
+        'insurance_usd': insuranceValue,
+        'confirmed_hs_code': hsCode,
+        'product_description': 'Cálculo desde Flutter App',
+      };
 
-    // 3. CIF (Base Maestra)
-    final double cifValue = fobValue + freightValue + calculatedInsurance;
+      // Sending to pre-liquidations API
 
-    // 4. TASAS FIJAS & VARIABLES
-    const double fodinfaRate = 0.005; // 0.5% Fijo Ley
-    const double ivaRate = 0.15; // 15% IVA Actual
+      // 3. Call backend API
+      final response =
+          await _apiClient.post('sales/pre-liquidations/', payload);
 
-    // 5. CÁLCULO DE TRIBUTOS
-    // A. Ad-Valorem (Arancel)
-    final double adValoremTax = cifValue * _adValoremRate;
+      // Pre-liquidation response received
 
-    // B. FODINFA
-    final double fodinfaTax = cifValue * fodinfaRate;
+      // 4. Parse response and update state
+      if (mounted) {
+        setState(() {
+          _cifValue = _parseDouble(response['cif_value_usd']);
+          _insuranceCost = insuranceValue;
+          _adValorem = _parseDouble(response['ad_valorem_usd']);
+          _fodinfa = _parseDouble(response['fodinfa_usd']);
+          _iceTax = _parseDouble(response['ice_usd']);
+          _iva = _parseDouble(response['iva_usd']);
+          _total = _parseDouble(response['total_tributos_usd']);
 
-    // C. ICE (Impuesto Consumos Especiales)
-    // CRÍTICO: Se calcula sobre (CIF + Arancel) según normativa de valoración en aduana
-    final double iceBase = cifValue + adValoremTax;
-    final double iceTax = _iceRate > 0 ? iceBase * _iceRate : 0.0;
+          // Calculate rates for display
+          if (_cifValue > 0) {
+            _iceRate = _iceTax > 0 ? (_iceTax / _cifValue) * 100 : 0;
+          }
 
-    // D. IVA (Impuesto al Valor Agregado)
-    // Base Imponible IVA = CIF + AdValorem + FODINFA + ICE
-    final double vatBase = cifValue + adValoremTax + fodinfaTax + iceTax;
-    final double ivaTax = vatBase * ivaRate;
+          _isCalculating = false;
+        });
+      }
+    } catch (e) {
+      // Error calculating taxes
+      if (mounted) {
+        setState(() {
+          _isCalculating = false;
+        });
 
-    // 6. TOTAL FINAL (Solo Tributos para esta vista)
-    final double totalTaxes = adValoremTax + fodinfaTax + iceTax + ivaTax;
-
-    if (mounted) {
-      setState(() {
-        _insuranceCost = calculatedInsurance;
-        _adValorem = adValoremTax;
-        _fodinfa = fodinfaTax;
-        _iceTax = iceTax;
-        _iva = ivaTax;
-        _total = totalTaxes;
-        _isCalculating = false;
-      });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error conectando al servidor: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
+  }
+
+  double _parseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 
   @override
@@ -487,7 +510,7 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
           width: double.infinity,
           height: 56,
           child: ElevatedButton.icon(
-            onPressed: _isCalculating ? null : _calculate,
+            onPressed: _isCalculating ? null : _calculateFromBackend,
             icon: _isCalculating
                 ? const SizedBox(
                     width: 20,

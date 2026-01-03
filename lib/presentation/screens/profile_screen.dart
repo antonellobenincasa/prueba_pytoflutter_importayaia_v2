@@ -1,6 +1,41 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/api/client.dart';
+
+/// List of main Ecuador cities for autocomplete
+const List<String> ecuadorCities = [
+  'Guayaquil',
+  'Quito',
+  'Cuenca',
+  'Santo Domingo',
+  'Machala',
+  'Durán',
+  'Manta',
+  'Portoviejo',
+  'Loja',
+  'Ambato',
+  'Esmeraldas',
+  'Quevedo',
+  'Riobamba',
+  'Milagro',
+  'Ibarra',
+  'Latacunga',
+  'Tulcán',
+  'Babahoyo',
+  'Sangolquí',
+  'Pasaje',
+  'Chone',
+  'Santa Rosa',
+  'Huaquillas',
+  'El Carmen',
+  'Daule',
+  'Samborondón',
+  'La Libertad',
+  'Salinas',
+  'Otavalo',
+  'Cayambe',
+];
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -12,6 +47,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
+  final ApiClient _apiClient = ApiClient();
 
   // Controllers
   final _nombreController = TextEditingController();
@@ -19,11 +55,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final _empresaController = TextEditingController();
   final _rucController = TextEditingController();
   final _telefonoController = TextEditingController();
-  final _ciudadController = TextEditingController();
   final _direccionController = TextEditingController();
 
-  bool _isLoading = false;
+  // City autocomplete
+  String _selectedCity = '';
+
   bool _isSaving = false;
+  bool _rucIsReadOnly = false;
   String? _errorMessage;
   String? _successMessage;
 
@@ -40,7 +78,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _apellidoController.text = userData['last_name'] ?? '';
       _empresaController.text = userData['company_name'] ?? '';
       _telefonoController.text = userData['phone'] ?? '';
-      _ciudadController.text = userData['city'] ?? '';
+      _selectedCity = userData['city'] ?? '';
+      _direccionController.text = userData['address'] ?? '';
+
+      // Pre-fill RUC from registration data
+      final ruc = userData['ruc'] ?? _authService.userRuc ?? '';
+      if (ruc.isNotEmpty) {
+        _rucController.text = ruc;
+        // If RUC is already approved, make it read-only
+        if (_authService.isRucApproved) {
+          _rucIsReadOnly = true;
+        }
+      }
     }
   }
 
@@ -51,7 +100,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _empresaController.dispose();
     _rucController.dispose();
     _telefonoController.dispose();
-    _ciudadController.dispose();
     _direccionController.dispose();
     super.dispose();
   }
@@ -59,27 +107,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
 
+    // Validate city is selected
+    if (_selectedCity.isEmpty) {
+      setState(() => _errorMessage = 'Por favor selecciona una ciudad');
+      return;
+    }
+
     setState(() {
       _isSaving = true;
       _errorMessage = null;
       _successMessage = null;
     });
 
-    // TODO: Implementar llamada a API para guardar perfil
-    // Por ahora simulamos guardado exitoso
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      // Prepare profile data
+      final profileData = {
+        'first_name': _nombreController.text.trim(),
+        'last_name': _apellidoController.text.trim(),
+        'company_name': _empresaController.text.trim(),
+        'phone': _telefonoController.text.trim(),
+        'city': _selectedCity,
+        'address': _direccionController.text.trim(),
+      };
 
-    setState(() {
-      _isSaving = false;
-      _successMessage = 'Perfil actualizado exitosamente';
-    });
-
-    // Ocultar mensaje después de 3 segundos
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        setState(() => _successMessage = null);
+      // Only include RUC if not read-only (not yet approved)
+      if (!_rucIsReadOnly && _rucController.text.isNotEmpty) {
+        profileData['ruc'] = _rucController.text.trim();
       }
-    });
+
+      // Saving profile to backend
+
+      // Call API to update profile using PUT to /profile/complete/
+      await _apiClient.put('accounts/profile/complete/', profileData);
+      // Profile saved successfully
+
+      // If RUC was provided and is new, request approval
+      if (!_rucIsReadOnly && _rucController.text.isNotEmpty) {
+        try {
+          await _requestRucApproval();
+        } catch (e) {
+          // RUC approval request issue - continue anyway
+        }
+      }
+
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _successMessage = _rucController.text.isNotEmpty && !_rucIsReadOnly
+              ? '✅ Perfil guardado. RUC enviado para aprobación.'
+              : '✅ Perfil actualizado exitosamente';
+        });
+
+        // Refresh user data
+        await _authService.fetchUserProfile();
+      }
+    } catch (e) {
+      // Error saving profile
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+          _errorMessage = 'Error al guardar: $e';
+        });
+      }
+    }
+  }
+
+  Future<void> _requestRucApproval() async {
+    final rucData = {
+      'ruc': _rucController.text.trim(),
+      'company_name': _empresaController.text.trim(),
+    };
+
+    await _apiClient.post('accounts/request-ruc-approval/', rucData);
   }
 
   @override
@@ -139,11 +238,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 keyboardType: TextInputType.phone,
               ),
               const SizedBox(height: 16),
-              _buildTextField(
-                controller: _ciudadController,
-                label: "Ciudad",
-                icon: Icons.location_city_outlined,
-              ),
+
+              // City Autocomplete
+              _buildCityAutocomplete(surfaceDark, primaryColor),
+
               const SizedBox(height: 32),
 
               // Información Empresarial
@@ -168,10 +266,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 16),
               _buildTextField(
                 controller: _rucController,
-                label: "RUC (13 dígitos)",
+                label:
+                    _rucIsReadOnly ? "RUC (Verificado ✓)" : "RUC (13 dígitos)",
                 icon: Icons.badge_outlined,
                 keyboardType: TextInputType.number,
                 maxLength: 13,
+                readOnly: _rucIsReadOnly,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'El RUC es requerido';
@@ -181,6 +281,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                   if (!RegExp(r'^\d{13}$').hasMatch(value)) {
                     return 'El RUC solo debe contener números';
+                  }
+                  if (!value.endsWith('001')) {
+                    return 'El RUC debe terminar en 001';
                   }
                   return null;
                 },
@@ -201,9 +304,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
+                    color: Colors.red.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
+                    border:
+                        Border.all(color: Colors.red.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
@@ -224,9 +328,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   padding: const EdgeInsets.all(12),
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(
-                    color: primaryColor.withOpacity(0.1),
+                    color: primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: primaryColor.withOpacity(0.3)),
+                    border:
+                        Border.all(color: primaryColor.withValues(alpha: 0.3)),
                   ),
                   child: Row(
                     children: [
@@ -282,6 +387,101 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  Widget _buildCityAutocomplete(Color surfaceDark, Color primaryColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Autocomplete<String>(
+          initialValue: TextEditingValue(text: _selectedCity),
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            if (textEditingValue.text.isEmpty) {
+              return const Iterable<String>.empty();
+            }
+            return ecuadorCities.where((city) => city
+                .toLowerCase()
+                .startsWith(textEditingValue.text.toLowerCase()));
+          },
+          onSelected: (String selection) {
+            setState(() => _selectedCity = selection);
+          },
+          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+            // Sync controller with selected city
+            if (controller.text.isEmpty && _selectedCity.isNotEmpty) {
+              controller.text = _selectedCity;
+            }
+            return TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              style: const TextStyle(color: Colors.white),
+              onChanged: (value) {
+                // Update selected city as user types
+                if (ecuadorCities
+                    .any((c) => c.toLowerCase() == value.toLowerCase())) {
+                  _selectedCity = ecuadorCities.firstWhere(
+                      (c) => c.toLowerCase() == value.toLowerCase());
+                }
+              },
+              decoration: InputDecoration(
+                labelText: "Ciudad",
+                labelStyle: TextStyle(color: Colors.grey[400]),
+                prefixIcon:
+                    Icon(Icons.location_city_outlined, color: Colors.grey[500]),
+                suffixIcon:
+                    Icon(Icons.arrow_drop_down, color: Colors.grey[500]),
+                filled: true,
+                fillColor: surfaceDark,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide:
+                      BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: primaryColor),
+                ),
+              ),
+            );
+          },
+          optionsViewBuilder: (context, onSelected, options) {
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                color: surfaceDark,
+                elevation: 8,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 40,
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (context, index) {
+                      final option = options.elementAt(index);
+                      return ListTile(
+                        leading: Icon(Icons.location_on,
+                            color: primaryColor, size: 20),
+                        title: Text(option,
+                            style: const TextStyle(color: Colors.white)),
+                        onTap: () => onSelected(option),
+                        hoverColor: primaryColor.withValues(alpha: 0.1),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildStatusBanner(
       String? rucStatus, bool isRucApproved, Color primaryColor) {
     String message;
@@ -307,9 +507,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
@@ -344,6 +544,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     TextInputType? keyboardType,
     int? maxLength,
     int maxLines = 1,
+    bool readOnly = false,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
@@ -351,22 +552,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
       keyboardType: keyboardType,
       maxLength: maxLength,
       maxLines: maxLines,
+      readOnly: readOnly,
       validator: validator,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: readOnly ? Colors.grey : Colors.white),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.grey[400]),
         prefixIcon: Icon(icon, color: Colors.grey[500]),
         counterStyle: TextStyle(color: Colors.grey[600]),
         filled: true,
-        fillColor: const Color(0xFF0A101D),
+        fillColor: readOnly
+            ? const Color(0xFF0A101D).withValues(alpha: 0.5)
+            : const Color(0xFF0A101D),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
+          borderSide: BorderSide(
+              color: readOnly
+                  ? Colors.green.withValues(alpha: 0.3)
+                  : Colors.white.withValues(alpha: 0.1)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

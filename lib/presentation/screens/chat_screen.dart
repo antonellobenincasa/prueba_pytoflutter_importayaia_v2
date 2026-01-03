@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'tax_calculator_screen.dart';
-import 'cost_simulator_screen.dart';
+import 'quote_request_screen.dart';
 import '../../config/theme.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -53,7 +53,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: bgDark,
       appBar: AppBar(
-        backgroundColor: bgDark.withOpacity(0.9),
+        backgroundColor: bgDark.withValues(alpha: 0.9),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -137,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 12, vertical: 4),
                               decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.05),
+                                  color: Colors.white.withValues(alpha: 0.05),
                                   borderRadius: BorderRadius.circular(12)),
                               child: const Text("Hoy",
                                   style: TextStyle(
@@ -211,7 +211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                            color: primaryColor.withOpacity(0.2),
+                            color: primaryColor.withValues(alpha: 0.2),
                             blurRadius: 10)
                       ]),
                   child: IconButton(
@@ -299,7 +299,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12, vertical: 6),
                                   decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.05),
+                                      color: Colors.white.withValues(alpha: 0.05),
                                       border: Border.all(color: Colors.white10),
                                       borderRadius: BorderRadius.circular(8)),
                                   child: Text(a,
@@ -394,7 +394,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 MaterialPageRoute(builder: (_) => const TaxCalculatorScreen()));
           } else if (label == "Simulador Costos") {
             Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const CostSimulatorScreen()));
+                MaterialPageRoute(builder: (_) => const QuoteRequestScreen()));
           } else {
             setState(() => _controller.text = label);
           }

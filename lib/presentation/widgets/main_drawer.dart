@@ -2,12 +2,15 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../screens/notifications_screen.dart';
 import '../screens/profile_screen.dart';
 import '../screens/contact_screen.dart';
 import '../screens/about_us_screen.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/theme_provider.dart';
+import '../../core/services/navigation_sound_service.dart';
 
 class MainDrawer extends StatelessWidget {
   const MainDrawer({super.key});
@@ -171,17 +174,16 @@ class MainDrawer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 64,
-                height: 64, // size-16
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                    color: const Color(0xFF0A101D), // bg-surface-dark
-                    borderRadius: BorderRadius.circular(16),
+                    color: const Color(0xFF0A101D),
+                    borderRadius: BorderRadius.circular(12),
                     border:
                         Border.all(color: Colors.white.withValues(alpha: 0.05)),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black
-                            .withValues(alpha: 0.2), // shadow-inner approx
+                        color: Colors.black.withValues(alpha: 0.2),
                       )
                     ]),
                 child: InkWell(
@@ -192,39 +194,66 @@ class MainDrawer extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (_) => const ProfileScreen()));
                   },
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   child: Center(
                     child: Icon(Icons.local_shipping,
-                        size: 40, color: AppColors.neonGreen),
+                        size: 28, color: AppColors.neonGreen),
                   ),
                 ),
               ),
-              const SizedBox(width: 16), // gap-3 (12px) - adjusted
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "ImportaYA.ia",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24, // text-2xl
-                      fontWeight: FontWeight.bold,
-                      height: 1.0,
-                    ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    final authService = AuthService();
+                    if (authService.isLoggedIn) {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/home', (route) => false);
+                    } else {
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, '/', (route) => false);
+                    }
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            "ImportaYAia",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                            ),
+                          ),
+                          Text(
+                            ".com",
+                            style: TextStyle(
+                              color: AppColors.neonGreen,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Logística Inteligente",
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 14,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "Logística Inteligente",
-                    style: TextStyle(
-                      color: Colors.grey[400], // text-gray-400
-                      fontSize: 14,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const Spacer(),
               IconButton(
                 icon: const Icon(Icons.notifications_outlined,
                     color: Colors.white),
@@ -349,7 +378,88 @@ class MainDrawer extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
+          // Theme and Sound Toggles
+          Row(
+            children: [
+              Consumer<ThemeProvider>(
+                builder: (context, themeProvider, _) {
+                  return InkWell(
+                    onTap: () => themeProvider.toggleTheme(),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0A101D),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.1)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            themeProvider.isDarkMode
+                                ? Icons.light_mode
+                                : Icons.dark_mode,
+                            size: 16,
+                            color: AppColors.neonGreen,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            themeProvider.isDarkMode ? 'Claro' : 'Oscuro',
+                            style: TextStyle(
+                                color: Colors.grey[400], fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(width: 8),
+              Consumer<NavigationSoundService>(
+                builder: (context, soundService, _) {
+                  return InkWell(
+                    onTap: () => soundService.toggleSound(),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF0A101D),
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                            color: Colors.white.withValues(alpha: 0.1)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            soundService.isEnabled
+                                ? Icons.volume_up
+                                : Icons.volume_off,
+                            size: 16,
+                            color: soundService.isEnabled
+                                ? AppColors.neonGreen
+                                : Colors.grey,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Sonido',
+                            style: TextStyle(
+                                color: Colors.grey[400], fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

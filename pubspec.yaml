@@ -19,11 +19,16 @@ dependencies:
   # --- Lógica y Datos (Versiones compatibles con tu SDK) ---
   flutter_secure_storage: ^10.0.0  # Bajamos de 9.0.0 a 8.0.0
   http: ^1.1.0
-  shared_preferences: ^2.2.0
+  shared_preferences: ^2.5.4
   dio: ^5.3.0
   url_launcher: ^6.1.14
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
+  
+  # --- Video Player ---
+  video_player: ^2.8.1
+  audioplayers: ^6.5.1
+  provider: ^6.1.5+1
 
 dev_dependencies:
   flutter_test:
@@ -34,3 +39,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/videos/

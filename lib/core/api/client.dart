@@ -1,26 +1,37 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ApiClient {
   // ---------------------------------------------------------
   // CONFIGURACIÓN DE CONEXIÓN
   // ---------------------------------------------------------
 
-  // Usamos 127.0.0.1 y el puerto 8001/api como confirmamos antes.
-  static const String baseUrl = 'http://127.0.0.1:8001/api';
+  // Usamos localhost para mejor compatibilidad CORS en browser
+  static const String baseUrl = 'http://localhost:8001/api';
 
   // ---------------------------------------------------------
 
-  final Map<String, String> headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-  };
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
+
+  Map<String, String> get headers => {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      };
+
+  Future<Map<String, String>> getAuthHeaders() async {
+    final token = await _storage.read(key: 'auth_token');
+    return {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      if (token != null) "Authorization": "Bearer $token",
+    };
+  }
 
   // Método POST genérico
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     try {
-      print('Intentando POST a: $url');
       final response = await http.post(
         url,
         headers: headers,
@@ -28,21 +39,53 @@ class ApiClient {
       );
       return _handleResponse(response);
     } catch (e) {
-      print('Error POST: $e');
       throw Exception(
           'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
     }
   }
 
-  // Método GET genérico
+  // Método GET genérico (sin autenticación)
   Future<dynamic> get(String endpoint) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     try {
-      print('Intentando GET a: $url');
-      final response = await http.get(url, headers: headers);
+      final authHeaders = await getAuthHeaders();
+      final response = await http.get(url, headers: authHeaders);
       return _handleResponse(response);
     } catch (e) {
-      print('Error GET: $e');
+      throw Exception(
+          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
+    }
+  }
+
+  // Método PUT genérico con autenticación
+  Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    try {
+      final authHeaders = await getAuthHeaders();
+      final response = await http.put(
+        url,
+        headers: authHeaders,
+        body: jsonEncode(data),
+      );
+      return _handleResponse(response);
+    } catch (e) {
+      throw Exception(
+          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
+    }
+  }
+
+  // Método PATCH con autenticación
+  Future<dynamic> patch(String endpoint, Map<String, dynamic> data) async {
+    final url = Uri.parse('$baseUrl/$endpoint');
+    try {
+      final authHeaders = await getAuthHeaders();
+      final response = await http.patch(
+        url,
+        headers: authHeaders,
+        body: jsonEncode(data),
+      );
+      return _handleResponse(response);
+    } catch (e) {
       throw Exception(
           'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
     }

@@ -26,6 +26,7 @@ class AuthService extends ChangeNotifier {
   String? _rucStatus; // 'pending', 'approved', 'rejected', null
   bool _hasCompletedImport = false;
   bool _isProfileComplete = false;
+  bool _isActiveImporter = false;
 
   // Getters
   bool get isLoggedIn => _isLoggedIn;
@@ -38,6 +39,7 @@ class AuthService extends ChangeNotifier {
   String? get rucStatus => _rucStatus;
   bool get hasCompletedImport => _hasCompletedImport;
   bool get isProfileComplete => _isProfileComplete;
+  bool get isActiveImporter => _isActiveImporter;
   Map<String, dynamic>? get userData => _userData;
 
   /// Verifica si hay una sesión guardada
@@ -67,7 +69,7 @@ class AuthService extends ChangeNotifier {
             success: false, message: 'Email y contraseña requeridos');
       }
 
-      print('📡 Enviando Login a Django...');
+      // Sending login request to Django
 
       // Llamada REAL al servidor
       final response = await _apiClient.post('accounts/login/', {
@@ -75,7 +77,7 @@ class AuthService extends ChangeNotifier {
         'password': password,
       });
 
-      print('✅ Respuesta recibida: $response');
+      // Login response received
 
       // Django devuelve: { "tokens": { "access": "...", "refresh": "..." }, "user": {...} }
       final tokens = response['tokens'];
@@ -113,7 +115,7 @@ class AuthService extends ChangeNotifier {
             success: false, message: 'Error: No se recibió token');
       }
     } catch (e) {
-      print('❌ Error en Login: $e');
+      // Error in login
       return AuthResult(
           success: false,
           message: 'Fallo al iniciar sesión. Revisa usuario/clave.');
@@ -138,7 +140,7 @@ class AuthService extends ChangeNotifier {
             success: false, message: 'Datos inválidos o contraseña corta');
       }
 
-      print('📡 Enviando Registro a Django...');
+      // Sending registration request to Django
 
       // Construimos el objeto de datos que espera Django
       // NOTA: Debe coincidir con UserRegistrationSerializer de Django
@@ -153,6 +155,9 @@ class AuthService extends ChangeNotifier {
       };
 
       // Agregar campos opcionales solo si tienen valor
+      if (ruc != null && ruc.isNotEmpty) {
+        registerData['ruc'] = ruc;
+      }
       if (ciudad != null && ciudad.isNotEmpty) {
         registerData['city'] = ciudad;
       }
@@ -161,7 +166,7 @@ class AuthService extends ChangeNotifier {
       final response =
           await _apiClient.post('accounts/register/', registerData);
 
-      print('✅ Registro exitoso: $response');
+      // Registration successful
 
       // Django devuelve tokens en registro también - auto-login
       final tokens = response['tokens'];
@@ -199,7 +204,7 @@ class AuthService extends ChangeNotifier {
         data: _userData,
       );
     } catch (e) {
-      print('❌ Error en Registro: $e');
+      // Error in registration
       // Manejo de errores comunes de Django (ej: Email ya existe)
       if (e.toString().contains('unique') || e.toString().contains('exists')) {
         return AuthResult(
@@ -210,10 +215,60 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  /// Fetch user profile from backend to get RUC status and importer flags
+  /// Calls GET /api/sales/me/
+  Future<bool> fetchUserProfile() async {
+    if (!_isLoggedIn || _userToken == null) {
+      return false;
+    }
+
+    try {
+      // Fetching user profile from backend
+      final response = await _apiClient.get('sales/me/');
+
+      // Profile response received
+
+      _userData = response;
+      _userName =
+          '${response['first_name'] ?? ''} ${response['last_name'] ?? ''}'
+              .trim();
+      _userEmail = response['email'];
+      _userRuc = response['ruc'];
+      _rucStatus = response['ruc_status'];
+
+      // Set access control flags based on backend response
+      _isRucApproved = _rucStatus == 'approved' || _rucStatus == 'primary';
+      _isActiveImporter = response['is_active_importer'] ?? false;
+      _isProfileComplete = (_userRuc != null && _userRuc!.isNotEmpty);
+
+      // Check if user has completed at least one import
+      _hasCompletedImport = response['has_approved_quote'] ?? false;
+
+      notifyListeners();
+      return true;
+    } catch (e) {
+      // Error fetching user profile
+      return false;
+    }
+  }
+
+  /// Check if user can access protected features (requires RUC approval)
+  bool canAccessQuoteFeatures() {
+    return _isLoggedIn && _isRucApproved;
+  }
+
+  /// Check if user can access premium AI features (requires completed import)
+  bool canAccessPremiumFeatures() {
+    return _isLoggedIn && _hasCompletedImport;
+  }
+
   /// Cerrar sesión
   Future<void> logout() async {
     _isLoggedIn = false;
     _userToken = null;
+    _isActiveImporter = false;
+    _isRucApproved = false;
+    _hasCompletedImport = false;
     await _storage.deleteAll();
     notifyListeners();
   }

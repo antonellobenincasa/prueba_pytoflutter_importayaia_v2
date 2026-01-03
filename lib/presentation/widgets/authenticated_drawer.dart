@@ -117,7 +117,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.white.withOpacity(0.1),
+                        Colors.white.withValues(alpha: 0.1),
                         Colors.transparent,
                       ],
                     ),
@@ -162,7 +162,7 @@ class AuthenticatedDrawer extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF070E1A),
         border: Border(
-          bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
+          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
         ),
       ),
       child: Row(
@@ -171,9 +171,9 @@ class AuthenticatedDrawer extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.neonGreen.withOpacity(0.15),
+              color: AppColors.neonGreen.withValues(alpha: 0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.neonGreen.withOpacity(0.3)),
+              border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
             ),
             child: Center(
               child: Text(
@@ -243,7 +243,7 @@ class AuthenticatedDrawer extends StatelessWidget {
     bool isLocked = false,
   }) {
     return Material(
-      color: isActive ? Colors.white.withOpacity(0.05) : Colors.transparent,
+      color: isActive ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -286,7 +286,7 @@ class AuthenticatedDrawer extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xFF070E1A),
         border: Border(
-          top: BorderSide(color: Colors.white.withOpacity(0.05)),
+          top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
         ),
       ),
       child: Column(
@@ -304,7 +304,7 @@ class AuthenticatedDrawer extends StatelessWidget {
               label: const Text("Cerrar Sesión"),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.red[400],
-                side: BorderSide(color: Colors.red.withOpacity(0.3)),
+                side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),

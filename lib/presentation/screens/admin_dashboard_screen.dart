@@ -5,7 +5,8 @@ import '../widgets/admin_sidebar_drawer.dart';
 
 /// Enhanced Master Admin Dashboard with full management capabilities
 class AdminDashboardScreen extends StatefulWidget {
-  const AdminDashboardScreen({super.key});
+  final int initialTab;
+  const AdminDashboardScreen({super.key, this.initialTab = 0});
 
   @override
   State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
@@ -40,7 +41,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController =
+        TabController(length: 4, vsync: this, initialIndex: widget.initialTab);
     _loadDashboardData();
   }
 
@@ -62,6 +64,9 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             await _apiClient.get('accounts/admin/ruc-approvals/');
         if (rucsResponse is List) {
           _pendingRucs = List<Map<String, dynamic>>.from(rucsResponse);
+        } else if (rucsResponse['pending_rucs'] != null) {
+          _pendingRucs =
+              List<Map<String, dynamic>>.from(rucsResponse['pending_rucs']);
         } else if (rucsResponse['results'] != null) {
           _pendingRucs =
               List<Map<String, dynamic>>.from(rucsResponse['results']);
@@ -229,6 +234,15 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
           setState(() => _currentModule = route);
           // Navigate to specific module screens
           switch (route) {
+            case 'dashboard':
+              _tabController.animateTo(0);
+              break;
+            case 'ruc_approvals':
+              _tabController.animateTo(0);
+              break;
+            case 'cotizaciones':
+              _tabController.animateTo(1);
+              break;
             case 'usuarios':
               Navigator.pushNamed(context, '/admin_usuarios');
               break;
@@ -241,10 +255,35 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
             case 'proveedores':
               Navigator.pushNamed(context, '/admin_proveedores');
               break;
-            // Add more routes as modules are implemented
-            default:
-              // Stay on dashboard for unimplemented modules
+            case 'config_hitos':
+              Navigator.pushNamed(context, '/admin_config_hitos');
               break;
+            case 'tracking_ff':
+              Navigator.pushNamed(context, '/admin_tracking_ff');
+              break;
+            case 'portal_ff':
+              Navigator.pushNamed(context, '/admin_portal_ff');
+              break;
+            case 'cotizaciones_ff':
+              Navigator.pushNamed(context, '/admin_cotizaciones_ff');
+              break;
+            case 'config_ff':
+              Navigator.pushNamed(context, '/admin_config_ff');
+              break;
+            case 'puertos':
+              Navigator.pushNamed(context, '/admin_puertos');
+              break;
+            case 'aeropuertos':
+              Navigator.pushNamed(context, '/admin_aeropuertos');
+              break;
+            case 'profit_review':
+              Navigator.pushNamed(context, '/admin_profit_review');
+              break;
+            case 'logs':
+              Navigator.pushNamed(context, '/admin_logs');
+              break;
+            default:
+              break; // Stay current
           }
         },
       ),

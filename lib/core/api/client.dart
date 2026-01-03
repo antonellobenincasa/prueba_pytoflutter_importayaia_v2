@@ -8,7 +8,7 @@ class ApiClient {
   // ---------------------------------------------------------
 
   // Usamos localhost para mejor compatibilidad CORS en browser
-  static const String baseUrl = 'http://localhost:8001/api';
+  static const String baseUrl = 'http://127.0.0.1:8001/api';
 
   // ---------------------------------------------------------
 
@@ -32,9 +32,10 @@ class ApiClient {
   Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     try {
+      final authHeaders = await getAuthHeaders();
       final response = await http.post(
         url,
-        headers: headers,
+        headers: authHeaders,
         body: jsonEncode(data),
       );
       return _handleResponse(response);
@@ -45,8 +46,13 @@ class ApiClient {
   }
 
   // Método GET genérico (sin autenticación)
-  Future<dynamic> get(String endpoint) async {
-    final url = Uri.parse('$baseUrl/$endpoint');
+  Future<dynamic> get(String endpoint,
+      {Map<String, String>? queryParameters}) async {
+    Uri url = Uri.parse('$baseUrl/$endpoint');
+    if (queryParameters != null) {
+      url = url.replace(queryParameters: queryParameters);
+    }
+
     try {
       final authHeaders = await getAuthHeaders();
       final response = await http.get(url, headers: authHeaders);
@@ -67,6 +73,24 @@ class ApiClient {
         headers: authHeaders,
         body: jsonEncode(data),
       );
+      return _handleResponse(response);
+    } catch (e) {
+      throw Exception(
+          'Error de conexión con el servidor ($baseUrl). Verifica que Python esté corriendo.');
+    }
+  }
+
+  // Método DELETE genérico con autenticación
+  Future<dynamic> delete(String endpoint,
+      {Map<String, String>? queryParameters}) async {
+    Uri url = Uri.parse('$baseUrl/$endpoint');
+    if (queryParameters != null) {
+      url = url.replace(queryParameters: queryParameters);
+    }
+
+    try {
+      final authHeaders = await getAuthHeaders();
+      final response = await http.delete(url, headers: authHeaders);
       return _handleResponse(response);
     } catch (e) {
       throw Exception(

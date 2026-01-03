@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/api/client.dart';
+import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Proveedores (Providers) Management Screen
 /// Manage carriers (navieras), airlines, customs brokers, and local transport
@@ -32,6 +33,61 @@ class _AdminProveedoresScreenState extends State<AdminProveedoresScreen>
       setState(() => _currentTab = _tabController.index);
     });
     _loadAllProviders();
+  }
+
+  void _handleNavigation(String route) {
+    Navigator.pop(context);
+    if (route == 'proveedores') return;
+    switch (route) {
+      case 'dashboard':
+      case 'ruc_approvals':
+        Navigator.pushReplacementNamed(context, '/admin_dashboard');
+        break;
+      case 'cotizaciones':
+        Navigator.pushReplacementNamed(context, '/admin_cotizaciones');
+        break;
+      case 'usuarios':
+        Navigator.pushReplacementNamed(context, '/admin_usuarios');
+        break;
+      case 'arancel':
+        Navigator.pushReplacementNamed(context, '/admin_arancel');
+        break;
+      case 'tarifas_base':
+        Navigator.pushReplacementNamed(context, '/admin_tarifas_base');
+        break;
+      case 'proveedores':
+        Navigator.pushReplacementNamed(context, '/admin_proveedores');
+        break;
+      case 'config_hitos':
+        Navigator.pushReplacementNamed(context, '/admin_config_hitos');
+        break;
+      case 'tracking_ff':
+        Navigator.pushReplacementNamed(context, '/admin_tracking_ff');
+        break;
+      case 'portal_ff':
+        Navigator.pushReplacementNamed(context, '/admin_portal_ff');
+        break;
+      case 'cotizaciones_ff':
+        Navigator.pushReplacementNamed(context, '/admin_cotizaciones_ff');
+        break;
+      case 'config_ff':
+        Navigator.pushReplacementNamed(context, '/admin_config_ff');
+        break;
+      case 'puertos':
+        Navigator.pushReplacementNamed(context, '/admin_puertos');
+        break;
+      case 'aeropuertos':
+        Navigator.pushReplacementNamed(context, '/admin_aeropuertos');
+        break;
+      case 'profit_review':
+        Navigator.pushReplacementNamed(context, '/admin_profit_review');
+        break;
+      case 'logs':
+        Navigator.pushReplacementNamed(context, '/admin_logs');
+        break;
+      default:
+        break;
+    }
   }
 
   @override
@@ -339,6 +395,10 @@ class _AdminProveedoresScreenState extends State<AdminProveedoresScreen>
 
     return Scaffold(
       backgroundColor: bgDark,
+      drawer: AdminSidebarDrawer(
+        currentRoute: 'proveedores',
+        onNavigate: _handleNavigation,
+      ),
       appBar: AppBar(
         title: const Row(
           children: [

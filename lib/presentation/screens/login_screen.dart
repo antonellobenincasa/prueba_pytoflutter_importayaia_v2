@@ -46,7 +46,11 @@ class _LoginScreenState extends State<LoginScreen> {
         final args = ModalRoute.of(context)?.settings.arguments;
         String redirectTo = '/home'; // Valor por defecto
 
-        if (args != null && args is Map<String, dynamic>) {
+        // Check for admin role first
+        if (authService.userRole == 'admin' ||
+            authService.userRole == 'superuser') {
+          redirectTo = '/admin_dashboard';
+        } else if (args != null && args is Map<String, dynamic>) {
           redirectTo = args['redirectTo'] ?? '/home';
         }
 

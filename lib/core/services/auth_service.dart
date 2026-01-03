@@ -41,6 +41,7 @@ class AuthService extends ChangeNotifier {
   bool get isProfileComplete => _isProfileComplete;
   bool get isActiveImporter => _isActiveImporter;
   Map<String, dynamic>? get userData => _userData;
+  String? get userRole => _userData?['role'];
 
   /// Verifica si hay una sesión guardada
   Future<bool> checkStoredSession() async {

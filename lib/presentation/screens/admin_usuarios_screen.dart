@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/api/client.dart';
+import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Users Management Screen
 /// Full CRUD for users: list, edit, activate/suspend, change roles
@@ -23,6 +24,63 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
   void initState() {
     super.initState();
     _loadUsers();
+  }
+
+  void _handleNavigation(String route) {
+    // Close drawer first
+    Navigator.pop(context);
+
+    if (route == 'usuarios') return;
+
+    // Map routes to navigation
+    switch (route) {
+      case 'dashboard':
+      case 'ruc_approvals':
+        Navigator.pushReplacementNamed(context, '/admin_dashboard');
+        break;
+      case 'cotizaciones':
+        Navigator.pushReplacementNamed(context, '/admin_cotizaciones');
+        break;
+      // Case 'usuarios' ignored above
+      case 'arancel':
+        Navigator.pushReplacementNamed(context, '/admin_arancel');
+        break;
+      case 'tarifas_base':
+        Navigator.pushReplacementNamed(context, '/admin_tarifas_base');
+        break;
+      case 'proveedores':
+        Navigator.pushReplacementNamed(context, '/admin_proveedores');
+        break;
+      case 'config_hitos':
+        Navigator.pushReplacementNamed(context, '/admin_config_hitos');
+        break;
+      case 'tracking_ff':
+        Navigator.pushReplacementNamed(context, '/admin_tracking_ff');
+        break;
+      case 'portal_ff':
+        Navigator.pushReplacementNamed(context, '/admin_portal_ff');
+        break;
+      case 'cotizaciones_ff':
+        Navigator.pushReplacementNamed(context, '/admin_cotizaciones_ff');
+        break;
+      case 'config_ff':
+        Navigator.pushReplacementNamed(context, '/admin_config_ff');
+        break;
+      case 'puertos':
+        Navigator.pushReplacementNamed(context, '/admin_puertos');
+        break;
+      case 'aeropuertos':
+        Navigator.pushReplacementNamed(context, '/admin_aeropuertos');
+        break;
+      case 'profit_review':
+        Navigator.pushReplacementNamed(context, '/admin_profit_review');
+        break;
+      case 'logs':
+        Navigator.pushReplacementNamed(context, '/admin_logs');
+        break;
+      default:
+        break;
+    }
   }
 
   Future<void> _loadUsers() async {
@@ -305,6 +363,10 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
 
     return Scaffold(
       backgroundColor: bgDark,
+      drawer: AdminSidebarDrawer(
+        currentRoute: 'usuarios',
+        onNavigate: _handleNavigation,
+      ),
       appBar: AppBar(
         title: const Row(
           children: [

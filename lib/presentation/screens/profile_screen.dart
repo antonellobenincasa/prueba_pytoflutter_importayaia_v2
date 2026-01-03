@@ -178,7 +178,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       'company_name': _empresaController.text.trim(),
     };
 
-    await _apiClient.post('accounts/request-ruc-approval/', rucData);
+    await _apiClient.post('accounts/register-ruc/', rucData);
   }
 
   @override

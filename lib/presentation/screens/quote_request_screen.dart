@@ -611,7 +611,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Límite de peso: Máximo 21,000 Kg por contenedor.",
+                            "Peso máximo: 27,000 Kg por contenedor (aplica a todos los tipos). La línea naviera puede cobrar OWS (Overweight Surcharges) por sobrepeso.",
                             style: TextStyle(
                                 color: Colors.amber[200], fontSize: 11),
                           ),

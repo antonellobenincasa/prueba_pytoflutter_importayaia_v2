@@ -23,6 +23,7 @@ import 'presentation/screens/profile_screen.dart'; // Perfil de usuario
 import 'presentation/screens/notifications_screen.dart'; // Notificaciones
 import 'presentation/screens/tracking_screen.dart'; // Tracking de embarques
 import 'presentation/screens/quote_history_screen.dart'; // Historial de cotizaciones
+import 'presentation/screens/tax_calculator_screen.dart'; // Calculadora de Impuestos
 import 'presentation/screens/admin_dashboard_screen.dart'; // Master Admin
 import 'presentation/screens/admin_usuarios_screen.dart'; // Admin Users
 import 'presentation/screens/admin_arancel_screen.dart'; // Admin Arancel
@@ -90,6 +91,7 @@ class ImportaYaApp extends StatelessWidget {
             '/tracking': (context) => const TrackingScreen(),
             '/history': (context) => const QuoteHistoryScreen(),
             '/support': (context) => const ContactScreen(),
+            '/tax_calculator': (context) => const TaxCalculatorScreen(),
             '/home': (context) => const HomeScreen(), // Alias for /dashboard
             // Admin Routes
             '/admin_dashboard': (context) => const AdminProtectedRoute(

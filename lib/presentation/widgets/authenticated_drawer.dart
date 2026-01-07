@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/firebase_service.dart';
 
 class AuthenticatedDrawer extends StatelessWidget {
   const AuthenticatedDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
+    final authService = Provider.of<AuthService>(context, listen: false);
     final userName = authService.userName ?? 'Usuario';
     final userEmail = authService.userEmail ?? '';
-    final isRucApproved = authService.isRucApproved;
-    final hasCompletedImport = authService.hasCompletedImport;
 
     return Drawer(
       backgroundColor: AppColors.darkBlueBackground,
@@ -42,15 +42,13 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.add_circle_outline,
                   title: "Nueva Cotización",
-                  onTap: () =>
-                      _navigateWithCheck(context, '/quote_form', isRucApproved),
+                  onTap: () => _navigateWithCheck(context, '/quote_request'),
                 ),
                 _buildMenuItem(
                   context,
                   icon: Icons.history,
                   title: "Mis Cotizaciones",
-                  onTap: () => _navigateWithCheck(
-                      context, '/quote_history', isRucApproved),
+                  onTap: () => _navigateWithCheck(context, '/history'),
                 ),
                 const SizedBox(height: 16),
 
@@ -59,8 +57,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.local_shipping,
                   title: "Tracking",
-                  onTap: () =>
-                      _navigateWithCheck(context, '/tracking', isRucApproved),
+                  onTap: () => _navigateWithCheck(context, '/tracking'),
                 ),
                 const SizedBox(height: 16),
 
@@ -69,21 +66,16 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.calculate,
                   title: "Calculadora de Impuestos",
-                  onTap: () => _navigateWithCheck(
-                      context, '/tax_calculator', isRucApproved),
+                  onTap: () => _navigateWithCheck(context, '/tax_calculator'),
                 ),
                 _buildMenuItem(
                   context,
                   icon: Icons.smart_toy,
                   title: "AduanaExpertoIA",
-                  isLocked: !hasCompletedImport,
+                  isLocked: true, // Locked until first import
                   onTap: () {
                     Navigator.pop(context);
-                    if (hasCompletedImport) {
-                      Navigator.pushNamed(context, '/aduana_experto');
-                    } else {
-                      _showPremiumDialog(context);
-                    }
+                    _showPremiumDialog(context);
                   },
                 ),
                 const SizedBox(height: 16),
@@ -173,7 +165,8 @@ class AuthenticatedDrawer extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.neonGreen.withValues(alpha: 0.15),
               shape: BoxShape.circle,
-              border: Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
+              border:
+                  Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
             ),
             child: Center(
               child: Text(
@@ -243,7 +236,8 @@ class AuthenticatedDrawer extends StatelessWidget {
     bool isLocked = false,
   }) {
     return Material(
-      color: isActive ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
+      color:
+          isActive ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -338,32 +332,62 @@ class AuthenticatedDrawer extends StatelessWidget {
     );
   }
 
-  void _navigateWithCheck(
-      BuildContext context, String route, bool isRucApproved) {
+  Future<void> _navigateWithCheck(BuildContext context, String route) async {
     Navigator.pop(context);
-    if (isRucApproved) {
-      Navigator.pushNamed(context, route);
-    } else {
-      _showProfileRequiredDialog(context);
+
+    // Check RUC status directly from Firebase to ensure accuracy
+    final firebaseService = FirebaseService();
+    try {
+      final userData = await firebaseService.getUserProfile();
+      final rucStatus = userData?['ruc_status'] ?? '';
+
+      if (!context.mounted) return;
+
+      if (rucStatus == 'approved') {
+        Navigator.pushNamed(context, route);
+      } else {
+        _showProfileRequiredDialog(context, rucStatus);
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pushNamed(context, route); // Fallback - allow access
+      }
     }
   }
 
-  void _showProfileRequiredDialog(BuildContext context) {
+  void _showProfileRequiredDialog(BuildContext context, String rucStatus) {
+    String message;
+    String title;
+
+    if (rucStatus == 'pending') {
+      title = 'RUC en revisión';
+      message =
+          'Tu RUC está siendo verificado por nuestro equipo. Te notificaremos cuando esté aprobado.';
+    } else if (rucStatus == 'rejected') {
+      title = 'RUC rechazado';
+      message =
+          'Tu RUC fue rechazado. Por favor actualiza la información en tu perfil.';
+    } else {
+      title = 'Perfil incompleto';
+      message = 'Completa tu perfil con tu RUC para acceder a esta función.';
+    }
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF0A101D),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber, color: Colors.amber),
-            SizedBox(width: 12),
-            Text("Perfil incompleto", style: TextStyle(color: Colors.white)),
+            Icon(Icons.warning_amber,
+                color: rucStatus == 'pending' ? Colors.blue : Colors.amber),
+            const SizedBox(width: 12),
+            Text(title, style: const TextStyle(color: Colors.white)),
           ],
         ),
-        content: const Text(
-          "Completa tu perfil y espera la aprobación de tu RUC para acceder a esta función.",
-          style: TextStyle(color: Colors.grey),
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.grey),
         ),
         actions: [
           TextButton(

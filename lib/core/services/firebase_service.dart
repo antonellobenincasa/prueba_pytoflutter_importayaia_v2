@@ -42,6 +42,31 @@ class FirebaseService {
     return snapshot.docs.map((d) => {'id': d.id, ...d.data()}).toList();
   }
 
+  /// Verificar si un RUC ya está registrado
+  /// Retorna null si el RUC está disponible, o el email del usuario que lo tiene si ya existe
+  Future<String?> checkRucExists(String ruc, {String? excludeUserId}) async {
+    if (ruc.isEmpty) return null;
+
+    final query =
+        await _db.collection('users').where('ruc', isEqualTo: ruc).get();
+
+    for (final doc in query.docs) {
+      // Si hay un userId a excluir (para edición de perfil), lo saltamos
+      if (excludeUserId != null && doc.id == excludeUserId) continue;
+
+      // RUC encontrado en otro usuario
+      final data = doc.data();
+      return data['email'] ?? 'usuario desconocido';
+    }
+
+    return null; // RUC disponible
+  }
+
+  /// Actualizar usuario por ID (admin)
+  Future<void> updateUserById(String odId, Map<String, dynamic> data) async {
+    await _db.collection('users').doc(odId).update(data);
+  }
+
   // =========================================
   // PUERTOS
   // =========================================
@@ -250,9 +275,8 @@ class FirebaseService {
   // =========================================
 
   Future<List<Map<String, dynamic>>> getLogs({String? action}) async {
-    Query<Map<String, dynamic>> query = _db
-        .collection('logs')
-        .orderBy('timestamp', descending: true);
+    Query<Map<String, dynamic>> query =
+        _db.collection('logs').orderBy('timestamp', descending: true);
 
     if (action != null && action.isNotEmpty) {
       query = query.where('action', isEqualTo: action);
@@ -396,14 +420,67 @@ class FirebaseService {
       final id = await createQuote(data);
       return {'id': id, 'success': true};
     }
-    if (path.contains('ruc-approve') || path.contains('ruc-reject')) {
+    if (path.contains('ruc-approvals')) {
       // Handle RUC approval/rejection
-      final userId = data['user_id'] ?? data['userId'];
-      if (userId != null) {
-        final status = path.contains('approve') ? 'approved' : 'rejected';
-        await _db.collection('users').doc(userId).update({
-          'ruc_status': status,
-        });
+      // Path format: accounts/admin/ruc-approvals/USER_ID/
+      // Data: {'action': 'approve'} or {'action': 'reject'}
+      final idMatch = RegExp(r'ruc-approvals/([^/]+)').firstMatch(path);
+      final action = data['action'];
+
+      if (idMatch != null && action != null) {
+        final userId = idMatch.group(1);
+        if (userId != null) {
+          final isApproved = action == 'approve';
+
+          // --- VALIDACIÓN DE RUC DUPLICADO (Solo al aprobar) ---
+          if (isApproved) {
+            // Obtener el RUC del usuario a aprobar
+            final userDoc = await _db.collection('users').doc(userId).get();
+            if (!userDoc.exists) {
+              return {
+                'success': false,
+                'error': 'Usuario no encontrado',
+              };
+            }
+
+            final userData = userDoc.data()!;
+            final rucToApprove = userData['ruc']?.toString() ?? '';
+
+            if (rucToApprove.isNotEmpty) {
+              // Buscar si otro usuario ya tiene este RUC aprobado
+              final duplicateQuery = await _db
+                  .collection('users')
+                  .where('ruc', isEqualTo: rucToApprove)
+                  .where('ruc_status', isEqualTo: 'approved')
+                  .get();
+
+              // Filtrar para excluir el usuario actual
+              final duplicates =
+                  duplicateQuery.docs.where((doc) => doc.id != userId).toList();
+
+              if (duplicates.isNotEmpty) {
+                final existingUser = duplicates.first.data();
+                final existingEmail =
+                    existingUser['email'] ?? 'email desconocido';
+                return {
+                  'success': false,
+                  'error':
+                      'RUC duplicado: Este RUC ($rucToApprove) ya está registrado y aprobado para el usuario: $existingEmail',
+                  'duplicate_email': existingEmail,
+                };
+              }
+            }
+          }
+          // --- FIN VALIDACIÓN DE RUC DUPLICADO ---
+
+          await _db.collection('users').doc(userId).update({
+            'ruc_status': isApproved ? 'approved' : 'rejected',
+            'is_active_importer': isApproved,
+          });
+
+          // Log the action
+          await logAction('ruc_$action', {'user_id': userId});
+        }
       }
       return {'success': true};
     }

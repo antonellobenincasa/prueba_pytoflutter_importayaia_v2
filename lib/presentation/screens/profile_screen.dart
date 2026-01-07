@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firebase_service.dart';
@@ -46,7 +47,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  final AuthService _authService = AuthService();
+  late AuthService _authService;
   final FirebaseService _firebaseService = FirebaseService();
 
   // Controllers
@@ -60,6 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // City autocomplete
   String _selectedCity = '';
 
+  bool _isLoading = true;
   bool _isSaving = false;
   bool _rucIsReadOnly = false;
   String? _errorMessage;
@@ -68,27 +70,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    // Defer loading to after build when context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _authService = Provider.of<AuthService>(context, listen: false);
+      _loadUserData();
+    });
   }
 
-  void _loadUserData() {
-    final userData = _authService.userData;
-    if (userData != null) {
-      _nombreController.text = userData['first_name'] ?? '';
-      _apellidoController.text = userData['last_name'] ?? '';
-      _empresaController.text = userData['company_name'] ?? '';
-      _telefonoController.text = userData['phone'] ?? '';
-      _selectedCity = userData['city'] ?? '';
-      _direccionController.text = userData['address'] ?? '';
+  Future<void> _loadUserData() async {
+    setState(() => _isLoading = true);
 
-      // Pre-fill RUC from registration data
-      final ruc = userData['ruc'] ?? _authService.userRuc ?? '';
-      if (ruc.isNotEmpty) {
-        _rucController.text = ruc;
-        // If RUC is already approved, make it read-only
-        if (_authService.isRucApproved) {
-          _rucIsReadOnly = true;
-        }
+    try {
+      // Try to get data from AuthService first
+      Map<String, dynamic>? userData = _authService.userData;
+
+      // If not available, fetch directly from Firebase
+      if (userData == null || userData.isEmpty) {
+        userData = await _firebaseService.getUserProfile();
+      }
+
+      if (userData != null && mounted) {
+        setState(() {
+          _nombreController.text = userData!['first_name'] ?? '';
+          _apellidoController.text = userData['last_name'] ?? '';
+          _empresaController.text = userData['company_name'] ?? '';
+          _telefonoController.text = userData['phone'] ?? '';
+          _selectedCity = userData['city'] ?? '';
+          _direccionController.text = userData['address'] ?? '';
+
+          // Pre-fill RUC from registration data
+          final ruc = userData['ruc'] ?? '';
+          if (ruc.isNotEmpty) {
+            _rucController.text = ruc;
+            // If RUC is already approved, make it read-only
+            final rucStatus = userData['ruc_status'] ?? '';
+            if (rucStatus == 'approved') {
+              _rucIsReadOnly = true;
+            }
+          }
+          _isLoading = false;
+        });
+      } else {
+        setState(() => _isLoading = false);
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Error cargando datos: $e';
+        });
       }
     }
   }
@@ -120,6 +150,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
 
     try {
+      // --- VERIFICAR RUC DUPLICADO ANTES DE GUARDAR ---
+      if (!_rucIsReadOnly && _rucController.text.isNotEmpty) {
+        final ruc = _rucController.text.trim();
+        final currentUserId = _firebaseService.currentUser?.uid;
+        final existingEmail = await _firebaseService.checkRucExists(
+          ruc,
+          excludeUserId: currentUserId,
+        );
+        if (existingEmail != null) {
+          setState(() {
+            _isSaving = false;
+            _errorMessage =
+                'Este RUC ya está registrado en la APP. Comunicarse a contacto@importayaia.com para mayor información.';
+          });
+          return;
+        }
+      }
+      // --- FIN VERIFICACIÓN RUC DUPLICADO ---
+
       // Prepare profile data
       final profileData = {
         'first_name': _nombreController.text.trim(),
@@ -188,9 +237,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     const surfaceDark = Color(0xFF0A101D);
     const primaryColor = AppColors.neonGreen;
 
-    final rucStatus = _authService.rucStatus;
-    final isRucApproved = _authService.isRucApproved;
-
     return Scaffold(
       backgroundColor: bgDark,
       appBar: AppBar(
@@ -198,193 +244,200 @@ class _ProfileScreenState extends State<ProfileScreen> {
         backgroundColor: bgDark,
         elevation: 0,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Status Banner
-              _buildStatusBanner(rucStatus, isRucApproved, primaryColor),
-              const SizedBox(height: 24),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: AppColors.neonGreen))
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Status Banner
+                    _buildStatusBanner(_rucIsReadOnly ? 'approved' : 'pending',
+                        _rucIsReadOnly, primaryColor),
+                    const SizedBox(height: 24),
 
-              // Información Personal
-              _buildSectionTitle("Información Personal"),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _nombreController,
-                      label: "Nombre",
-                      icon: Icons.person_outline,
+                    // Información Personal
+                    _buildSectionTitle("Información Personal"),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _nombreController,
+                            label: "Nombre",
+                            icon: Icons.person_outline,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildTextField(
+                            controller: _apellidoController,
+                            label: "Apellido",
+                            icon: Icons.person_outline,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: _buildTextField(
-                      controller: _apellidoController,
-                      label: "Apellido",
-                      icon: Icons.person_outline,
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _telefonoController,
+                      label: "Teléfono",
+                      icon: Icons.phone_outlined,
+                      keyboardType: TextInputType.phone,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _telefonoController,
-                label: "Teléfono",
-                icon: Icons.phone_outlined,
-                keyboardType: TextInputType.phone,
-              ),
-              const SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
-              // City Autocomplete
-              _buildCityAutocomplete(surfaceDark, primaryColor),
+                    // City Autocomplete
+                    _buildCityAutocomplete(surfaceDark, primaryColor),
 
-              const SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
-              // Información Empresarial
-              _buildSectionTitle("Información Empresarial"),
-              const SizedBox(height: 8),
-              Text(
-                "Estos datos son requeridos para habilitar las funciones de cotización e importación.",
-                style: TextStyle(color: Colors.grey[500], fontSize: 12),
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _empresaController,
-                label: "Nombre de Empresa",
-                icon: Icons.business_outlined,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'El nombre de empresa es requerido';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _rucController,
-                label:
-                    _rucIsReadOnly ? "RUC (Verificado ✓)" : "RUC (13 dígitos)",
-                icon: Icons.badge_outlined,
-                keyboardType: TextInputType.number,
-                maxLength: 13,
-                readOnly: _rucIsReadOnly,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'El RUC es requerido';
-                  }
-                  if (value.length != 13) {
-                    return 'El RUC debe tener 13 dígitos';
-                  }
-                  if (!RegExp(r'^\d{13}$').hasMatch(value)) {
-                    return 'El RUC solo debe contener números';
-                  }
-                  if (!value.endsWith('001')) {
-                    return 'El RUC debe terminar en 001';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 16),
-              _buildTextField(
-                controller: _direccionController,
-                label: "Dirección Comercial",
-                icon: Icons.location_on_outlined,
-                maxLines: 2,
-              ),
-              const SizedBox(height: 32),
-
-              // Messages
-              if (_errorMessage != null)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border:
-                        Border.all(color: Colors.red.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.error_outline,
-                          color: Colors.red, size: 20),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(_errorMessage!,
-                            style: const TextStyle(color: Colors.red)),
-                      ),
-                    ],
-                  ),
-                ),
-
-              if (_successMessage != null)
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.only(bottom: 16),
-                  decoration: BoxDecoration(
-                    color: primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                    border:
-                        Border.all(color: primaryColor.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.check_circle, color: primaryColor, size: 20),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(_successMessage!,
-                            style: TextStyle(color: primaryColor)),
-                      ),
-                    ],
-                  ),
-                ),
-
-              // Save Button
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: _isSaving ? null : _saveProfile,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: bgDark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                    // Información Empresarial
+                    _buildSectionTitle("Información Empresarial"),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Estos datos son requeridos para habilitar las funciones de cotización e importación.",
+                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
                     ),
-                  ),
-                  child: _isSaving
-                      ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2, color: Colors.black),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _empresaController,
+                      label: "Nombre de Empresa",
+                      icon: Icons.business_outlined,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El nombre de empresa es requerido';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _rucController,
+                      label: _rucIsReadOnly
+                          ? "RUC (Verificado ✓)"
+                          : "RUC (13 dígitos)",
+                      icon: Icons.badge_outlined,
+                      keyboardType: TextInputType.number,
+                      maxLength: 13,
+                      readOnly: _rucIsReadOnly,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'El RUC es requerido';
+                        }
+                        if (value.length != 13) {
+                          return 'El RUC debe tener 13 dígitos';
+                        }
+                        if (!RegExp(r'^\d{13}$').hasMatch(value)) {
+                          return 'El RUC solo debe contener números';
+                        }
+                        if (!value.endsWith('001')) {
+                          return 'El RUC debe terminar en 001';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: _direccionController,
+                      label: "Dirección Comercial",
+                      icon: Icons.location_on_outlined,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Messages
+                    if (_errorMessage != null)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.red.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color: Colors.red.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
                           children: [
-                            Icon(Icons.save),
-                            SizedBox(width: 8),
-                            Text(
-                              "Guardar Cambios",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            const Icon(Icons.error_outline,
+                                color: Colors.red, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(_errorMessage!,
+                                  style: const TextStyle(color: Colors.red)),
                             ),
                           ],
                         ),
+                      ),
+
+                    if (_successMessage != null)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(12),
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: primaryColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                              color: primaryColor.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.check_circle,
+                                color: primaryColor, size: 20),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(_successMessage!,
+                                  style: TextStyle(color: primaryColor)),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    // Save Button
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: _isSaving ? null : _saveProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: primaryColor,
+                          foregroundColor: bgDark,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: _isSaving
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 2, color: Colors.black),
+                              )
+                            : const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.save),
+                                  SizedBox(width: 8),
+                                  Text(
+                                    "Guardar Cambios",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
-              const SizedBox(height: 40),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 

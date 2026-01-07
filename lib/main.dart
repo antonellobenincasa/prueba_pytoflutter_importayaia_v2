@@ -90,6 +90,7 @@ class ImportaYaApp extends StatelessWidget {
             '/tracking': (context) => const TrackingScreen(),
             '/history': (context) => const QuoteHistoryScreen(),
             '/support': (context) => const ContactScreen(),
+            '/home': (context) => const HomeScreen(), // Alias for /dashboard
             // Admin Routes
             '/admin_dashboard': (context) => const AdminProtectedRoute(
                   child: AdminDashboardScreen(),

@@ -29,7 +29,7 @@ class AdminProtectedRoute extends StatelessWidget {
           // Redirect strictly to home if not admin to avoid loop
           WidgetsBinding.instance.addPostFrameCallback((_) {
             // Use pushReplacement to avoid back-navigating to forbidden page
-            Navigator.of(context).pushReplacementNamed('/home');
+            Navigator.of(context).pushReplacementNamed('/dashboard');
 
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

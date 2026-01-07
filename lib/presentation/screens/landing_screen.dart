@@ -2,7 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
+import '../../core/services/auth_service.dart';
 import '../widgets/main_drawer.dart';
 
 class LandingScreen extends StatefulWidget {
@@ -146,8 +148,17 @@ class _LandingScreenState extends State<LandingScreen> {
         children: [
           GestureDetector(
             onTap: () {
-              // Refresh to landing page
-              Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+              // Auth-aware logo navigation
+              final authService =
+                  Provider.of<AuthService>(context, listen: false);
+              if (authService.isLoggedIn) {
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/dashboard', (route) => false);
+              } else {
+                // Refresh landing page
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
+              }
             },
             child: Row(
               children: [
@@ -157,8 +168,8 @@ class _LandingScreenState extends State<LandingScreen> {
                   decoration: BoxDecoration(
                     color: AppColors.neonGreen.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(8),
-                    border:
-                        Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
+                    border: Border.all(
+                        color: AppColors.neonGreen.withValues(alpha: 0.3)),
                   ),
                   child: const Icon(Icons.inventory_2_outlined,
                       color: AppColors.neonGreen, size: 20),
@@ -429,7 +440,8 @@ class _LandingScreenState extends State<LandingScreen> {
                     style: OutlinedButton.styleFrom(
                       backgroundColor: AppColors.surface,
                       foregroundColor: AppColors.textWhite,
-                      side: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                      side: BorderSide(
+                          color: Colors.white.withValues(alpha: 0.1)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),

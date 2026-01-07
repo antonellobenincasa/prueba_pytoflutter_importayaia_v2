@@ -69,6 +69,31 @@ class MainDrawer extends StatelessWidget {
                   },
                 ),
 
+                // --- ADMIN PANEL ACCESS (Solo visible para admin/superuser) ---
+                Consumer<AuthService>(
+                  builder: (context, authService, _) {
+                    final isAdmin = authService.userRole == 'admin' ||
+                        authService.userRole == 'superuser';
+                    if (!isAdmin) return const SizedBox.shrink();
+                    return Column(
+                      children: [
+                        const SizedBox(height: 8),
+                        _buildMenuItem(
+                          context,
+                          icon: Icons.admin_panel_settings,
+                          title: "Panel Admin",
+                          onTap: () {
+                            Navigator.pop(context);
+                            Navigator.pushNamed(context, '/admin_dashboard');
+                          },
+                          isActive: false,
+                          isArrowVisible: true,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+
                 const SizedBox(height: 24),
                 // Divider Gradient
                 Container(
@@ -108,10 +133,11 @@ class MainDrawer extends StatelessWidget {
                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          // Verificar si el usuario está autenticado
-                          final authService = AuthService();
+                          // Verificar si el usuario está autenticado usando Provider
+                          final authService =
+                              Provider.of<AuthService>(context, listen: false);
                           if (authService.isLoggedIn) {
-                            Navigator.pushNamed(context, '/quote_form');
+                            Navigator.pushNamed(context, '/quote_request');
                           } else {
                             // Redirigir a login si no está autenticado
                             Navigator.pushNamed(context, '/login');
@@ -206,10 +232,11 @@ class MainDrawer extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
-                    final authService = AuthService();
+                    final authService =
+                        Provider.of<AuthService>(context, listen: false);
                     if (authService.isLoggedIn) {
                       Navigator.pushNamedAndRemoveUntil(
-                          context, '/home', (route) => false);
+                          context, '/dashboard', (route) => false);
                     } else {
                       Navigator.pushNamedAndRemoveUntil(
                           context, '/', (route) => false);

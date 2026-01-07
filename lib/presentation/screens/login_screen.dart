@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
 
@@ -32,7 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final authService = AuthService();
+    // CORRECCIÓN: Usar Provider en lugar de nueva instancia
+    final authService = Provider.of<AuthService>(context, listen: false);
     final result = await authService.login(
       _emailController.text.trim(),
       _passwordController.text,

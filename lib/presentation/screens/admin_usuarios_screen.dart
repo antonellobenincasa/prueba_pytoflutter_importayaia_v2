@@ -89,61 +89,25 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
     });
 
     try {
-      // Try to get users from leads endpoint
-      final response = await _firebaseService.get('sales/leads/');
-      List<Map<String, dynamic>> users = [];
-
-      if (response is List) {
-        users = List<Map<String, dynamic>>.from(response);
-      } else if (response['results'] != null) {
-        users = List<Map<String, dynamic>>.from(response['results']);
-      }
-
+      // Get users directly from Firestore
+      final users = await _firebaseService.getAllUsers();
       setState(() {
         _users = users;
         _isLoading = false;
       });
     } catch (e) {
-      // Error loading users - use mock data for demo
       setState(() {
         _isLoading = false;
-        // Mock data for demo
-        _users = [
-          {
-            'id': 1,
-            'first_name': 'Juan',
-            'last_name': 'Pérez',
-            'email': 'juan@test.com',
-            'company_name': 'Importadora ABC',
-            'role': 'lead',
-            'is_active': true,
-            'ruc_status': 'approved',
-            'created_at': '2024-12-20',
-          },
-          {
-            'id': 2,
-            'first_name': 'María',
-            'last_name': 'González',
-            'email': 'maria@test.com',
-            'company_name': 'Comercial XYZ',
-            'role': 'lead',
-            'is_active': true,
-            'ruc_status': 'pending',
-            'created_at': '2024-12-21',
-          },
-          {
-            'id': 3,
-            'first_name': 'Carlos',
-            'last_name': 'Rodríguez',
-            'email': 'carlos@test.com',
-            'company_name': 'Distribuidora 123',
-            'role': 'lead',
-            'is_active': false,
-            'ruc_status': 'rejected',
-            'created_at': '2024-12-22',
-          },
-        ];
+        _users = [];
       });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error cargando usuarios: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
@@ -175,7 +139,7 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
     }).toList();
   }
 
-  Future<void> _toggleUserStatus(int userId, bool currentStatus) async {
+  Future<void> _toggleUserStatus(String odId, bool currentStatus) async {
     final confirm = await _showConfirmDialog(
       title: currentStatus ? 'Suspender Usuario' : 'Activar Usuario',
       content: currentStatus
@@ -187,7 +151,7 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
 
     if (confirm == true) {
       try {
-        await _firebaseService.post('sales/leads/$userId/', {
+        await _firebaseService.updateUserById(odId, {
           'is_active': !currentStatus,
         });
         _showSnackBar(
@@ -202,70 +166,105 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
   }
 
   void _showEditUserDialog(Map<String, dynamic> user) {
+    final userId = user['id']?.toString() ?? '';
     final firstNameController =
         TextEditingController(text: user['first_name'] ?? '');
     final lastNameController =
         TextEditingController(text: user['last_name'] ?? '');
     final companyController =
         TextEditingController(text: user['company_name'] ?? '');
-    String selectedRole = user['role'] ?? 'lead';
+    final rucController = TextEditingController(text: user['ruc'] ?? '');
+    final phoneController = TextEditingController(text: user['phone'] ?? '');
+    String selectedRole = user['role'] ?? 'user';
+    String selectedRucStatus = user['ruc_status'] ?? 'none';
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
-        title:
-            const Text('Editar Usuario', style: TextStyle(color: Colors.white)),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField('Nombre', firstNameController),
-              const SizedBox(height: 12),
-              _buildTextField('Apellido', lastNameController),
-              const SizedBox(height: 12),
-              _buildTextField('Empresa', companyController),
-              const SizedBox(height: 12),
-              _buildDropdown(
-                label: 'Rol',
-                value: selectedRole,
-                items: const [
-                  DropdownMenuItem(value: 'lead', child: Text('Lead')),
-                  DropdownMenuItem(value: 'customer', child: Text('Cliente')),
-                  DropdownMenuItem(
-                      value: 'admin', child: Text('Administrador')),
-                ],
-                onChanged: (value) => selectedRole = value ?? 'lead',
-              ),
-            ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          backgroundColor: const Color(0xFF0A101D),
+          title: const Text('Editar Usuario',
+              style: TextStyle(color: Colors.white)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildTextField('Nombre', firstNameController),
+                const SizedBox(height: 12),
+                _buildTextField('Apellido', lastNameController),
+                const SizedBox(height: 12),
+                _buildTextField('Empresa', companyController),
+                const SizedBox(height: 12),
+                _buildTextField('RUC', rucController),
+                const SizedBox(height: 12),
+                _buildTextField('Teléfono', phoneController),
+                const SizedBox(height: 12),
+                _buildDropdown(
+                  label: 'Rol',
+                  value: selectedRole,
+                  items: const [
+                    DropdownMenuItem(value: 'user', child: Text('Usuario')),
+                    DropdownMenuItem(
+                        value: 'importer', child: Text('Importador')),
+                    DropdownMenuItem(value: 'admin', child: Text('Admin')),
+                    DropdownMenuItem(
+                        value: 'superuser', child: Text('Super Admin')),
+                  ],
+                  onChanged: (value) =>
+                      setDialogState(() => selectedRole = value ?? 'user'),
+                ),
+                const SizedBox(height: 12),
+                _buildDropdown(
+                  label: 'Estado RUC',
+                  value: selectedRucStatus,
+                  items: const [
+                    DropdownMenuItem(value: 'none', child: Text('Sin RUC')),
+                    DropdownMenuItem(
+                        value: 'pending', child: Text('Pendiente')),
+                    DropdownMenuItem(
+                        value: 'approved', child: Text('Aprobado')),
+                    DropdownMenuItem(
+                        value: 'rejected', child: Text('Rechazado')),
+                  ],
+                  onChanged: (value) =>
+                      setDialogState(() => selectedRucStatus = value ?? 'none'),
+                ),
+              ],
+            ),
           ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child:
+                  const Text('Cancelar', style: TextStyle(color: Colors.grey)),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                try {
+                  await _firebaseService.updateUserById(userId, {
+                    'first_name': firstNameController.text.trim(),
+                    'last_name': lastNameController.text.trim(),
+                    'company_name': companyController.text.trim(),
+                    'ruc': rucController.text.trim(),
+                    'phone': phoneController.text.trim(),
+                    'role': selectedRole,
+                    'ruc_status': selectedRucStatus,
+                    'is_active_importer': selectedRucStatus == 'approved',
+                  });
+                  _showSnackBar('Usuario actualizado', AppColors.neonGreen);
+                  _loadUsers();
+                } catch (e) {
+                  _showSnackBar('Error: $e', Colors.red);
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.neonGreen),
+              child:
+                  const Text('Guardar', style: TextStyle(color: Colors.black)),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              try {
-                await _firebaseService.post('sales/leads/${user['id']}/', {
-                  'first_name': firstNameController.text,
-                  'last_name': lastNameController.text,
-                  'company_name': companyController.text,
-                  'role': selectedRole,
-                });
-                _showSnackBar('Usuario actualizado', AppColors.neonGreen);
-                _loadUsers();
-              } catch (e) {
-                _showSnackBar('Error: $e', Colors.red);
-              }
-            },
-            style:
-                ElevatedButton.styleFrom(backgroundColor: AppColors.neonGreen),
-            child: const Text('Guardar', style: TextStyle(color: Colors.black)),
-          ),
-        ],
       ),
     );
   }
@@ -642,7 +641,8 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
               ),
               const SizedBox(width: 8),
               TextButton.icon(
-                onPressed: () => _toggleUserStatus(user['id'], isActive),
+                onPressed: () =>
+                    _toggleUserStatus(user['id']?.toString() ?? '', isActive),
                 icon:
                     Icon(isActive ? Icons.block : Icons.check_circle, size: 16),
                 label: Text(isActive ? 'Suspender' : 'Activar'),

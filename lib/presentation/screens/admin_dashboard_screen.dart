@@ -120,7 +120,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     }
   }
 
-  Future<void> _approveRuc(int userId, String userName) async {
+  Future<void> _approveRuc(String userId, String userName) async {
     final confirm = await _showConfirmDialog(
       title: 'Aprobar RUC',
       content: '¿Aprobar el RUC de $userName?',
@@ -130,8 +130,16 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
     if (confirm == true) {
       try {
-        await _firebaseService.post(
+        final result = await _firebaseService.post(
             'accounts/admin/ruc-approvals/$userId/', {'action': 'approve'});
+
+        // Verificar si hay error de RUC duplicado
+        if (result is Map && result['success'] == false) {
+          _showSnackBar(
+              '❌ ${result['error'] ?? 'Error desconocido'}', Colors.red);
+          return;
+        }
+
         _showSnackBar('✅ RUC aprobado', AppColors.neonGreen);
         _loadDashboardData();
       } catch (e) {
@@ -140,7 +148,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     }
   }
 
-  Future<void> _rejectRuc(int userId, String userName) async {
+  Future<void> _rejectRuc(String userId, String userName) async {
     final confirm = await _showConfirmDialog(
       title: 'Rechazar RUC',
       content: '¿Rechazar el RUC de $userName?',
@@ -490,7 +498,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
   Widget _buildRucCard(
       Map<String, dynamic> item, Color surfaceDark, Color primaryColor) {
-    final userId = item['id'] ?? item['user_id'] ?? 0;
+    // Firebase uses string document IDs, extract uid or id
+    final userId = (item['uid'] ?? item['id'] ?? '').toString();
     final userName =
         '${item['first_name'] ?? ''} ${item['last_name'] ?? ''}'.trim();
     final companyName = item['company_name'] ?? 'Sin empresa';
@@ -755,7 +764,39 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
   // Users Tab
   Widget _buildUsersTab(Color surfaceDark, Color primaryColor) {
-    return _buildEmptyState('Gestión de usuarios próximamente', Icons.people);
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.people, color: primaryColor, size: 64),
+          const SizedBox(height: 16),
+          const Text(
+            'Gestión de Usuarios',
+            style: TextStyle(
+                color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Administra todos los usuarios de la plataforma',
+            style: TextStyle(color: Colors.grey[500], fontSize: 14),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () => Navigator.pushNamed(context, '/admin_usuarios'),
+            icon: const Icon(Icons.open_in_new, size: 18),
+            label: const Text('Abrir Gestión de Usuarios'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // Helpers

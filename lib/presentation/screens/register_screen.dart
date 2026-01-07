@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/firebase_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -48,6 +49,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _errorMessage = null;
     });
 
+    // --- VERIFICAR RUC DUPLICADO ANTES DE REGISTRAR ---
+    final ruc = _rucController.text.trim();
+    if (ruc.isNotEmpty) {
+      final existingEmail = await FirebaseService().checkRucExists(ruc);
+      if (existingEmail != null) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage =
+              'Este RUC ya está registrado en la APP. Comunicarse a contacto@importayaia.com para mayor información.';
+        });
+        return;
+      }
+    }
+    // --- FIN VERIFICACIÓN RUC DUPLICADO ---
+
     final authService = AuthService();
     final result = await authService.register(
       nombre: _nombreController.text.trim(),
@@ -56,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       empresa: _empresaController.text.trim(),
       telefono: _telefonoController.text.trim(),
       password: _passwordController.text,
-      ruc: _rucController.text.trim(),
+      ruc: ruc,
     );
 
     setState(() => _isLoading = false);
@@ -65,7 +81,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (mounted) {
         // Navegación directa al Dashboard borrando historial
         Navigator.of(context)
-            .pushNamedAndRemoveUntil('/home', (route) => false);
+            .pushNamedAndRemoveUntil('/dashboard', (route) => false);
       }
     } else {
       setState(() => _errorMessage = result.message);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Tarifas Base (Base Rates) Management Screen
@@ -14,7 +14,7 @@ class AdminTarifasBaseScreen extends StatefulWidget {
 
 class _AdminTarifasBaseScreenState extends State<AdminTarifasBaseScreen>
     with SingleTickerProviderStateMixin {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   late TabController _tabController;
 
   // Data for each rate type
@@ -104,7 +104,7 @@ class _AdminTarifasBaseScreenState extends State<AdminTarifasBaseScreen>
 
     try {
       // Load freight rates
-      final freightResponse = await _apiClient.get('sales/freight-rates/');
+      final freightResponse = await _firebaseService.get('sales/freight-rates/');
       if (freightResponse is List) {
         _freightRatesFCL = List<Map<String, dynamic>>.from(
             freightResponse.where((r) => r['transport_mode'] == 'FCL'));

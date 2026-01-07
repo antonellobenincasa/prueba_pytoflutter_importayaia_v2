@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminPuertosScreen extends StatefulWidget {
@@ -11,13 +11,13 @@ class AdminPuertosScreen extends StatefulWidget {
 }
 
 class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> _ports = [];
   bool _isLoading = true;
   String? _selectedRegion;
-  int _page = 1;
+  final int _page = 1;
   int _totalRecords = 0;
   List<Map<String, dynamic>> _regions = [];
 
@@ -43,8 +43,11 @@ class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
         if (_selectedRegion != null) 'region': _selectedRegion!,
       };
 
-      final response =
-          await _apiClient.get('admin/ports/', queryParameters: queryParams);
+      final response = await _firebaseService.get('admin/ports/',
+          queryParameters: queryParams);
+
+      // --- FIX 1: Seguridad antes de setState ---
+      if (!mounted) return;
 
       if (response != null && response is Map<String, dynamic>) {
         setState(() {
@@ -57,9 +60,13 @@ class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
         });
       }
     } catch (e) {
-      _showSnackBar('Error cargando puertos: $e', Colors.red);
+      if (mounted) {
+        _showSnackBar('Error cargando puertos: $e', Colors.red);
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -89,12 +96,18 @@ class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
 
     if (confirm == true) {
       try {
-        await _apiClient
+        await _firebaseService
             .delete('admin/ports/', queryParameters: {'id': id.toString()});
+
+        // --- FIX 2: Seguridad antes de usar context ---
+        if (!mounted) return;
+
         _showSnackBar('Puerto eliminado correctamente', AppColors.neonGreen);
         _loadPorts();
       } catch (e) {
-        _showSnackBar('Error eliminando puerto: $e', Colors.red);
+        if (mounted) {
+          _showSnackBar('Error eliminando puerto: $e', Colors.red);
+        }
       }
     }
   }
@@ -135,7 +148,7 @@ class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
                       style: TextStyle(color: Colors.white)),
                   value: isActive,
                   onChanged: (val) => setDialogState(() => isActive = val),
-                  activeColor: AppColors.neonGreen,
+                  activeThumbColor: AppColors.neonGreen,
                 ),
               ],
             ),
@@ -158,21 +171,23 @@ class _AdminPuertosScreenState extends State<AdminPuertosScreen> {
                   };
 
                   if (isNew) {
-                    await _apiClient.post('admin/ports/', data);
+                    await _firebaseService.post('admin/ports/', data);
                   } else {
                     data['id'] = port['id'];
-                    await _apiClient.put('admin/ports/', data);
+                    await _firebaseService.put('admin/ports/', data);
                   }
 
-                  if (mounted) {
-                    Navigator.pop(context);
-                    _showSnackBar(
-                        isNew ? 'Puerto creado' : 'Puerto actualizado',
-                        AppColors.neonGreen);
-                    _loadPorts();
-                  }
+                  // --- FIX 3: Seguridad en el diálogo (Ya lo tenías, perfecto) ---
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context);
+                  _showSnackBar(isNew ? 'Puerto creado' : 'Puerto actualizado',
+                      AppColors.neonGreen);
+                  _loadPorts();
                 } catch (e) {
-                  _showSnackBar('Error guardando puerto: $e', Colors.red);
+                  if (mounted) {
+                    _showSnackBar('Error guardando puerto: $e', Colors.red);
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(

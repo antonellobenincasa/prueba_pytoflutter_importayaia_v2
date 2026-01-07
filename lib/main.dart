@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// --- NUEVOS IMPORTS DE FIREBASE ---
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart'; // Asegúrate de que este archivo exista (si no, te dará error hasta generarlo)
+
 // 1. Importamos la configuración del Tema y Providers
 import 'core/services/theme_provider.dart';
 import 'core/services/navigation_sound_service.dart';
@@ -12,6 +16,7 @@ import 'presentation/screens/login_screen.dart';
 import 'presentation/screens/register_screen.dart';
 import 'presentation/screens/home_screen.dart'; // Tu Dashboard
 import 'presentation/screens/contact_screen.dart'; // Pantalla Contacto
+import 'presentation/screens/forgot_password_screen.dart'; // Recuperar contraseña
 import 'presentation/screens/quote_request_screen.dart'; // Formulario de cotización
 import 'presentation/screens/onboarding_screen.dart';
 import 'presentation/screens/profile_screen.dart'; // Perfil de usuario
@@ -32,8 +37,14 @@ import 'presentation/screens/admin_portal_ff_screen.dart';
 import 'presentation/screens/admin_placeholder_screen.dart'; // Placeholder for new admin modules
 import 'presentation/widgets/admin_protected_route.dart'; // Protected Route Wrapper
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // --- INICIALIZACIÓN DE FIREBASE ---
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -69,6 +80,7 @@ class ImportaYaApp extends StatelessWidget {
           routes: {
             '/': (context) => const LandingScreen(),
             '/login': (context) => const LoginScreen(),
+            '/forgot_password': (context) => const ForgotPasswordScreen(),
             '/register': (context) => const RegisterScreen(),
             '/onboarding': (context) => const OnboardingScreen(),
             '/dashboard': (context) => const HomeScreen(),

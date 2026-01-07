@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminTrackingFFScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class AdminTrackingFFScreen extends StatefulWidget {
 }
 
 class _AdminTrackingFFScreenState extends State<AdminTrackingFFScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   List<Map<String, dynamic>> _ros = [];
   bool _isLoading = true;
@@ -25,7 +25,7 @@ class _AdminTrackingFFScreenState extends State<AdminTrackingFFScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiClient
+      final response = await _firebaseService
           .get('admin/tracking/', queryParameters: {'action': 'list'});
       if (response != null && response is Map<String, dynamic>) {
         setState(() {
@@ -43,7 +43,7 @@ class _AdminTrackingFFScreenState extends State<AdminTrackingFFScreen> {
     try {
       // Logic for downloading would go here, often handled by opening URL in browser
       // For now we simulate the request
-      final response = await _apiClient
+      final response = await _firebaseService
           .get('admin/tracking/', queryParameters: {'action': 'template'});
       // Check if we got a stream or similar. In this mock client we might get raw data.
       if (response != null) {

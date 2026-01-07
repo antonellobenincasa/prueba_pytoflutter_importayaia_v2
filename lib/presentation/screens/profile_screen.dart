@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 
 /// List of main Ecuador cities for autocomplete
 const List<String> ecuadorCities = [
@@ -47,7 +47,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   // Controllers
   final _nombreController = TextEditingController();
@@ -135,10 +135,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         profileData['ruc'] = _rucController.text.trim();
       }
 
-      // Saving profile to backend
+      // Saving profile to Firebase (Firestore)
 
-      // Call API to update profile using PUT to /profile/complete/
-      await _apiClient.put('accounts/profile/complete/', profileData);
+      // Call Firebase to update profile
+      await _firebaseService.updateUserProfile(profileData);
       // Profile saved successfully
 
       // If RUC was provided and is new, request approval
@@ -173,12 +173,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _requestRucApproval() async {
-    final rucData = {
+    // En Firebase, el RUC ya se guarda en el perfil del usuario
+    // No necesitamos una llamada separada
+    await _firebaseService.updateUserProfile({
       'ruc': _rucController.text.trim(),
+      'ruc_status': 'pending',
       'company_name': _empresaController.text.trim(),
-    };
-
-    await _apiClient.post('accounts/register-ruc/', rucData);
+    });
   }
 
   @override

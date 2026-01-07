@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminLogsScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class AdminLogsScreen extends StatefulWidget {
 }
 
 class _AdminLogsScreenState extends State<AdminLogsScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   List<Map<String, dynamic>> _logs = [];
   bool _isLoading = true;
@@ -51,7 +51,7 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
       };
 
       final response =
-          await _apiClient.get('admin/logs/', queryParameters: queryParams);
+          await _firebaseService.get('admin/logs/', queryParameters: queryParams);
 
       if (response != null && response is Map<String, dynamic>) {
         setState(() {
@@ -112,12 +112,15 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
   IconData _getActionIcon(String actionType) {
     if (actionType.contains('login')) return Icons.login;
     if (actionType.contains('logout')) return Icons.logout;
-    if (actionType.contains('quote') || actionType.contains('cotizacion'))
+    if (actionType.contains('quote') || actionType.contains('cotizacion')) {
       return Icons.request_quote;
-    if (actionType.contains('shipment') || actionType.contains('embarque'))
+    }
+    if (actionType.contains('shipment') || actionType.contains('embarque')) {
       return Icons.directions_boat;
-    if (actionType.contains('user') || actionType.contains('usuario'))
+    }
+    if (actionType.contains('user') || actionType.contains('usuario')) {
       return Icons.person;
+    }
     if (actionType.contains('error')) return Icons.error_outline;
     if (actionType.contains('api')) return Icons.api;
     return Icons.history;
@@ -213,7 +216,7 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedActionType,
+                    initialValue: _selectedActionType,
                     decoration: InputDecoration(
                       labelText: 'Tipo de Acción',
                       labelStyle: const TextStyle(color: Colors.grey),
@@ -246,7 +249,7 @@ class _AdminLogsScreenState extends State<AdminLogsScreen> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _selectedLevel,
+                    initialValue: _selectedLevel,
                     decoration: InputDecoration(
                       labelText: 'Nivel',
                       labelStyle: const TextStyle(color: Colors.grey),

@@ -1,10 +1,10 @@
 import 'dart:async';
-import '../api/client.dart';
+import 'firebase_service.dart';
 
-/// Service to fetch ports and airports from Python backend
+/// Service to fetch ports and airports from Firebase (Firestore)
 /// Used for POL/POD autocomplete in quote request forms
 class PortAirportService {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   // Cache for all data
   List<Map<String, dynamic>>? _allPorts;
@@ -12,15 +12,14 @@ class PortAirportService {
   List<Map<String, dynamic>>? _ecuadorPorts;
   List<Map<String, dynamic>>? _ecuadorAirports;
 
-  /// Fetch ALL ports from API once and cache
+  /// Fetch ALL ports from Firebase (Firestore) once and cache
   Future<List<Map<String, dynamic>>> _fetchAllPorts() async {
     if (_allPorts != null) return _allPorts!;
 
     try {
-      final response = await _apiClient.get('sales/ports/');
-      if (response is List) {
-        _allPorts = List<Map<String, dynamic>>.from(response);
-        // Successfully loaded ports from API
+      final response = await _firebaseService.getPorts();
+      if (response.isNotEmpty) {
+        _allPorts = response;
         return _allPorts!;
       }
     } catch (e) {
@@ -32,15 +31,14 @@ class PortAirportService {
     return _allPorts!;
   }
 
-  /// Fetch ALL airports from API once and cache
+  /// Fetch ALL airports from Firebase (Firestore) once and cache
   Future<List<Map<String, dynamic>>> _fetchAllAirports() async {
     if (_allAirports != null) return _allAirports!;
 
     try {
-      final response = await _apiClient.get('sales/airports/');
-      if (response is List) {
-        _allAirports = List<Map<String, dynamic>>.from(response);
-        // Successfully loaded airports from API
+      final response = await _firebaseService.getAirports();
+      if (response.isNotEmpty) {
+        _allAirports = response;
         return _allAirports!;
       }
     } catch (e) {

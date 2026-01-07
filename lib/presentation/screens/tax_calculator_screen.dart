@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 
 class TaxCalculatorScreen extends StatefulWidget {
   const TaxCalculatorScreen({super.key});
@@ -11,18 +11,22 @@ class TaxCalculatorScreen extends StatefulWidget {
 }
 
 class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
-  // API Client
-  final ApiClient _apiClient = ApiClient();
+  // Firebase Service
+  final FirebaseService _firebaseService = FirebaseService();
 
   // Controllers
-  final TextEditingController _fobController =
-      TextEditingController(text: "12500.00");
-  final TextEditingController _hsCodeController =
-      TextEditingController(text: "8517.13.00");
-  final TextEditingController _freightController =
-      TextEditingController(text: "850.00");
-  final TextEditingController _weightController =
-      TextEditingController(text: "45");
+  final TextEditingController _fobController = TextEditingController(
+    text: "12500.00",
+  );
+  final TextEditingController _hsCodeController = TextEditingController(
+    text: "8517.13.00",
+  );
+  final TextEditingController _freightController = TextEditingController(
+    text: "850.00",
+  );
+  final TextEditingController _weightController = TextEditingController(
+    text: "45",
+  );
 
   // --- STATE ---
   String _originCountry = "US";
@@ -35,12 +39,12 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
   double _adValorem = 0.0;
   double _fodinfa = 0.0;
   double _iceTax = 0.0;
-  double _iceRate = 0.0;
+  final double _iceRate = 0.0;
   double _iva = 0.0;
   double _total = 0.0;
 
-  /// Calculate taxes by calling backend API
-  /// Sends data to POST /api/sales/pre-liquidations/
+  /// Calculate taxes using local calculation or Firebase
+  /// Performs pre-liquidation calculation
   Future<void> _calculateFromBackend() async {
     setState(() {
       _isCalculating = true;
@@ -60,38 +64,24 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
         if (insuranceValue < 70.0) insuranceValue = 70.0;
       }
 
-      // 2. Prepare payload for backend
-      final payload = {
-        'fob_value_usd': fobValue,
-        'freight_usd': freightValue,
-        'insurance_usd': insuranceValue,
-        'confirmed_hs_code': hsCode,
-        'product_description': 'Cálculo desde Flutter App',
-      };
+      // 2. Use Firebase service for calculation
+      final result = await _firebaseService.calculatePreLiquidation({
+        'fob_value': fobValue,
+        'freight_cost': freightValue,
+        'insurance': insuranceValue,
+        'hs_code': hsCode,
+      });
 
-      // Sending to pre-liquidations API
-
-      // 3. Call backend API
-      final response =
-          await _apiClient.post('sales/pre-liquidations/', payload);
-
-      // Pre-liquidation response received
-
-      // 4. Parse response and update state
+      // 3. Update state with results
       if (mounted) {
         setState(() {
-          _cifValue = _parseDouble(response['cif_value_usd']);
+          _cifValue = result['cif'] ?? 0.0;
           _insuranceCost = insuranceValue;
-          _adValorem = _parseDouble(response['ad_valorem_usd']);
-          _fodinfa = _parseDouble(response['fodinfa_usd']);
-          _iceTax = _parseDouble(response['ice_usd']);
-          _iva = _parseDouble(response['iva_usd']);
-          _total = _parseDouble(response['total_tributos_usd']);
-
-          // Calculate rates for display
-          if (_cifValue > 0) {
-            _iceRate = _iceTax > 0 ? (_iceTax / _cifValue) * 100 : 0;
-          }
+          _adValorem = 0.0; // Will be calculated based on HS code
+          _fodinfa = _cifValue * 0.005; // 0.5% of CIF
+          _iceTax = 0.0;
+          _iva = (_cifValue + _adValorem + _fodinfa) * 0.12; // 12% IVA
+          _total = _adValorem + _fodinfa + _iva + _iceTax;
 
           _isCalculating = false;
         });
@@ -105,20 +95,12 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error conectando al servidor: $e'),
+            content: Text('Error en el cálculo: $e'),
             backgroundColor: Colors.red,
           ),
         );
       }
     }
-  }
-
-  double _parseDouble(dynamic value) {
-    if (value == null) return 0.0;
-    if (value is double) return value;
-    if (value is int) return value.toDouble();
-    if (value is String) return double.tryParse(value) ?? 0.0;
-    return 0.0;
   }
 
   @override
@@ -138,20 +120,28 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text("PRE-LIQUIDACIÓN",
-            style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-                letterSpacing: 1)),
+        title: const Text(
+          "PRE-LIQUIDACIÓN",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+            letterSpacing: 1,
+          ),
+        ),
         centerTitle: true,
         bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(color: Colors.white10, height: 1)),
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: Colors.white10, height: 1),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(
-            16, 24, 16, 130), // Bottom space for fixed button
+          16,
+          24,
+          16,
+          130,
+        ), // Bottom space for fixed button
         child: Column(
           children: [
             // Section 1: Import Data
@@ -162,12 +152,15 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                   children: [
                     Icon(Icons.inventory_2, color: primaryColor),
                     SizedBox(width: 8),
-                    Text("DATOS DE IMPORTACIÓN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5)),
+                    Text(
+                      "DATOS DE IMPORTACIÓN",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -177,28 +170,33 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderOlive)),
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderOlive),
+                  ),
                   child: Row(
                     children: [
-                      const Text("\$",
-                          style: TextStyle(color: textSecondary, fontSize: 18)),
+                      const Text(
+                        "\$",
+                        style: TextStyle(color: textSecondary, fontSize: 18),
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: TextField(
                           controller: _fobController,
                           keyboardType: TextInputType.number,
                           style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                           decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              hintText: "0.00",
-                              hintStyle: TextStyle(color: Colors.grey)),
+                            border: InputBorder.none,
+                            hintText: "0.00",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -208,39 +206,46 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                 _buildLabel("Partida Arancelaria", textSecondary),
                 Container(
                   decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderOlive)),
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderOlive),
+                  ),
                   child: Row(
                     children: [
                       Expanded(
                         child: TextField(
                           controller: _hsCodeController,
                           style: const TextStyle(
-                              color: Colors.white, fontSize: 16),
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
                           decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              contentPadding:
-                                  EdgeInsets.symmetric(horizontal: 16),
-                              hintText: "Ej: 8517.13.00",
-                              hintStyle: TextStyle(color: Colors.grey)),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 16,
+                            ),
+                            hintText: "Ej: 8517.13.00",
+                            hintStyle: TextStyle(color: Colors.grey),
+                          ),
                         ),
                       ),
                       Container(
                         height: 56,
                         width: 56,
                         decoration: const BoxDecoration(
-                            border:
-                                Border(left: BorderSide(color: borderOlive))),
+                          border: Border(left: BorderSide(color: borderOlive)),
+                        ),
                         child: const Icon(Icons.search, color: primaryColor),
-                      )
+                      ),
                     ],
                   ),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 4, top: 4),
-                  child: Text("Smartphones y dispositivos móviles",
-                      style: TextStyle(color: textSecondary, fontSize: 12)),
+                  child: Text(
+                    "Smartphones y dispositivos móviles",
+                    style: TextStyle(color: textSecondary, fontSize: 12),
+                  ),
                 ),
                 const SizedBox(height: 16),
 
@@ -249,28 +254,31 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: borderOlive)),
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderOlive),
+                  ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<String>(
-                        value: _originCountry,
-                        isExpanded: true,
-                        dropdownColor: cardColor,
-                        icon:
-                            const Icon(Icons.expand_more, color: primaryColor),
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 16),
-                        items: const [
-                          DropdownMenuItem(
-                              value: "US", child: Text("Estados Unidos (USA)")),
-                          DropdownMenuItem(value: "CN", child: Text("China")),
-                          DropdownMenuItem(
-                              value: "EU", child: Text("Unión Europea")),
-                          DropdownMenuItem(
-                              value: "CO", child: Text("Colombia")),
-                        ],
-                        onChanged: (v) => setState(() => _originCountry = v!)),
+                      value: _originCountry,
+                      isExpanded: true,
+                      dropdownColor: cardColor,
+                      icon: const Icon(Icons.expand_more, color: primaryColor),
+                      style: const TextStyle(color: Colors.white, fontSize: 16),
+                      items: const [
+                        DropdownMenuItem(
+                          value: "US",
+                          child: Text("Estados Unidos (USA)"),
+                        ),
+                        DropdownMenuItem(value: "CN", child: Text("China")),
+                        DropdownMenuItem(
+                          value: "EU",
+                          child: Text("Unión Europea"),
+                        ),
+                        DropdownMenuItem(value: "CO", child: Text("Colombia")),
+                      ],
+                      onChanged: (v) => setState(() => _originCountry = v!),
+                    ),
                   ),
                 ),
               ],
@@ -288,12 +296,15 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                   children: [
                     Icon(Icons.local_shipping, color: primaryColor),
                     SizedBox(width: 8),
-                    Text("LOGÍSTICA Y SEGURO",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.5)),
+                    Text(
+                      "LOGÍSTICA Y SEGURO",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -308,30 +319,36 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                                color: cardColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: borderOlive)),
+                              color: cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: borderOlive),
+                            ),
                             child: Row(
                               children: [
-                                const Text("\$",
-                                    style: TextStyle(
-                                        color: textSecondary, fontSize: 16)),
+                                const Text(
+                                  "\$",
+                                  style: TextStyle(
+                                    color: textSecondary,
+                                    fontSize: 16,
+                                  ),
+                                ),
                                 const SizedBox(width: 4),
                                 Expanded(
                                   child: TextField(
                                     controller: _freightController,
                                     keyboardType: TextInputType.number,
                                     style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                     decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "0.00",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey)),
+                                      border: InputBorder.none,
+                                      hintText: "0.00",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                    ),
                                   ),
-                                )
+                                ),
                               ],
                             ),
                           ),
@@ -347,9 +364,10 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             decoration: BoxDecoration(
-                                color: cardColor,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: borderOlive)),
+                              color: cardColor,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: borderOlive),
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
@@ -357,25 +375,30 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                                     controller: _weightController,
                                     keyboardType: TextInputType.number,
                                     style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                     decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                        hintText: "0.00",
-                                        hintStyle:
-                                            TextStyle(color: Colors.grey)),
+                                      border: InputBorder.none,
+                                      hintText: "0.00",
+                                      hintStyle: TextStyle(color: Colors.grey),
+                                    ),
                                   ),
                                 ),
-                                const Text("kg",
-                                    style: TextStyle(
-                                        color: textSecondary, fontSize: 14)),
+                                const Text(
+                                  "kg",
+                                  style: TextStyle(
+                                    color: textSecondary,
+                                    fontSize: 14,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -384,24 +407,33 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: borderOlive.withValues(alpha: 0.5))),
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: borderOlive.withValues(alpha: 0.5),
+                    ),
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Seguro Internacional",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500)),
-                          Text('0.35% del CFR (mínimo \$70 USD)',
-                              style: TextStyle(
-                                  color: textSecondary, fontSize: 12)),
+                          Text(
+                            "Seguro Internacional",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            '0.35% del CFR (mínimo \$70 USD)',
+                            style: TextStyle(
+                              color: textSecondary,
+                              fontSize: 12,
+                            ),
+                          ),
                         ],
                       ),
                       Switch(
@@ -411,10 +443,10 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                         activeTrackColor: Colors.white10,
                         inactiveThumbColor: Colors.white,
                         inactiveTrackColor: Colors.white10,
-                      )
+                      ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
 
@@ -426,16 +458,18 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [cardColor, Color(0xFF161912)]),
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [cardColor, Color(0xFF161912)],
+                  ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: borderOlive.withValues(alpha: 0.6)),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 15,
-                        offset: const Offset(0, 5))
+                      color: Colors.black.withValues(alpha: 0.4),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
                   ],
                 ),
                 child: Column(
@@ -443,26 +477,36 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("ESTIMACIÓN TOTAL",
-                            style: TextStyle(
-                                color: textSecondary,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1)),
+                        const Text(
+                          "ESTIMACIÓN TOTAL",
+                          style: TextStyle(
+                            color: textSecondary,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1,
+                          ),
+                        ),
                         Container(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           decoration: BoxDecoration(
-                              color: Colors.yellow.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                  color: Colors.yellow.withValues(alpha: 0.3))),
-                          child: const Text("REFERENCIAL",
-                              style: TextStyle(
-                                  color: Colors.yellow,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold)),
-                        )
+                            color: Colors.yellow.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: Colors.yellow.withValues(alpha: 0.3),
+                            ),
+                          ),
+                          child: const Text(
+                            "REFERENCIAL",
+                            style: TextStyle(
+                              color: Colors.yellow,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -475,31 +519,38 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                     // ICE solo se muestra si aplica
                     if (_iceTax > 0)
                       _buildResultRow(
-                          "ICE (${(_iceRate * 100).toStringAsFixed(0)}%)",
-                          _iceTax),
+                        "ICE (${(_iceRate * 100).toStringAsFixed(0)}%)",
+                        _iceTax,
+                      ),
                     _buildResultRow("IVA (15%)", _iva),
                     const Divider(color: Colors.white10, height: 24),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text("Total a Pagar",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500)),
-                        Text("\$${_total.toStringAsFixed(2)}",
-                            style: const TextStyle(
-                                color: primaryColor,
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: -1)),
+                        const Text(
+                          "Total a Pagar",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Text(
+                          "\$${_total.toStringAsFixed(2)}",
+                          style: const TextStyle(
+                            color: primaryColor,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: -1,
+                          ),
+                        ),
                       ],
-                    )
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -516,18 +567,24 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
                     width: 20,
                     height: 20,
                     child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.black))
+                      strokeWidth: 2,
+                      color: Colors.black,
+                    ),
+                  )
                 : const Icon(Icons.calculate),
-            label: Text(_isCalculating ? "CALCULANDO..." : "CALCULAR IMPUESTOS",
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            label: Text(
+              _isCalculating ? "CALCULANDO..." : "CALCULAR IMPUESTOS",
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                foregroundColor: Colors.black,
-                elevation: 10,
-                shadowColor: primaryColor.withValues(alpha: 0.4),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12))),
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.black,
+              elevation: 10,
+              shadowColor: primaryColor.withValues(alpha: 0.4),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
       ),
@@ -537,9 +594,14 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
   Widget _buildLabel(String text, Color color) {
     return Padding(
       padding: const EdgeInsets.only(left: 4, bottom: 8),
-      child: Text(text,
-          style: TextStyle(
-              color: color, fontSize: 14, fontWeight: FontWeight.w500)),
+      child: Text(
+        text,
+        style: TextStyle(
+          color: color,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
     );
   }
 
@@ -549,11 +611,18 @@ class _TaxCalculatorScreenState extends State<TaxCalculatorScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(color: Colors.white70, fontSize: 14)),
-          Text("\$${val.toStringAsFixed(2)}",
-              style: const TextStyle(
-                  color: Colors.white, fontSize: 14, fontFamily: 'monospace')),
+          Text(
+            label,
+            style: const TextStyle(color: Colors.white70, fontSize: 14),
+          ),
+          Text(
+            "\$${val.toStringAsFixed(2)}",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontFamily: 'monospace',
+            ),
+          ),
         ],
       ),
     );

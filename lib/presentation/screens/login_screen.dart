@@ -38,20 +38,25 @@ class _LoginScreenState extends State<LoginScreen> {
       _passwordController.text,
     );
 
+    // Debug: print login result
+    debugPrint(
+        'Login result: success=${result.success}, message=${result.message}');
+    debugPrint('User role: ${authService.userRole}');
+
     setState(() => _isLoading = false);
 
     if (result.success) {
       if (mounted) {
         // Verificar si hay una ruta de redirección
         final args = ModalRoute.of(context)?.settings.arguments;
-        String redirectTo = '/home'; // Valor por defecto
+        String redirectTo = '/dashboard'; // Valor por defecto corregido
 
         // Check for admin role first
         if (authService.userRole == 'admin' ||
             authService.userRole == 'superuser') {
           redirectTo = '/admin_dashboard';
         } else if (args != null && args is Map<String, dynamic>) {
-          redirectTo = args['redirectTo'] ?? '/home';
+          redirectTo = args['redirectTo'] ?? '/dashboard';
         }
 
         Navigator.pushReplacementNamed(context, redirectTo);
@@ -282,7 +287,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 56,
                         child: OutlinedButton(
                           onPressed: () =>
-                              Navigator.pushNamed(context, '/registro'),
+                              Navigator.pushNamed(context, '/register'),
                           style: OutlinedButton.styleFrom(
                             foregroundColor: Colors.white,
                             side: BorderSide(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Arancel (Tariff) Management Screen
@@ -13,7 +13,7 @@ class AdminArancelScreen extends StatefulWidget {
 }
 
 class _AdminArancelScreenState extends State<AdminArancelScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> _hsCodes = [];
@@ -92,7 +92,7 @@ class _AdminArancelScreenState extends State<AdminArancelScreen> {
 
     try {
       // Try to get HS codes from backend
-      final response = await _apiClient.get('admin/hs-codes/');
+      final response = await _firebaseService.get('admin/hs-codes/');
       List<Map<String, dynamic>> codes = [];
 
       if (response is List) {
@@ -253,9 +253,9 @@ class _AdminArancelScreenState extends State<AdminArancelScreen> {
                 };
 
                 if (isNew) {
-                  await _apiClient.post('admin/hs-codes/', data);
+                  await _firebaseService.post('admin/hs-codes/', data);
                 } else {
-                  await _apiClient.post(
+                  await _firebaseService.post(
                       'admin/hs-codes/${hsCode['id']}/', data);
                 }
                 _showSnackBar(isNew ? 'Partida creada' : 'Partida actualizada',

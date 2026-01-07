@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminAeropuertosScreen extends StatefulWidget {
@@ -11,13 +11,13 @@ class AdminAeropuertosScreen extends StatefulWidget {
 }
 
 class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   final TextEditingController _searchController = TextEditingController();
 
   List<Map<String, dynamic>> _airports = [];
   bool _isLoading = true;
   String? _selectedRegion;
-  int _page = 1;
+  final int _page = 1;
   int _totalRecords = 0;
   List<Map<String, dynamic>> _regions = [];
 
@@ -43,8 +43,11 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
         if (_selectedRegion != null) 'region': _selectedRegion!,
       };
 
-      final response =
-          await _apiClient.get('admin/airports/', queryParameters: queryParams);
+      final response = await _firebaseService.get('admin/airports/',
+          queryParameters: queryParams);
+
+      // --- FIX 1: Verificar si sigue montado antes de usar setState ---
+      if (!mounted) return;
 
       if (response != null && response is Map<String, dynamic>) {
         setState(() {
@@ -58,9 +61,13 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
         });
       }
     } catch (e) {
-      _showSnackBar('Error cargando aeropuertos: $e', Colors.red);
+      if (mounted) {
+        _showSnackBar('Error cargando aeropuertos: $e', Colors.red);
+      }
     } finally {
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -90,13 +97,19 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
 
     if (confirm == true) {
       try {
-        await _apiClient
+        await _firebaseService
             .delete('admin/airports/', queryParameters: {'id': id.toString()});
+
+        // --- FIX 2: ESTA ERA LA CAUSA PRINCIPAL DEL ERROR ---
+        if (!mounted) return;
+
         _showSnackBar(
             'Aeropuerto eliminado correctamente', AppColors.neonGreen);
         _loadAirports();
       } catch (e) {
-        _showSnackBar('Error eliminando aeropuerto: $e', Colors.red);
+        if (mounted) {
+          _showSnackBar('Error eliminando aeropuerto: $e', Colors.red);
+        }
       }
     }
   }
@@ -152,7 +165,7 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
                       style: TextStyle(color: Colors.white)),
                   value: isActive,
                   onChanged: (val) => setDialogState(() => isActive = val),
-                  activeColor: AppColors.neonGreen,
+                  activeThumbColor: AppColors.neonGreen,
                 ),
               ],
             ),
@@ -177,21 +190,24 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
                   };
 
                   if (isNew) {
-                    await _apiClient.post('admin/airports/', data);
+                    await _firebaseService.post('admin/airports/', data);
                   } else {
                     data['id'] = airport['id'];
-                    await _apiClient.put('admin/airports/', data);
+                    await _firebaseService.put('admin/airports/', data);
                   }
 
-                  if (mounted) {
-                    Navigator.pop(context);
-                    _showSnackBar(
-                        isNew ? 'Aeropuerto creado' : 'Aeropuerto actualizado',
-                        AppColors.neonGreen);
-                    _loadAirports();
-                  }
+                  // --- FIX 3: Asegurar mounted antes de cerrar y mostrar snackbar ---
+                  if (!context.mounted) return;
+
+                  Navigator.pop(context);
+                  _showSnackBar(
+                      isNew ? 'Aeropuerto creado' : 'Aeropuerto actualizado',
+                      AppColors.neonGreen);
+                  _loadAirports();
                 } catch (e) {
-                  _showSnackBar('Error guardando aeropuerto: $e', Colors.red);
+                  if (mounted) {
+                    _showSnackBar('Error guardando aeropuerto: $e', Colors.red);
+                  }
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -416,11 +432,12 @@ class _AdminAeropuertosScreenState extends State<AdminAeropuertosScreen> {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                          airport['name'] ?? 'Sin nombre',
-                                          style: const TextStyle(
-                                              color: Colors.white,
-                                              overflow: TextOverflow.ellipsis),
-                                          maxLines: 1),
+                                        airport['name'] ?? 'Sin nombre',
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            overflow: TextOverflow.ellipsis),
+                                        maxLines: 1,
+                                      ),
                                     ),
                                   ],
                                 ),

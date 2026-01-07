@@ -1,129 +1,92 @@
 import 'package:flutter/foundation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import '../api/client.dart'; // Importamos tu cliente real
 
 class AuthService extends ChangeNotifier {
-  static final AuthService _instance = AuthService._internal();
-  factory AuthService() => _instance;
-  AuthService._internal();
-
+  // --- INSTANCIAS DE FIREBASE ---
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
-  final ApiClient _apiClient = ApiClient(); // Instancia del cliente real
 
+  // --- ESTADO LOCAL COMPATIBLE CON TU UI ---
+  bool _isLoading = false;
   bool _isLoggedIn = false;
-  String? _userToken;
-  String? _refreshToken;
-  String? _userId;
+
+  // Datos del Usuario (Compatibilidad Legacy)
   String? _userEmail;
   String? _userName;
   String? _userRuc;
 
-  // User profile data from backend
+  // Perfil completo
   Map<String, dynamic>? _userData;
 
-  // Access control flags
+  // Banderas de Control
   bool _isRucApproved = false;
-  String? _rucStatus; // 'pending', 'approved', 'rejected', null
-  bool _hasCompletedImport = false;
-  bool _isProfileComplete = false;
+  String? _rucStatus;
+  final bool _hasCompletedImport = false;
   bool _isActiveImporter = false;
 
-  // Getters
-  bool get isLoggedIn => _isLoggedIn;
-  String? get userToken => _userToken;
-  String? get userId => _userId;
-  String? get userEmail => _userEmail;
-  String? get userName => _userName;
+  // --- GETTERS CRÍTICOS ---
+  bool get isLoading => _isLoading;
+  bool get isLoggedIn => _auth.currentUser != null;
+  String? get userToken => _auth.currentUser?.uid;
+
+  // CORRECCIÓN: Usamos directo Firebase, ya no la variable _userId
+  String? get userId => _auth.currentUser?.uid;
+
+  String? get userEmail => _userEmail ?? _auth.currentUser?.email;
+  String? get userName => _userName ?? _auth.currentUser?.displayName;
   String? get userRuc => _userRuc;
   bool get isRucApproved => _isRucApproved;
   String? get rucStatus => _rucStatus;
   bool get hasCompletedImport => _hasCompletedImport;
-  bool get isProfileComplete => _isProfileComplete;
   bool get isActiveImporter => _isActiveImporter;
   Map<String, dynamic>? get userData => _userData;
-  String? get userRole => _userData?['role'];
 
-  /// Verifica si hay una sesión guardada
+  // Getter para corregir el error en login_screen.dart
+  String? get userRole => _userData?['role'] ?? 'user';
+
+  // --- 1. VERIFICAR SESIÓN ---
   Future<bool> checkStoredSession() async {
     try {
-      final token = await _storage.read(key: 'auth_token');
-      final email = await _storage.read(key: 'user_email');
-
-      if (token != null && token.isNotEmpty) {
-        _userToken = token;
-        _userEmail = email;
+      final user = _auth.currentUser;
+      if (user != null) {
         _isLoggedIn = true;
+        _userEmail = user.email;
+        // BORRADO: _userId = user.uid; (Ya no existe la variable, no es necesaria)
+
+        await fetchUserProfile(); // Cargamos datos reales
         notifyListeners();
         return true;
       }
     } catch (e) {
-      debugPrint('Error checking stored session: $e');
+      debugPrint("Error verificando sesión: $e");
     }
     return false;
   }
 
-  /// Login REAL conectado al backend Python (Puerto 8001)
+  // --- 2. LOGIN ---
   Future<AuthResult> login(String email, String password) async {
+    _setLoading(true);
     try {
-      if (email.isEmpty || password.isEmpty) {
-        return AuthResult(
-            success: false, message: 'Email y contraseña requeridos');
-      }
+      UserCredential cred = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
 
-      // Sending login request to Django
+      await _checkSessionAndLoadProfile(cred.user!);
 
-      // Llamada REAL al servidor
-      final response = await _apiClient.post('accounts/login/', {
-        'email': email,
-        'password': password,
-      });
-
-      // Login response received
-
-      // Django devuelve: { "tokens": { "access": "...", "refresh": "..." }, "user": {...} }
-      final tokens = response['tokens'];
-      final token =
-          tokens?['access'] ?? response['access'] ?? response['token'];
-      final refresh = tokens?['refresh'];
-
-      if (token != null) {
-        _userToken = token;
-        _refreshToken = refresh;
-        _userEmail = email;
-        _isLoggedIn = true;
-
-        // Guardar datos del usuario desde la respuesta
-        if (response['user'] != null) {
-          _userData = response['user'];
-          _userId = _userData?['id']?.toString();
-          _userName =
-              '${_userData?['first_name'] ?? ''} ${_userData?['last_name'] ?? ''}'
-                  .trim();
-          _rucStatus = _userData?['ruc_status'];
-          _isRucApproved = _userData?['ruc_approved'] ?? false;
-          _hasCompletedImport = _userData?['has_approved_quote'] ?? false;
-        }
-
-        await _storage.write(key: 'auth_token', value: _userToken);
-        await _storage.write(key: 'refresh_token', value: _refreshToken);
-        await _storage.write(key: 'user_email', value: _userEmail);
-
-        notifyListeners();
-        return AuthResult(
-            success: true, message: 'Bienvenido', data: _userData);
-      } else {
-        return AuthResult(
-            success: false, message: 'Error: No se recibió token');
-      }
+      _setLoading(false);
+      return AuthResult(success: true, message: 'Bienvenido', data: _userData);
+    } on FirebaseAuthException catch (e) {
+      _setLoading(false);
+      return AuthResult(success: false, message: e.message ?? 'Error Auth');
     } catch (e) {
-      // Error in login
-      return AuthResult(
-          success: false,
-          message: 'Fallo al iniciar sesión. Revisa usuario/clave.');
+      _setLoading(false);
+      return AuthResult(success: false, message: 'Error: $e');
     }
   }
 
-  /// Registro REAL conectado al backend Python
+  // --- 3. REGISTRO ---
   Future<AuthResult> register({
     required String nombre,
     required String apellido,
@@ -135,146 +98,103 @@ class AuthService extends ChangeNotifier {
     String? ciudad,
     String? pais,
   }) async {
+    _setLoading(true);
     try {
-      if (email.isEmpty || password.length < 8) {
-        return AuthResult(
-            success: false, message: 'Datos inválidos o contraseña corta');
-      }
+      UserCredential cred = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
 
-      // Sending registration request to Django
+      final String fullName = "$nombre $apellido".trim();
 
-      // Construimos el objeto de datos que espera Django
-      // NOTA: Debe coincidir con UserRegistrationSerializer de Django
-      final Map<String, dynamic> registerData = {
+      // Estructura de Usuario en Firebase
+      final Map<String, dynamic> userMap = {
+        'uid': cred.user!.uid,
         'email': email,
-        'password': password,
-        'password_confirm': password, // Requerido por el serializer
         'first_name': nombre,
         'last_name': apellido,
+        'full_name': fullName,
         'company_name': empresa,
         'phone': telefono,
+        'ruc': ruc ?? '',
+        'city': ciudad ?? '',
+        'country': pais ?? 'Ecuador',
+        'is_active_importer': false,
+        'ruc_status': 'pending',
+        'role': 'importer', // Rol por defecto
+        'created_at': FieldValue.serverTimestamp(),
       };
 
-      // Agregar campos opcionales solo si tienen valor
-      if (ruc != null && ruc.isNotEmpty) {
-        registerData['ruc'] = ruc;
-      }
-      if (ciudad != null && ciudad.isNotEmpty) {
-        registerData['city'] = ciudad;
-      }
+      await _db.collection('users').doc(cred.user!.uid).set(userMap);
+      await cred.user!.updateDisplayName(fullName);
+      await _checkSessionAndLoadProfile(cred.user!);
 
-      // Llamada REAL al servidor
-      final response =
-          await _apiClient.post('accounts/register/', registerData);
-
-      // Registration successful
-
-      // Django devuelve tokens en registro también - auto-login
-      final tokens = response['tokens'];
-      final token = tokens?['access'];
-      final refresh = tokens?['refresh'];
-
-      if (token != null) {
-        // Auto-login: guardar tokens y datos de usuario
-        _userToken = token;
-        _refreshToken = refresh;
-        _userEmail = email;
-        _isLoggedIn = true;
-        _userName = '$nombre $apellido'.trim();
-
-        // Guardar datos del usuario desde la respuesta
-        if (response['user'] != null) {
-          _userData = response['user'];
-          _userId = _userData?['id']?.toString();
-          _rucStatus = _userData?['ruc_status'];
-          _isRucApproved = _userData?['ruc_approved'] ?? false;
-          _hasCompletedImport = _userData?['has_approved_quote'] ?? false;
-        }
-
-        await _storage.write(key: 'auth_token', value: _userToken);
-        await _storage.write(key: 'refresh_token', value: _refreshToken);
-        await _storage.write(key: 'user_email', value: _userEmail);
-
-        notifyListeners();
-      }
-
+      _setLoading(false);
       return AuthResult(
-        success: true,
-        message: 'Cuenta creada exitosamente.',
-        requiresVerification: false, // Auto-logged in, no verification needed
-        data: _userData,
-      );
+          success: true,
+          message: 'Cuenta creada.',
+          requiresVerification: true,
+          data: userMap);
     } catch (e) {
-      // Error in registration
-      // Manejo de errores comunes de Django (ej: Email ya existe)
-      if (e.toString().contains('unique') || e.toString().contains('exists')) {
-        return AuthResult(
-            success: false, message: 'Este correo ya está registrado.');
-      }
-      return AuthResult(
-          success: false, message: 'Error al registrar: ${e.toString()}');
+      _setLoading(false);
+      return AuthResult(success: false, message: 'Error al registrar: $e');
     }
   }
 
-  /// Fetch user profile from backend to get RUC status and importer flags
-  /// Calls GET /api/sales/me/
-  Future<bool> fetchUserProfile() async {
-    if (!_isLoggedIn || _userToken == null) {
-      return false;
-    }
-
-    try {
-      // Fetching user profile from backend
-      final response = await _apiClient.get('sales/me/');
-
-      // Profile response received
-
-      _userData = response;
-      _userName =
-          '${response['first_name'] ?? ''} ${response['last_name'] ?? ''}'
-              .trim();
-      _userEmail = response['email'];
-      _userRuc = response['ruc'];
-      _rucStatus = response['ruc_status'];
-
-      // Set access control flags based on backend response
-      _isRucApproved = _rucStatus == 'approved' || _rucStatus == 'primary';
-      _isActiveImporter = response['is_active_importer'] ?? false;
-      _isProfileComplete = (_userRuc != null && _userRuc!.isNotEmpty);
-
-      // Check if user has completed at least one import
-      _hasCompletedImport = response['has_approved_quote'] ?? false;
-
-      notifyListeners();
-      return true;
-    } catch (e) {
-      // Error fetching user profile
-      return false;
-    }
-  }
-
-  /// Check if user can access protected features (requires RUC approval)
-  bool canAccessQuoteFeatures() {
-    return _isLoggedIn && _isRucApproved;
-  }
-
-  /// Check if user can access premium AI features (requires completed import)
-  bool canAccessPremiumFeatures() {
-    return _isLoggedIn && _hasCompletedImport;
-  }
-
-  /// Cerrar sesión
+  // --- 4. LOGOUT ---
   Future<void> logout() async {
-    _isLoggedIn = false;
-    _userToken = null;
-    _isActiveImporter = false;
-    _isRucApproved = false;
-    _hasCompletedImport = false;
+    await _auth.signOut();
     await _storage.deleteAll();
+    _limpiarEstadoLocal();
     notifyListeners();
   }
 
+  // --- FUNCIONES DE SOPORTE ---
+
+  Future<bool> fetchUserProfile() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return false;
+
+      DocumentSnapshot doc = await _db.collection('users').doc(user.uid).get();
+
+      if (doc.exists) {
+        final data = doc.data() as Map<String, dynamic>;
+        _userData = data;
+        _userName = data['full_name'];
+        _userRuc = data['ruc'];
+        _rucStatus = data['ruc_status'];
+        _isRucApproved = data['is_active_importer'] == true;
+        _isActiveImporter = _isRucApproved;
+        notifyListeners();
+        return true;
+      }
+    } catch (e) {
+      debugPrint("Error leyendo perfil: $e");
+    }
+    return false;
+  }
+
+  Future<void> _checkSessionAndLoadProfile(User user) async {
+    _isLoggedIn = true;
+    _userEmail = user.email;
+    // BORRADO: _userId = user.uid; (Ya no existe la variable)
+    await fetchUserProfile();
+  }
+
+  void _limpiarEstadoLocal() {
+    _isLoggedIn = false;
+    _userData = null;
+    _isRucApproved = false;
+  }
+
+  // Helpers de acceso
+  bool canAccessQuoteFeatures() => _isLoggedIn && _isRucApproved;
+  bool canAccessPremiumFeatures() => _isLoggedIn && _hasCompletedImport;
   bool canAccessProtectedContent() => _isLoggedIn;
+
+  void _setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 }
 
 class AuthResult {

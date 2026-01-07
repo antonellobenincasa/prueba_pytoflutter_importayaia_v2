@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "215953934792",
+    "project_id": "importaya-ia-platform",
+    "storage_bucket": "importaya-ia-platform.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215953934792:android:c42a1bc169f734650c58fd",
+        "android_client_info": {
+          "package_name": "com.example.prueba_pytoflutter_importayaia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBeWj2IcirXz3VsmsnkAyAo_IUst77bN9I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -10,14 +10,19 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # --- UI & Diseño (Versiones compatibles) ---
+  # --- Firebase (Versiones alineadas) ---
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.4
+  cloud_firestore: ^5.6.2
+
+  # --- UI & Diseño ---
   cupertino_icons: ^1.0.2
   google_fonts: ^6.1.0
   animate_do: ^4.2.0
   flutter_animate: ^4.5.0
   
-  # --- Lógica y Datos (Versiones compatibles con tu SDK) ---
-  flutter_secure_storage: ^10.0.0  # Bajamos de 9.0.0 a 8.0.0
+  # --- Lógica y Datos ---
+  flutter_secure_storage: ^10.0.0
   http: ^1.1.0
   shared_preferences: ^2.5.4
   dio: ^5.3.0
@@ -25,9 +30,11 @@ dependencies:
   flutter_bloc: ^9.1.1
   equatable: ^2.0.5
   
-  # --- Video Player ---
+  # --- Multimedia ---
   video_player: ^2.8.1
   audioplayers: ^6.5.1
+  
+  # --- Gestión de Estado ---
   provider: ^6.1.5+1
 
 dev_dependencies:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminProfitReviewScreen extends StatefulWidget {
@@ -12,7 +12,7 @@ class AdminProfitReviewScreen extends StatefulWidget {
 }
 
 class _AdminProfitReviewScreenState extends State<AdminProfitReviewScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   bool _isLoading = true;
   Map<String, dynamic> _data = {};
@@ -26,7 +26,7 @@ class _AdminProfitReviewScreenState extends State<AdminProfitReviewScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiClient.get('admin/profit-review/');
+      final response = await _firebaseService.get('admin/profit-review/');
       if (response != null && response is Map<String, dynamic>) {
         setState(() => _data = response);
       }
@@ -39,7 +39,7 @@ class _AdminProfitReviewScreenState extends State<AdminProfitReviewScreen> {
 
   Future<void> _downloadReport() async {
     try {
-      final response = await _apiClient
+      final response = await _firebaseService
           .get('admin/export/', queryParameters: {'type': 'profit'});
       // In a real web app, we would trigger a download with the blob.
       // For now, we just show success since file handling varies.
@@ -378,7 +378,7 @@ class _AdminProfitReviewScreenState extends State<AdminProfitReviewScreen> {
                           .withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
-                    child: Text('${marginPct}%',
+                    child: Text('$marginPct%',
                         style: TextStyle(
                             color: isPositive ? Colors.green : Colors.red,
                             fontSize: 12,

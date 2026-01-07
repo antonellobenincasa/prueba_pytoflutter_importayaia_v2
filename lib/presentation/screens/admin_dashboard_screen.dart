@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 /// Enhanced Master Admin Dashboard with full management capabilities
@@ -14,7 +14,7 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen>
     with SingleTickerProviderStateMixin {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   late TabController _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -61,7 +61,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
       // Load pending RUCs
       try {
         final rucsResponse =
-            await _apiClient.get('accounts/admin/ruc-approvals/');
+            await _firebaseService.get('accounts/admin/ruc-approvals/');
         if (rucsResponse is List) {
           _pendingRucs = List<Map<String, dynamic>>.from(rucsResponse);
         } else if (rucsResponse['pending_rucs'] != null) {
@@ -78,7 +78,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
       // Load quotes
       try {
-        final quotesResponse = await _apiClient.get('sales/submissions/');
+        final quotesResponse = await _firebaseService.get('sales/submissions/');
         if (quotesResponse is List) {
           _quotes = List<Map<String, dynamic>>.from(quotesResponse);
         } else if (quotesResponse['results'] != null) {
@@ -92,7 +92,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
       // Load shipments
       try {
-        final shipmentsResponse = await _apiClient.get('sales/shipments/');
+        final shipmentsResponse =
+            await _firebaseService.get('sales/shipments/');
         if (shipmentsResponse is List) {
           _shipments = List<Map<String, dynamic>>.from(shipmentsResponse);
         } else if (shipmentsResponse['results'] != null) {
@@ -129,7 +130,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
     if (confirm == true) {
       try {
-        await _apiClient.post(
+        await _firebaseService.post(
             'accounts/admin/ruc-approvals/$userId/', {'action': 'approve'});
         _showSnackBar('✅ RUC aprobado', AppColors.neonGreen);
         _loadDashboardData();
@@ -149,7 +150,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
     if (confirm == true) {
       try {
-        await _apiClient.post(
+        await _firebaseService.post(
             'accounts/admin/ruc-approvals/$userId/', {'action': 'reject'});
         _showSnackBar('RUC rechazado', Colors.orange);
         _loadDashboardData();
@@ -161,7 +162,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
   Future<void> _processQuote(int quoteId, String action) async {
     try {
-      await _apiClient
+      await _firebaseService
           .post('sales/submissions/$quoteId/process/', {'action': action});
       _showSnackBar('Cotización procesada', AppColors.neonGreen);
       _loadDashboardData();
@@ -172,7 +173,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen>
 
   Future<void> _updateShipmentStatus(int shipmentId, String newStatus) async {
     try {
-      await _apiClient
+      await _firebaseService
           .post('sales/shipments/$shipmentId/', {'status': newStatus});
       _showSnackBar('Estado actualizado', AppColors.neonGreen);
       _loadDashboardData();

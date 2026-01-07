@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Users Management Screen
@@ -13,7 +13,7 @@ class AdminUsuariosScreen extends StatefulWidget {
 }
 
 class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   List<Map<String, dynamic>> _users = [];
   bool _isLoading = true;
@@ -90,7 +90,7 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
 
     try {
       // Try to get users from leads endpoint
-      final response = await _apiClient.get('sales/leads/');
+      final response = await _firebaseService.get('sales/leads/');
       List<Map<String, dynamic>> users = [];
 
       if (response is List) {
@@ -187,7 +187,7 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
 
     if (confirm == true) {
       try {
-        await _apiClient.post('sales/leads/$userId/', {
+        await _firebaseService.post('sales/leads/$userId/', {
           'is_active': !currentStatus,
         });
         _showSnackBar(
@@ -249,7 +249,7 @@ class _AdminUsuariosScreenState extends State<AdminUsuariosScreen> {
             onPressed: () async {
               Navigator.pop(context);
               try {
-                await _apiClient.post('sales/leads/${user['id']}/', {
+                await _firebaseService.post('sales/leads/${user['id']}/', {
                   'first_name': firstNameController.text,
                   'last_name': lastNameController.text,
                   'company_name': companyController.text,

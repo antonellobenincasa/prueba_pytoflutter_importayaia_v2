@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 class AdminPortalFFScreen extends StatefulWidget {
@@ -11,7 +11,7 @@ class AdminPortalFFScreen extends StatefulWidget {
 }
 
 class _AdminPortalFFScreenState extends State<AdminPortalFFScreen> {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   List<Map<String, dynamic>> _invitations = [];
   bool _isLoading = true;
@@ -25,7 +25,7 @@ class _AdminPortalFFScreenState extends State<AdminPortalFFScreen> {
   Future<void> _loadInvitations() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiClient.get('admin/ff-invitations/');
+      final response = await _firebaseService.get('admin/ff-invitations/');
       if (response != null && response is Map<String, dynamic>) {
         setState(() {
           _invitations =
@@ -111,7 +111,7 @@ class _AdminPortalFFScreenState extends State<AdminPortalFFScreen> {
         'send_email': true
       };
 
-      await _apiClient.post('admin/ff-invitations/', data);
+      await _firebaseService.post('admin/ff-invitations/', data);
       _showSnackBar('Invitación enviada correctamente', AppColors.neonGreen);
       _loadInvitations();
     } catch (e) {

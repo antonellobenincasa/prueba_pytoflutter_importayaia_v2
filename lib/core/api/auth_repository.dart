@@ -1,64 +1,41 @@
 // lib/core/api/auth_repository.dart
-import 'package:flutter/foundation.dart'; // Para usar debugPrint en lugar de print
+// This file is now deprecated - Firebase Auth is used directly in auth_service.dart
+// Keeping for backward compatibility
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'client.dart';
+import '../services/firebase_service.dart';
 
 class AuthRepository {
-  final ApiClient _client = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  static const String _loginEndpoint = 'accounts/login/';
-  static const String _profileEndpoint =
-      'accounts/profile/'; // Endpoint del perfil
-
-  // Función para iniciar sesión
+  // Login via Firebase Auth is now handled by auth_service.dart
+  // This method is deprecated
   Future<bool> login(String username, String password) async {
-    try {
-      final response = await _client.post(_loginEndpoint, {
-        'email': username,
-        'password': password,
-      });
-
-      if (response != null && response.containsKey('access')) {
-        await _storage.write(key: 'auth_token', value: response['access']);
-
-        // Descargar datos del perfil inmediatamente
-        await _fetchAndStoreUserProfile();
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Descargar y guardar datos del usuario
-  Future<void> _fetchAndStoreUserProfile() async {
-    try {
-      final token = await _storage.read(key: 'auth_token');
-      if (token == null) return;
-
-      // Hacemos la petición al backend
-      final response = await _client.get(_profileEndpoint);
-
-      if (response != null) {
-        // Guardamos los datos
-        await _storage.write(
-            key: 'user_full_name', value: response['full_name']);
-        await _storage.write(key: 'user_email', value: response['email']);
-        await _storage.write(key: 'user_ruc', value: response['ruc']);
-        await _storage.write(
-            key: 'user_company', value: response['company_name']);
-      }
-    } catch (e) {
-      // Usamos debugPrint para evitar la advertencia de 'print'
-      debugPrint("Error obteniendo perfil: $e");
-    }
+    debugPrint('AuthRepository.login is deprecated - use AuthService instead');
+    return false;
   }
 
   // Recuperar datos guardados para mostrar en pantalla
   Future<Map<String, String?>> getUserData() async {
+    // Try to get from Firebase first
+    try {
+      final profile = await _firebaseService.getUserProfile();
+      if (profile != null) {
+        return {
+          'name': '${profile['first_name'] ?? ''} ${profile['last_name'] ?? ''}'
+              .trim(),
+          'email': profile['email']?.toString(),
+          'ruc': profile['ruc']?.toString(),
+          'company': profile['company_name']?.toString(),
+        };
+      }
+    } catch (e) {
+      debugPrint('Error getting user profile: $e');
+    }
+
+    // Fallback to local storage
     return {
       'name': await _storage.read(key: 'user_full_name'),
       'email': await _storage.read(key: 'user_email'),
@@ -72,6 +49,7 @@ class AuthRepository {
   }
 
   Future<String?> getToken() async {
+    // Firebase handles tokens internally
     return await _storage.read(key: 'auth_token');
   }
 }

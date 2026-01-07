@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../widgets/admin_sidebar_drawer.dart';
 
 /// Admin Proveedores (Providers) Management Screen
@@ -14,7 +14,7 @@ class AdminProveedoresScreen extends StatefulWidget {
 
 class _AdminProveedoresScreenState extends State<AdminProveedoresScreen>
     with SingleTickerProviderStateMixin {
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
   late TabController _tabController;
 
   List<Map<String, dynamic>> _navieras = [];
@@ -100,7 +100,7 @@ class _AdminProveedoresScreenState extends State<AdminProveedoresScreen>
     setState(() => _isLoading = true);
 
     try {
-      final response = await _apiClient.get('admin/providers/');
+      final response = await _firebaseService.get('admin/providers/');
       if (response is List) {
         _categorizeProviders(List<Map<String, dynamic>>.from(response));
       }

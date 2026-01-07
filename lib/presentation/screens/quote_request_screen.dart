@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
-import '../../core/api/client.dart';
+import '../../core/services/firebase_service.dart';
 import '../../core/services/auth_service.dart';
 import '../widgets/neon_card.dart';
 import '../widgets/port_autocomplete_field.dart';
@@ -16,7 +16,7 @@ class QuoteRequestScreen extends StatefulWidget {
 class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final ApiClient _apiClient = ApiClient();
+  final FirebaseService _firebaseService = FirebaseService();
 
   // -- Shared Controllers --
   final TextEditingController _fobController = TextEditingController();
@@ -146,15 +146,15 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     super.dispose();
   }
 
-  /// Fetch container types from backend
+  /// Fetch container types from Firebase
   Future<void> _fetchContainerTypes() async {
     try {
-      final response = await _apiClient.get('sales/containers/');
+      final response = await _firebaseService.getContainers();
       if (mounted) {
         setState(() {
-          _containerTypes = List<Map<String, dynamic>>.from(response);
+          _containerTypes =
+              response.isNotEmpty ? response : _getDefaultContainers();
           _isLoadingContainers = false;
-          // Initialize with one container row
           if (_fclContainerList.isEmpty && _containerTypes.isNotEmpty) {
             _addFCLContainer();
           }
@@ -164,32 +164,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
       // Error fetching containers - using fallback
       if (mounted) {
         setState(() {
-          _containerTypes = [
-            {
-              "code": "20GP",
-              "name": "20ft Standard",
-              "volume_capacity_cbm": 28,
-              "weight_capacity_kg": 21700
-            },
-            {
-              "code": "40GP",
-              "name": "40ft Standard",
-              "volume_capacity_cbm": 56,
-              "weight_capacity_kg": 26500
-            },
-            {
-              "code": "40HC",
-              "name": "40ft High Cube",
-              "volume_capacity_cbm": 67,
-              "weight_capacity_kg": 26500
-            },
-            {
-              "code": "40NOR",
-              "name": "40ft NOR Reefer",
-              "volume_capacity_cbm": 54,
-              "weight_capacity_kg": 27500
-            },
-          ];
+          _containerTypes = _getDefaultContainers();
           _isLoadingContainers = false;
           if (_fclContainerList.isEmpty) {
             _addFCLContainer();
@@ -197,6 +172,35 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
         });
       }
     }
+  }
+
+  List<Map<String, dynamic>> _getDefaultContainers() {
+    return [
+      {
+        "code": "20GP",
+        "name": "20ft Standard",
+        "volume_capacity_cbm": 28,
+        "weight_capacity_kg": 21700
+      },
+      {
+        "code": "40GP",
+        "name": "40ft Standard",
+        "volume_capacity_cbm": 56,
+        "weight_capacity_kg": 26500
+      },
+      {
+        "code": "40HC",
+        "name": "40ft High Cube",
+        "volume_capacity_cbm": 67,
+        "weight_capacity_kg": 26500
+      },
+      {
+        "code": "40NOR",
+        "name": "40ft NOR Reefer",
+        "volume_capacity_cbm": 54,
+        "weight_capacity_kg": 27500
+      },
+    ];
   }
 
   /// Add a new FCL container row
@@ -449,15 +453,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             .toList();
       }
 
-      // Submitting quote
-      final response = await _apiClient.post('sales/submissions/', payload);
+      // Submitting quote to Firebase
+      final quoteId = await _firebaseService.createQuote(payload);
       // Quote submitted successfully
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-                'Cotización enviada: ${response['submission_number'] ?? 'OK'}'),
+            content: Text('Cotización enviada: $quoteId'),
             backgroundColor: AppColors.neonGreen,
           ),
         );

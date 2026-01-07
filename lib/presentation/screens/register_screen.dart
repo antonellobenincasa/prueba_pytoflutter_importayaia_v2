@@ -11,6 +11,8 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+
+  // Controladores de texto
   final _nombreController = TextEditingController();
   final _apellidoController = TextEditingController();
   final _emailController = TextEditingController();
@@ -24,7 +26,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   String? _errorMessage;
-  final bool _registrationSuccess = false;
 
   @override
   void dispose() {
@@ -61,9 +62,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = false);
 
     if (result.success) {
-      // Usuario auto-logueado - redirigir al dashboard
       if (mounted) {
-        Navigator.pushReplacementNamed(context, '/home');
+        // Navegación directa al Dashboard borrando historial
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil('/home', (route) => false);
       }
     } else {
       setState(() => _errorMessage = result.message);
@@ -75,10 +77,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     const bgDark = Color(0xFF050A14);
     const primaryColor = AppColors.neonGreen;
 
-    if (_registrationSuccess) {
-      return _buildSuccessScreen(bgDark, primaryColor);
-    }
-
     return Scaffold(
       backgroundColor: bgDark,
       body: SafeArea(
@@ -87,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: const EdgeInsets.all(24.0),
             child: Column(
               children: [
-                // Header con botón volver
+                // Header
                 Row(
                   children: [
                     IconButton(
@@ -107,7 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 24),
 
-                // Ícono de usuario
+                // Icono
                 Container(
                   width: 80,
                   height: 80,
@@ -123,7 +121,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 24),
 
-                // Título
                 const Text(
                   "Crear tu cuenta",
                   style: TextStyle(
@@ -149,7 +146,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      // Nombre y Apellido en fila
                       Row(
                         children: [
                           Expanded(
@@ -181,10 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Email
                       _buildTextField(
                         controller: _emailController,
                         hintText: "Correo electrónico",
@@ -200,25 +193,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Empresa
                       _buildTextField(
                         controller: _empresaController,
                         hintText: "Nombre de Empresa",
                         prefixIcon: Icons.business_outlined,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Ingresa el nombre de tu empresa';
+                            return 'Requerido';
                           }
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 16),
-
-                      // RUC Ecuador (13 dígitos)
                       _buildTextField(
                         controller: _rucController,
                         hintText: "RUC (13 dígitos)",
@@ -232,7 +219,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return 'El RUC debe tener 13 dígitos';
                           }
                           if (!RegExp(r'^\d+$').hasMatch(value)) {
-                            return 'Solo números permitidos';
+                            return 'Solo números';
                           }
                           if (!value.endsWith('001')) {
                             return 'RUC debe terminar en 001';
@@ -240,10 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Teléfono
                       _buildTextField(
                         controller: _telefonoController,
                         hintText: "Teléfono",
@@ -251,15 +235,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         keyboardType: TextInputType.phone,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Ingresa tu teléfono';
+                            return 'Requerido';
                           }
                           return null;
                         },
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Password
                       _buildTextField(
                         controller: _passwordController,
                         hintText: "Contraseña",
@@ -272,8 +253,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 : Icons.visibility,
                             color: Colors.grey,
                           ),
-                          onPressed: () => setState(
-                              () => _obscurePassword = !_obscurePassword),
+                          onPressed: () {
+                            setState(
+                                () => _obscurePassword = !_obscurePassword);
+                          },
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -285,8 +268,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-
-                      // Hint de contraseña
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
@@ -298,10 +279,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 16),
-
-                      // Confirmar Password
                       _buildTextField(
                         controller: _confirmPasswordController,
                         hintText: "Confirmar contraseña",
@@ -314,9 +292,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 : Icons.visibility,
                             color: Colors.grey,
                           ),
-                          onPressed: () => setState(() =>
-                              _obscureConfirmPassword =
-                                  !_obscureConfirmPassword),
+                          onPressed: () {
+                            setState(() => _obscureConfirmPassword =
+                                !_obscureConfirmPassword);
+                          },
                         ),
                         validator: (value) {
                           if (value != _passwordController.text) {
@@ -325,8 +304,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                       ),
-
-                      // Mensaje de error
                       if (_errorMessage != null)
                         Container(
                           width: double.infinity,
@@ -353,10 +330,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ],
                           ),
                         ),
-
                       const SizedBox(height: 24),
-
-                      // Botón Crear Cuenta
                       SizedBox(
                         width: double.infinity,
                         height: 56,
@@ -378,25 +352,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: CircularProgressIndicator(
                                       strokeWidth: 2, color: Colors.black),
                                 )
-                              : const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Crear Cuenta",
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Icon(Icons.check, size: 20),
-                                  ],
+                              : const Text(
+                                  "Crear Cuenta",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
                                 ),
                         ),
                       ),
-
                       const SizedBox(height: 24),
-
-                      // Link a login
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -407,10 +371,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TextButton(
                             onPressed: () => Navigator.pushReplacementNamed(
                                 context, '/login'),
-                            child: Text(
+                            child: const Text(
                               "Inicia sesión",
                               style: TextStyle(
-                                color: primaryColor,
+                                color: AppColors.neonGreen,
                                 fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
                               ),
@@ -418,85 +382,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ],
                       ),
-
-                      // Volver al inicio
-                      TextButton.icon(
-                        onPressed: () =>
-                            Navigator.pushReplacementNamed(context, '/'),
-                        icon: const Icon(Icons.arrow_back, size: 16),
-                        label: const Text("Volver al inicio"),
-                        style: TextButton.styleFrom(
-                            foregroundColor: Colors.grey[400]),
-                      ),
-
                       const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ],
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSuccessScreen(Color bgDark, Color primaryColor) {
-    return Scaffold(
-      backgroundColor: bgDark,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: primaryColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.check_circle, size: 80, color: primaryColor),
-              ),
-              const SizedBox(height: 32),
-              const Text(
-                "¡Cuenta Creada!",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Tu cuenta ha sido creada exitosamente. Revisa tu correo electrónico para verificar tu cuenta.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton(
-                  onPressed: () =>
-                      Navigator.pushReplacementNamed(context, '/login'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: bgDark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                  ),
-                  child: const Text(
-                    "Ir a Iniciar Sesión",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-            ],
           ),
         ),
       ),

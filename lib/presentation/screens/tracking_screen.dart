@@ -9,30 +9,42 @@ class TrackingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const primaryColor = AppColors.neonGreen;
-    const surfaceColor = AppColors.darkBlueBackground;
+    // Theme Awareness
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final primaryColor = AppColors.neonGreen;
+    final backgroundColor = theme.scaffoldBackgroundColor;
+    final cardColor = theme.cardColor;
+    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+
+    final subTitleColor = isDark ? Colors.grey : Colors.grey[600];
+
+    // Borders
+    final borderColor = isDark ? Colors.white10 : Colors.grey.withAlpha(50);
+
+    // App Bar specific
+    final appBarBg = isDark
+        ? const Color(0xFF050A14).withAlpha(230)
+        : Colors.white.withAlpha(240);
 
     return Scaffold(
-      backgroundColor: surfaceColor,
-      extendBodyBehindAppBar:
-          true, // For the blurred effect in header if we want, but HTML uses fixed header
+      backgroundColor: backgroundColor,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF050A14).withValues(alpha: 0.9),
+        backgroundColor: appBarBg,
         elevation: 0,
         leading: Builder(
             builder: (c) => IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
+                icon: Icon(Icons.arrow_back, color: textColor),
                 onPressed: () => Navigator.pop(c))),
-        title: const Text("Seguimiento de Carga",
+        title: Text("Seguimiento de Carga",
             style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18)),
+                color: textColor, fontWeight: FontWeight.bold, fontSize: 18)),
         actions: [
           Stack(
             children: [
               IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  icon: Icon(Icons.notifications, color: textColor),
                   onPressed: () {}),
               Positioned(
                   top: 10,
@@ -41,29 +53,26 @@ class TrackingScreen extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: const BoxDecoration(
-                          color: primaryColor, shape: BoxShape.circle)))
+                          color: AppColors.neonGreen, shape: BoxShape.circle)))
             ],
           )
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(
-            top: 100,
-            left: 16,
-            right: 16,
-            bottom: 40), // Top padding for fixed header simulation
+        padding:
+            const EdgeInsets.only(top: 100, left: 16, right: 16, bottom: 40),
         child: Column(
           children: [
             // Search Bar
             Container(
               height: 56,
               decoration: BoxDecoration(
-                color: const Color(0xFF111620),
+                color: cardColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white10),
+                border: Border.all(color: borderColor),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: Colors.black.withAlpha(51),
                       blurRadius: 10,
                       offset: const Offset(0, 4))
                 ],
@@ -76,8 +85,8 @@ class TrackingScreen extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       initialValue: "#$quoteId",
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: textColor, fontWeight: FontWeight.bold),
                       decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: "Número de guía...",
@@ -87,11 +96,10 @@ class TrackingScreen extends StatelessWidget {
                   Container(
                     width: 56,
                     height: 56,
-                    decoration: const BoxDecoration(
-                        border:
-                            Border(left: BorderSide(color: Colors.white10))),
-                    child:
-                        const Icon(Icons.qr_code_scanner, color: primaryColor),
+                    decoration: BoxDecoration(
+                        border: Border(left: BorderSide(color: borderColor))),
+                    child: const Icon(Icons.qr_code_scanner,
+                        color: AppColors.neonGreen),
                   )
                 ],
               ),
@@ -101,12 +109,12 @@ class TrackingScreen extends StatelessWidget {
             // Shipment Overview Card (Map)
             Container(
               decoration: BoxDecoration(
-                color: const Color(0xFF111620),
+                color: cardColor,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.white10),
+                border: Border.all(color: borderColor),
                 boxShadow: [
                   BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
+                      color: Colors.black.withAlpha(102),
                       blurRadius: 15,
                       offset: const Offset(0, 5))
                 ],
@@ -139,8 +147,8 @@ class TrackingScreen extends StatelessWidget {
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
                               colors: [
-                                const Color(0xFF111620),
-                                const Color(0xFF111620).withValues(alpha: 0.2),
+                                cardColor,
+                                cardColor.withAlpha(51),
                                 Colors.transparent
                               ],
                             )),
@@ -154,7 +162,7 @@ class TrackingScreen extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.6),
+                              color: Colors.black.withAlpha(153),
                               borderRadius: BorderRadius.circular(8),
                               border: Border.all(color: Colors.white10),
                             ),
@@ -166,7 +174,7 @@ class TrackingScreen extends StatelessWidget {
                                         width: 10,
                                         height: 10,
                                         decoration: const BoxDecoration(
-                                            color: primaryColor,
+                                            color: AppColors.neonGreen,
                                             shape: BoxShape.circle))),
                                 const SizedBox(width: 8),
                                 const Text("EN TRÁNSITO",
@@ -230,8 +238,8 @@ class TrackingScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold)),
                                 const SizedBox(height: 4),
                                 Text("#$quoteId",
-                                    style: const TextStyle(
-                                        color: Colors.white,
+                                    style: TextStyle(
+                                        color: textColor,
                                         fontSize: 22,
                                         fontWeight: FontWeight.bold)),
                               ],
@@ -247,7 +255,7 @@ class TrackingScreen extends StatelessWidget {
                                 const SizedBox(height: 4),
                                 const Text("24 Oct, 2023",
                                     style: TextStyle(
-                                        color: primaryColor,
+                                        color: AppColors.neonGreen,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
                               ],
@@ -274,7 +282,9 @@ class TrackingScreen extends StatelessWidget {
                                 height: 6,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
-                                    color: const Color(0xFF2A303C),
+                                    color: isDark
+                                        ? const Color(0xFF2A303C)
+                                        : Colors.grey[300],
                                     borderRadius: BorderRadius.circular(3))),
                             Container(
                                 height: 6,
@@ -285,10 +295,10 @@ class TrackingScreen extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 8),
-                        const Row(
+                        Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("65% Completado",
+                            const Text("65% Completado",
                                 style: TextStyle(
                                     color: Colors.grey, fontSize: 11)),
                             Text("En tiempo",
@@ -310,13 +320,14 @@ class TrackingScreen extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   children: [
-                    Icon(Icons.timeline, color: primaryColor, size: 20),
-                    SizedBox(width: 8),
+                    const Icon(Icons.timeline,
+                        color: AppColors.neonGreen, size: 20),
+                    const SizedBox(width: 8),
                     Text("Historial de Eventos",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: textColor,
                             fontWeight: FontWeight.bold,
                             fontSize: 16)),
                   ],
@@ -325,27 +336,35 @@ class TrackingScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
-                      color: const Color(0xFF111620),
+                      color: cardColor,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white10)),
+                      border: Border.all(color: borderColor)),
                   child: Column(
                     children: [
                       _buildTimelineItem(
                           icon: Icons.check,
                           iconColor: primaryColor,
-                          iconBg: primaryColor.withValues(alpha: 0.1),
+                          iconBg: primaryColor.withAlpha(25),
                           title: "Recibido en Origen",
                           desc: "Shanghai, CN • 10 Oct 2023, 09:30 AM",
                           isLast: false,
-                          isActive: false),
+                          isActive: false,
+                          textColor: textColor,
+                          subTitleColor: subTitleColor!,
+                          borderColor: borderColor,
+                          isDark: isDark),
                       _buildTimelineItem(
                           icon: Icons.sailing,
                           iconColor: primaryColor,
-                          iconBg: primaryColor.withValues(alpha: 0.1),
+                          iconBg: primaryColor.withAlpha(25),
                           title: "Zarpe de Buque",
                           desc: "Puerto Shanghai • 12 Oct 2023, 04:15 PM",
                           isLast: false,
-                          isActive: false),
+                          isActive: false,
+                          textColor: textColor,
+                          subTitleColor: subTitleColor,
+                          borderColor: borderColor,
+                          isDark: isDark),
                       _buildTimelineItem(
                           icon: Icons.waves,
                           iconColor: Colors.black,
@@ -355,25 +374,41 @@ class TrackingScreen extends StatelessWidget {
                           isLast: false,
                           isActive: true,
                           note:
-                              "Buque navegando a velocidad normal. Sin retrasos."),
+                              "Buque navegando a velocidad normal. Sin retrasos.",
+                          textColor: textColor,
+                          subTitleColor: subTitleColor,
+                          borderColor: borderColor,
+                          isDark: isDark),
                       _buildTimelineItem(
                           icon: Icons.anchor,
                           iconColor: Colors.grey,
-                          iconBg: const Color(0xFF1A212E),
+                          iconBg: isDark
+                              ? const Color(0xFF1A212E)
+                              : Colors.grey[200]!,
                           title: "Arribo a Puerto",
                           desc: "Manzanillo, MX • Est. 24 Oct",
                           isLast: false,
                           isActive: false,
-                          isPending: true),
+                          isPending: true,
+                          textColor: textColor,
+                          subTitleColor: subTitleColor,
+                          borderColor: borderColor,
+                          isDark: isDark),
                       _buildTimelineItem(
                           icon: Icons.local_shipping,
                           iconColor: Colors.grey,
-                          iconBg: const Color(0xFF1A212E),
+                          iconBg: isDark
+                              ? const Color(0xFF1A212E)
+                              : Colors.grey[200]!,
                           title: "Entrega Final",
                           desc: "Bodega Central • Est. 26 Oct",
                           isLast: true,
                           isActive: false,
-                          isPending: true),
+                          isPending: true,
+                          textColor: textColor,
+                          subTitleColor: subTitleColor,
+                          borderColor: borderColor,
+                          isDark: isDark),
                     ],
                   ),
                 )
@@ -388,13 +423,13 @@ class TrackingScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                        color: const Color(0xFF111620),
+                        color: cardColor,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white10)),
-                    child: const Column(
+                        border: Border.all(color: borderColor)),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(children: [
+                        const Row(children: [
                           Icon(Icons.monitor_weight_outlined,
                               color: Colors.grey, size: 16),
                           SizedBox(width: 4),
@@ -404,14 +439,14 @@ class TrackingScreen extends StatelessWidget {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold))
                         ]),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text.rich(TextSpan(
                             text: "1,250 ",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: textColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
-                            children: [
+                            children: const [
                               TextSpan(
                                   text: "kg",
                                   style: TextStyle(
@@ -428,13 +463,13 @@ class TrackingScreen extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                        color: const Color(0xFF111620),
+                        color: cardColor,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.white10)),
-                    child: const Column(
+                        border: Border.all(color: borderColor)),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(children: [
+                        const Row(children: [
                           Icon(Icons.inventory_2_outlined,
                               color: Colors.grey, size: 16),
                           SizedBox(width: 4),
@@ -444,14 +479,14 @@ class TrackingScreen extends StatelessWidget {
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold))
                         ]),
-                        SizedBox(height: 8),
+                        const SizedBox(height: 8),
                         Text.rich(TextSpan(
                             text: "450 ",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: textColor,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold),
-                            children: [
+                            children: const [
                               TextSpan(
                                   text: "un.",
                                   style: TextStyle(
@@ -489,13 +524,17 @@ class TrackingScreen extends StatelessWidget {
               height: 55,
               child: OutlinedButton.icon(
                 onPressed: () {},
-                icon: const Icon(Icons.support_agent),
-                label: const Text("CONTACTAR SOPORTE",
-                    style: TextStyle(fontWeight: FontWeight.bold)),
+                icon: Icon(Icons.support_agent,
+                    color: isDark ? Colors.white : Colors.black87),
+                label: Text("CONTACTAR SOPORTE",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : Colors.black87)),
                 style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF1A212E),
-                    side: const BorderSide(color: Colors.white10),
+                    foregroundColor: isDark ? Colors.white : Colors.black,
+                    backgroundColor:
+                        isDark ? const Color(0xFF1A212E) : Colors.grey[200],
+                    side: BorderSide(color: borderColor),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12))),
               ),
@@ -514,6 +553,10 @@ class TrackingScreen extends StatelessWidget {
       required String desc,
       required bool isLast,
       required bool isActive,
+      required Color textColor,
+      required Color subTitleColor,
+      required Color borderColor,
+      required bool isDark,
       bool isPending = false,
       String? note}) {
     return IntrinsicHeight(
@@ -530,7 +573,7 @@ class TrackingScreen extends StatelessWidget {
                     color: iconBg,
                     shape: BoxShape.circle,
                     border: Border.all(
-                        color: isActive ? Colors.transparent : Colors.white10),
+                        color: isActive ? Colors.transparent : borderColor),
                     boxShadow: isActive
                         ? [
                             const BoxShadow(
@@ -545,8 +588,7 @@ class TrackingScreen extends StatelessWidget {
                 Expanded(
                     child: Container(
                         width: 2,
-                        color:
-                            isActive ? AppColors.neonGreen : Colors.white10)),
+                        color: isActive ? AppColors.neonGreen : borderColor)),
             ],
           ),
           const SizedBox(width: 16),
@@ -561,22 +603,23 @@ class TrackingScreen extends StatelessWidget {
                       style: TextStyle(
                           color: isActive
                               ? AppColors.neonGreen
-                              : (isPending ? Colors.white60 : Colors.white),
+                              : (isPending
+                                  ? (isDark ? Colors.white60 : Colors.black45)
+                                  : textColor),
                           fontWeight: FontWeight.bold,
                           fontSize: 13)),
                   const SizedBox(height: 4),
                   Text(desc,
-                      style: const TextStyle(color: Colors.grey, fontSize: 11)),
+                      style: TextStyle(color: subTitleColor, fontSize: 11)),
                   if (note != null)
                     Container(
                       margin: const EdgeInsets.only(top: 8),
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                          color: AppColors.neonGreen.withValues(alpha: 0.05),
+                          color: AppColors.neonGreen.withAlpha(13),
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
-                              color:
-                                  AppColors.neonGreen.withValues(alpha: 0.2))),
+                              color: AppColors.neonGreen.withAlpha(51))),
                       child: Row(
                         children: [
                           const Icon(Icons.info,

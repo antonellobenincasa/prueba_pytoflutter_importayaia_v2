@@ -29,6 +29,21 @@ class _HoverCardState extends State<HoverCard> {
   @override
   Widget build(BuildContext context) {
     final borderRadius = widget.borderRadius ?? BorderRadius.circular(16);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Dynamic colors based on theme
+    final bgColor = isDark
+        ? const Color(0xFF0A101D)
+        : Colors.white; // White card in light mode
+
+    final borderColorLocked = isDark
+        ? Colors.grey.withAlpha(51) // ~0.2
+        : Colors.grey.withAlpha(76); // ~0.3
+
+    final borderColorDefault = isDark
+        ? widget.glowColor.withAlpha(76) // ~0.3
+        : widget.glowColor.withAlpha(128); // ~0.5 for better visibility
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -52,25 +67,33 @@ class _HoverCardState extends State<HoverCard> {
             duration: const Duration(milliseconds: 200),
             padding: widget.padding,
             decoration: BoxDecoration(
-              color: const Color(0xFF0A101D),
+              color: bgColor,
               borderRadius: borderRadius,
               border: Border.all(
                 color: _isHovered && !widget.isLocked
                     ? widget.glowColor
                     : (widget.isLocked
-                        ? Colors.grey.withValues(alpha: 0.2)
-                        : widget.glowColor.withValues(alpha: 0.3)),
+                        ? borderColorLocked
+                        : borderColorDefault),
                 width: _isHovered && !widget.isLocked ? 2 : 1,
               ),
               boxShadow: _isHovered && !widget.isLocked
                   ? [
                       BoxShadow(
-                        color: widget.glowColor.withValues(alpha: 0.4),
+                        color: widget.glowColor.withAlpha(102), // ~0.4
                         blurRadius: 20,
                         spreadRadius: 2,
                       ),
                     ]
-                  : null,
+                  : [
+                      // Subtle shadow for light mode cards to lift them off white bg
+                      if (!isDark)
+                        BoxShadow(
+                          color: Colors.black.withAlpha(13), // ~0.05
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        )
+                    ],
             ),
             child: widget.child,
           ),
@@ -108,6 +131,28 @@ class _HoverListTileState extends State<HoverListTile> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Dynamic colors
+    final bgColor = isDark ? const Color(0xFF0A101D) : Colors.white;
+    final titleColor = widget.isLocked
+        ? Colors.grey
+        : (isDark ? Colors.white : Colors.black87);
+
+    final subtitleColor = isDark
+        ? Colors.grey[widget.isLocked ? 600 : 400]
+        : Colors.grey[widget.isLocked ? 600 : 600];
+
+    final arrowColorDefault = isDark ? Colors.grey[600] : Colors.grey[400];
+
+    // Border logic
+    final borderColorLocked =
+        isDark ? Colors.grey.withAlpha(51) : Colors.grey.withAlpha(76);
+
+    final borderColorDefault =
+        isDark ? widget.color.withAlpha(76) : widget.color.withAlpha(128);
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -122,26 +167,31 @@ class _HoverListTileState extends State<HoverListTile> {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: _isHovered && !widget.isLocked
-                ? widget.color.withValues(alpha: 0.1)
-                : const Color(0xFF0A101D),
+                ? widget.color.withAlpha(25) // ~0.1
+                : bgColor,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _isHovered && !widget.isLocked
                   ? widget.color
-                  : (widget.isLocked
-                      ? Colors.grey.withValues(alpha: 0.2)
-                      : widget.color.withValues(alpha: 0.3)),
+                  : (widget.isLocked ? borderColorLocked : borderColorDefault),
               width: _isHovered && !widget.isLocked ? 2 : 1,
             ),
             boxShadow: _isHovered && !widget.isLocked
                 ? [
                     BoxShadow(
-                      color: widget.color.withValues(alpha: 0.3),
+                      color: widget.color.withAlpha(76), // ~0.3
                       blurRadius: 15,
                       spreadRadius: 1,
                     ),
                   ]
-                : null,
+                : [
+                    if (!isDark)
+                      BoxShadow(
+                        color: Colors.black.withAlpha(13),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      )
+                  ],
           ),
           child: Row(
             children: [
@@ -154,7 +204,7 @@ class _HoverListTileState extends State<HoverListTile> {
                     Text(
                       widget.title,
                       style: TextStyle(
-                        color: widget.isLocked ? Colors.grey : Colors.white,
+                        color: titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -163,7 +213,7 @@ class _HoverListTileState extends State<HoverListTile> {
                     Text(
                       widget.subtitle,
                       style: TextStyle(
-                        color: Colors.grey[widget.isLocked ? 600 : 400],
+                        color: subtitleColor,
                         fontSize: 12,
                       ),
                     ),
@@ -176,7 +226,7 @@ class _HoverListTileState extends State<HoverListTile> {
                   Icons.arrow_forward_ios,
                   color: _isHovered && !widget.isLocked
                       ? widget.color
-                      : Colors.grey[600],
+                      : arrowColorDefault,
                   size: 16,
                 ),
               ),

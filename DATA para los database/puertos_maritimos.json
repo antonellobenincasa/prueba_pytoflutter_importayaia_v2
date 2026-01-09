@@ -1,0 +1,905 @@
+[
+  {
+    "Puerto en origen POL": "Shanghai",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNSHA"
+  },
+  {
+    "Puerto en origen POL": "Ningbo",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNNGB"
+  },
+  {
+    "Puerto en origen POL": "Shenzhen",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNSZN"
+  },
+  {
+    "Puerto en origen POL": "Shekou",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNSHK"
+  },
+  {
+    "Puerto en origen POL": "Yantian",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNYTN"
+  },
+  {
+    "Puerto en origen POL": "DaChan Bay",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNDcB"
+  },
+  {
+    "Puerto en origen POL": "Guangzhou",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNGZG"
+  },
+  {
+    "Puerto en origen POL": "Huangpu",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNHUA"
+  },
+  {
+    "Puerto en origen POL": "Qingdao",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNQDA"
+  },
+  {
+    "Puerto en origen POL": "Tianjin",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNTXG"
+  },
+  {
+    "Puerto en origen POL": "Xingang",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNXGG"
+  },
+  {
+    "Puerto en origen POL": "Hong Kong",
+    "PAIS ": "Hong Kong",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "HKHKG"
+  },
+  {
+    "Puerto en origen POL": "Xiamen",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNXMN"
+  },
+  {
+    "Puerto en origen POL": "Fuzhou",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNFOC"
+  },
+  {
+    "Puerto en origen POL": "Nansha",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNNSA"
+  },
+  {
+    "Puerto en origen POL": "Jiangmen",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNJMN"
+  },
+  {
+    "Puerto en origen POL": "Gaosha",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNGSA"
+  },
+  {
+    "Puerto en origen POL": "Foshan",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNFOS"
+  },
+  {
+    "Puerto en origen POL": "Nanjing",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNNKG"
+  },
+  {
+    "Puerto en origen POL": "Zhanjiang",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNZHA"
+  },
+  {
+    "Puerto en origen POL": "Zhangjiang",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNZJG"
+  },
+  {
+    "Puerto en origen POL": "Chongqing",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNCKG"
+  },
+  {
+    "Puerto en origen POL": "Bahrain",
+    "PAIS ": "Bahrein",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "BHKBS"
+  },
+  {
+    "Puerto en origen POL": "Ahmedabad",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INAMD"
+  },
+  {
+    "Puerto en origen POL": "Anhui",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNANH"
+  },
+  {
+    "Puerto en origen POL": "Bangalore",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INBLR"
+  },
+  {
+    "Puerto en origen POL": "Beihai",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNBHY"
+  },
+  {
+    "Puerto en origen POL": "Beijiao",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNBEJ"
+  },
+  {
+    "Puerto en origen POL": "Beijing",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNBJS"
+  },
+  {
+    "Puerto en origen POL": "Beirut",
+    "PAIS ": "Libano",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "LBBEY"
+  },
+  {
+    "Puerto en origen POL": "Belawan",
+    "PAIS ": "Indonesia",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "IDBLW"
+  },
+  {
+    "Puerto en origen POL": "Calcutta (Kolkata)",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INCCU"
+  },
+  {
+    "Puerto en origen POL": "Bintulu",
+    "PAIS ": "Malasia",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "MYBTU"
+  },
+  {
+    "Puerto en origen POL": "Chittagong",
+    "PAIS ": "Bangladesh",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "BDHZP"
+  },
+  {
+    "Puerto en origen POL": "Gaoming",
+    "PAIS ": "China",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "CNGMG"
+  },
+  {
+    "Puerto en origen POL": "Singapur",
+    "PAIS ": "Singapur",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "SGSIN"
+  },
+  {
+    "Puerto en origen POL": "Busan",
+    "PAIS ": "Corea del Sur",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "KRPUS"
+  },
+  {
+    "Puerto en origen POL": "Jebel Ali (Dubai)",
+    "PAIS ": "EAU",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "AEJEA"
+  },
+  {
+    "Puerto en origen POL": "Port Klang",
+    "PAIS ": "Malasia",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "MYPKG"
+  },
+  {
+    "Puerto en origen POL": "Tanjung Pelepas",
+    "PAIS ": "Malasia",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "MYTPP"
+  },
+  {
+    "Puerto en origen POL": "Nhava Sheva (Mumbai)",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INNSA"
+  },
+  {
+    "Puerto en origen POL": "Mundra",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INMUN"
+  },
+  {
+    "Puerto en origen POL": "Chennai",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INMAA"
+  },
+  {
+    "Puerto en origen POL": "Tuticorin",
+    "PAIS ": "India",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "INTUT"
+  },
+  {
+    "Puerto en origen POL": "Tokio",
+    "PAIS ": "Japon",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "JPTYO"
+  },
+  {
+    "Puerto en origen POL": "Nagoya",
+    "PAIS ": "Japon",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "JPNGO"
+  },
+  {
+    "Puerto en origen POL": "Kobe",
+    "PAIS ": "Japon",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "JPUKB"
+  },
+  {
+    "Puerto en origen POL": "Yokohama",
+    "PAIS ": "Japon",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "JPYOK"
+  },
+  {
+    "Puerto en origen POL": "Kaohsiung",
+    "PAIS ": "Taiwan",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "TWKHH"
+  },
+  {
+    "Puerto en origen POL": "Keelung",
+    "PAIS ": "Taiwan",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "TWKEL"
+  },
+  {
+    "Puerto en origen POL": "Taichung",
+    "PAIS ": "Taiwan",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "TWTXG"
+  },
+  {
+    "Puerto en origen POL": "Bangkok",
+    "PAIS ": "Tailandia",
+    "REGION": "Asia",
+    "TIPO ": "Maritimo",
+    "un_locode": "THBKK"
+  },
+  {
+    "Puerto en origen POL": "Rotterdam",
+    "PAIS ": "Paises Bajos",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "NLRTM"
+  },
+  {
+    "Puerto en origen POL": "Amberes-Brujas",
+    "PAIS ": "Belgica",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "BEANR"
+  },
+  {
+    "Puerto en origen POL": "Bremerhaven",
+    "PAIS ": "Alemania",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "DEBRV"
+  },
+  {
+    "Puerto en origen POL": "Hamburgo",
+    "PAIS ": "Alemania",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "DEHAM"
+  },
+  {
+    "Puerto en origen POL": "Algeciras",
+    "PAIS ": "España",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ESALG"
+  },
+  {
+    "Puerto en origen POL": "Barcelona",
+    "PAIS ": "España",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ESBCN"
+  },
+  {
+    "Puerto en origen POL": "Valencia",
+    "PAIS ": "España",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ESVLC"
+  },
+  {
+    "Puerto en origen POL": "Southampton",
+    "PAIS ": "Reino Unido",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "GBSOU"
+  },
+  {
+    "Puerto en origen POL": "Londres (Gateway/Tilbury)",
+    "PAIS ": "Reino Unido",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "GBLON"
+  },
+  {
+    "Puerto en origen POL": "Felixstowe",
+    "PAIS ": "Reino Unido",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "GBFXT"
+  },
+  {
+    "Puerto en origen POL": "Marsella",
+    "PAIS ": "Francia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "FRMRS"
+  },
+  {
+    "Puerto en origen POL": "Le Havre",
+    "PAIS ": "Francia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "FRLEH"
+  },
+  {
+    "Puerto en origen POL": "Genova",
+    "PAIS ": "Italia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ITGOA"
+  },
+  {
+    "Puerto en origen POL": "Livorno",
+    "PAIS ": "Italia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ITLIV"
+  },
+  {
+    "Puerto en origen POL": "La Spezia",
+    "PAIS ": "Italia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ITSPE"
+  },
+  {
+    "Puerto en origen POL": "Gioia Tauro",
+    "PAIS ": "Italia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ITGIT"
+  },
+  {
+    "Puerto en origen POL": "El Pireo",
+    "PAIS ": "Grecia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "GRPIR"
+  },
+  {
+    "Puerto en origen POL": "Estambul (Istanbul)",
+    "PAIS ": "Turquia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "TRIST"
+  },
+  {
+    "Puerto en origen POL": "Mersin",
+    "PAIS ": "Turquia",
+    "REGION": "Europa",
+    "TIPO ": "Maritimo",
+    "un_locode": "TRMER"
+  },
+  {
+    "Puerto en origen POL": "Los Angeles",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USLAX"
+  },
+  {
+    "Puerto en origen POL": "Long Beach",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USLGB"
+  },
+  {
+    "Puerto en origen POL": "Nueva York",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USNYC"
+  },
+  {
+    "Puerto en origen POL": "Nueva Jersey",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USNWK"
+  },
+  {
+    "Puerto en origen POL": "Savannah",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USSAV"
+  },
+  {
+    "Puerto en origen POL": "Houston",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USHOU"
+  },
+  {
+    "Puerto en origen POL": "Virginia (Norfolk)",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USORF"
+  },
+  {
+    "Puerto en origen POL": "Seattle",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USSEA"
+  },
+  {
+    "Puerto en origen POL": "Tacoma",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USTAC"
+  },
+  {
+    "Puerto en origen POL": "Miami",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USMIA"
+  },
+  {
+    "Puerto en origen POL": "Port Everglades",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USPEF"
+  },
+  {
+    "Puerto en origen POL": "Baltimore",
+    "PAIS ": "USA",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "USBAL"
+  },
+  {
+    "Puerto en origen POL": "Lazaro Cardenas",
+    "PAIS ": "Mexico",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "MXLZC"
+  },
+  {
+    "Puerto en origen POL": "Veracruz",
+    "PAIS ": "Mexico",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "MXVER"
+  },
+  {
+    "Puerto en origen POL": "Manzanillo",
+    "PAIS ": "Mexico",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "MXZLO"
+  },
+  {
+    "Puerto en origen POL": "Altamira",
+    "PAIS ": "Mexico",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "MXATM"
+  },
+  {
+    "Puerto en origen POL": "Montreal",
+    "PAIS ": "Canada",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CAMTR"
+  },
+  {
+    "Puerto en origen POL": "Prince Rupert",
+    "PAIS ": "Canada",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CAPRR"
+  },
+  {
+    "Puerto en origen POL": "Vancouver",
+    "PAIS ": "Canada",
+    "REGION": "Norteamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CAVAN"
+  },
+  {
+    "Puerto en origen POL": "Balboa",
+    "PAIS ": "Panama",
+    "REGION": "Centroamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PABLB"
+  },
+  {
+    "Puerto en origen POL": "Colon / Manzanillo",
+    "PAIS ": "Panama",
+    "REGION": "Centroamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PAONX"
+  },
+  {
+    "Puerto en origen POL": "Rodman",
+    "PAIS ": "Panama",
+    "REGION": "Centroamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PAROD"
+  },
+  {
+    "Puerto en origen POL": "Moin",
+    "PAIS ": "Costa Rica",
+    "REGION": "Centroamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CRPMO"
+  },
+  {
+    "Puerto en origen POL": "Paranagua",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRPNG"
+  },
+  {
+    "Puerto en origen POL": "Rio Grande",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRRIG"
+  },
+  {
+    "Puerto en origen POL": "Pecem",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRPEC"
+  },
+  {
+    "Puerto en origen POL": "Itapoa",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRIOA"
+  },
+  {
+    "Puerto en origen POL": "Itajai",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRITJ"
+  },
+  {
+    "Puerto en origen POL": "Navegantes",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRNVT"
+  },
+  {
+    "Puerto en origen POL": "Imbituba",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRBBX"
+  },
+  {
+    "Puerto en origen POL": "Suape",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRSUA"
+  },
+  {
+    "Puerto en origen POL": "Rio de Janeiro",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRRIO"
+  },
+  {
+    "Puerto en origen POL": "Vitoria",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRVIX"
+  },
+  {
+    "Puerto en origen POL": "Salvador",
+    "PAIS ": "Brasil",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "BRSSA"
+  },
+  {
+    "Puerto en origen POL": "San Antonio",
+    "PAIS ": "Chile",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CLSAI"
+  },
+  {
+    "Puerto en origen POL": "Valparaiso",
+    "PAIS ": "Chile",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "CLVAP"
+  },
+  {
+    "Puerto en origen POL": "Callao",
+    "PAIS ": "Peru",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PECAL"
+  },
+  {
+    "Puerto en origen POL": "Chancay",
+    "PAIS ": "Peru",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PECHY"
+  },
+  {
+    "Puerto en origen POL": "Cartagena",
+    "PAIS ": "Colombia",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "COCTG"
+  },
+  {
+    "Puerto en origen POL": "Buenaventura",
+    "PAIS ": "Colombia",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "COBUN"
+  },
+  {
+    "Puerto en origen POL": "Barranquilla",
+    "PAIS ": "Colombia",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "COBAQ"
+  },
+  {
+    "Puerto en origen POL": "Buenos Aires",
+    "PAIS ": "Argentina",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "ARBUE"
+  },
+  {
+    "Puerto en origen POL": "Rosario",
+    "PAIS ": "Argentina",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "ARROS"
+  },
+  {
+    "Puerto en origen POL": "Montevideo",
+    "PAIS ": "Uruguay",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "UYMVD"
+  },
+  {
+    "Puerto en origen POL": "Asuncion",
+    "PAIS ": "Paraguay",
+    "REGION": "Sudamerica",
+    "TIPO ": "Maritimo",
+    "un_locode": "PYASU"
+  },
+  {
+    "Puerto en origen POL": "Tanger Med",
+    "PAIS ": "Marruecos",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "MAPTM"
+  },
+  {
+    "Puerto en origen POL": "Puerto Said",
+    "PAIS ": "Egipto",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "EGPSD"
+  },
+  {
+    "Puerto en origen POL": "Alejandria",
+    "PAIS ": "Egipto",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "EGALY"
+  },
+  {
+    "Puerto en origen POL": "Durban",
+    "PAIS ": "Sudafrica",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ZADUR"
+  },
+  {
+    "Puerto en origen POL": "Ciudad del Cabo",
+    "PAIS ": "Sudafrica",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "ZACPT"
+  },
+  {
+    "Puerto en origen POL": "Lagos (Apapa)",
+    "PAIS ": "Nigeria",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "NGLOS"
+  },
+  {
+    "Puerto en origen POL": "Mombasa",
+    "PAIS ": "Kenia",
+    "REGION": "Africa",
+    "TIPO ": "Maritimo",
+    "un_locode": "KEMBA"
+  },
+  {
+    "Puerto en origen POL": "Port Hedland",
+    "PAIS ": "Australia",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "AUPHE"
+  },
+  {
+    "Puerto en origen POL": "Melbourne",
+    "PAIS ": "Australia",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "AUMEL"
+  },
+  {
+    "Puerto en origen POL": "Sydney",
+    "PAIS ": "Australia",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "AUSYD"
+  },
+  {
+    "Puerto en origen POL": "Port Botany",
+    "PAIS ": "Australia",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "AUPBT"
+  },
+  {
+    "Puerto en origen POL": "Tauranga",
+    "PAIS ": "Nueva Zelanda",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "NZTRG"
+  },
+  {
+    "Puerto en origen POL": "Auckland",
+    "PAIS ": "Nueva Zelanda",
+    "REGION": "Oceania",
+    "TIPO ": "Maritimo",
+    "un_locode": "NZAKL"
+  }
+]

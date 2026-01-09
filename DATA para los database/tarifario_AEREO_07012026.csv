@@ -1,0 +1,11 @@
+﻿,,,,,,,,,,,ORDEN,SERVICIO
+,,,,,,,,,,,,
+ORIGEN,LINEA,DESTINO,TIPO/NEGOCIACION,DIAS LIBRES,VIGENCIA DESDE ,VIGENCIA HASTA,AGENTE,CONTRATO,TT,MONEDA,FLETE AEREO,
+MIAMI,Atlas Air Inc,QUITO,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA,1-2,DOLAR,$ 0.85,
+MIAMI,Atlas Air Inc,QUITO,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA SPOT,1-2,DOLAR,$ 0.75,
+MIAMI,LAN CARGO S.A.,Guayaquil,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA SPOT,1-1,DOLAR,$ 1.47,
+MIAMI,TAMPA CARGO S.A.S.,Guayaquil,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA,1-2,DOLAR,$ 1.95,
+MIAMI,TAMPA CARGO S.A.S.,Guayaquil,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA SPOT,1-2,DOLAR,$ 1.70,
+MIAMI,TAMPA CARGO S.A.S.,QUITO,AGENTE PROPIO,0,01/01/2026,31/01/2026,GAVA USA INC                                                                                        ,GAVA,1-1,DOLAR,$ 1.00,
+SHENZHEN,UNITED AIRLINES INC.,QUITO,DIRECTA,0,07/01/2026,31/01/2026,                                                                                                    ,,07/01/2026-31/01/2026,DOLAR,$ 8.89,
+SINGAPORE,LAN CARGO S.A.,Guayaquil,DIRECTA,0,06/01/2026,14/01/2026,                                                                                                    ,,06/01/2026-14/01/2026,DOLAR,$ 13.60,

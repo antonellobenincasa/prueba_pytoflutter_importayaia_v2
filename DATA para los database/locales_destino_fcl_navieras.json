@@ -1,0 +1,482 @@
+[
+  {
+    "naviera": "ONE",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ONE",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ONE",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ONE",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Hapag-Lloyd",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Hapag-Lloyd",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Hapag-Lloyd",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Hapag-Lloyd",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Posorja",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "165",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Posorja",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "195",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Posorja",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "440",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Maersk",
+    "puerto": "Posorja",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "MSC",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "MSC",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "MSC",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "MSC",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "HMM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "HMM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "HMM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "400",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "HMM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "CMA-CGM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "CMA-CGM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "CMA-CGM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "CMA-CGM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Evergreen",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "125",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Evergreen",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "225",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Evergreen",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Evergreen",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Wan Hai",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Wan Hai",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Wan Hai",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Wan Hai",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "COSCO",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "COSCO",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "COSCO",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "400",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "COSCO",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "OOCL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "125",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "OOCL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "OOCL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "OOCL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Seaboard Marine",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Seaboard Marine",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Seaboard Marine",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "450",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Seaboard Marine",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "PIL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "PIL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "PIL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "500",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "PIL",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Marfret",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Marfret",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Marfret",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "500",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "Marfret",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ZIM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Visto Bueno (MBL Fee)",
+    "monto_usd": "100",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ZIM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "THC Destino",
+    "monto_usd": "200",
+    "aplica_iva_15": "NO",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ZIM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Locales Naviera (Cntr)",
+    "monto_usd": "500",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  },
+  {
+    "naviera": "ZIM",
+    "puerto": "Guayaquil",
+    "concepto_rubro": "Handling Fee",
+    "monto_usd": "50",
+    "aplica_iva_15": "SI",
+    "tipo_carga": "FCL"
+  }
+]

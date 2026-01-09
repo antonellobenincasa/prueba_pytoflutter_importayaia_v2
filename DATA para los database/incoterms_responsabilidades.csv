@@ -1,0 +1,9 @@
+incoterm,nombre,vendedor_paga,comprador_paga
+EXW,Ex Works,Mercancía en fábrica,Todo el transporte
+FCA,Free Carrier,Hasta transportista,"Flete, seguro, tributos"
+FOB,Free On Board,Hasta bordo buque,"Flete, seguro, tributos"
+CFR,Cost and Freight,Hasta puerto destino,"Seguro, tributos"
+CIF,"Cost, Ins., Freight",Flete + Seguro,"Tributos, locales"
+CPT,Carriage Paid To,Flete hasta destino,"Seguro, tributos"
+DAP,Delivered at Place,Hasta lugar destino,"Tributos, descarga"
+DDP,Delivered Duty Paid,TODO incluido,Solo descarga

@@ -1,0 +1,44 @@
+[
+  {
+    "ciudad": "Guayaquil",
+    "cntr_20ft": "$150",
+    "cntr_40ft": "$180",
+    "cntr_40hc": "$200",
+    "cntr_40nor": "$250"
+  },
+  {
+    "ciudad": "Quito",
+    "cntr_20ft": "$220",
+    "cntr_40ft": "$280",
+    "cntr_40hc": "$300",
+    "cntr_40nor": "$350"
+  },
+  {
+    "ciudad": "Cuenca",
+    "cntr_20ft": "$250",
+    "cntr_40ft": "$320",
+    "cntr_40hc": "$350",
+    "cntr_40nor": "$400"
+  },
+  {
+    "ciudad": "Ambato",
+    "cntr_20ft": "$230",
+    "cntr_40ft": "$290",
+    "cntr_40hc": "$310",
+    "cntr_40nor": "$360"
+  },
+  {
+    "ciudad": "Manta",
+    "cntr_20ft": "$180",
+    "cntr_40ft": "$220",
+    "cntr_40hc": "$240",
+    "cntr_40nor": "$300"
+  },
+  {
+    "ciudad": "Loja",
+    "cntr_20ft": "$300",
+    "cntr_40ft": "$380",
+    "cntr_40hc": "$420",
+    "cntr_40nor": "$480"
+  }
+]

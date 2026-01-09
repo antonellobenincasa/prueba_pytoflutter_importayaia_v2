@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import '../widgets/authenticated_drawer.dart';
-import '../widgets/hover_card.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/firebase_service.dart';
+import '../../core/services/theme_provider.dart';
+import '../widgets/authenticated_drawer.dart';
+import '../widgets/hover_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,183 +15,144 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final AuthService _authService = AuthService();
-  bool _isLoadingProfile = true;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late AuthService _authService;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    // Verificar que el usuario esté logueado
-    if (!_authService.isLoggedIn) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
-    } else {
-      // Fetch user profile from backend
-      _fetchUserProfile();
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
   }
 
-  Future<void> _fetchUserProfile() async {
-    await _authService.fetchUserProfile();
-    if (mounted) {
-      setState(() => _isLoadingProfile = false);
-    }
+  Future<void> _loadUserData() async {
+    _authService = Provider.of<AuthService>(context, listen: false);
+    // Simulate or wait for user data if needed
+    setState(() => _isLoading = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    const bgDark = Color(0xFF050A14);
-    const surfaceDark = Color(0xFF0A101D);
-    const primaryColor = AppColors.neonGreen;
+    // Theme logic
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final bgDark = theme.scaffoldBackgroundColor;
+    final surfaceDark = theme.cardColor;
+    final primaryColor = AppColors.neonGreen;
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: bgDark,
+      drawer: const AuthenticatedDrawer(),
       appBar: AppBar(
-        title:
-            Text("Mi Dashboard", style: Theme.of(context).textTheme.titleLarge),
         backgroundColor: bgDark,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.menu, color: isDark ? Colors.white : Colors.black87),
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+        ),
+        title: Text(
+          "MI Dashboard",
+          style: TextStyle(
+            color: isDark ? Colors.white : Colors.black87,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.notifications_outlined),
+            icon: Icon(
+              isDark ? Icons.light_mode : Icons.dark_mode,
+              color: isDark ? Colors.white : Colors.black87,
+            ),
+            onPressed: () {
+              Provider.of<ThemeProvider>(context, listen: false).toggleTheme();
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.notifications_none,
+                color: isDark ? Colors.white : Colors.black87),
             onPressed: () => Navigator.pushNamed(context, '/notifications'),
           ),
+          const SizedBox(width: 8),
         ],
       ),
-      drawer: const AuthenticatedDrawer(),
-      body: _isLoadingProfile
+      body: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(color: AppColors.neonGreen),
-            )
+              child: CircularProgressIndicator(color: AppColors.neonGreen))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Verification Pending Banner
-                  if (!_authService.isRucApproved) _buildVerificationBanner(),
-
-                  // Welcome Header
-                  _buildWelcomeHeader(primaryColor),
+                  _buildWelcomeHeader(
+                      context, surfaceDark, primaryColor, isDark),
                   const SizedBox(height: 24),
-
-                  // Status Card (RUC Status)
-                  _buildStatusCard(surfaceDark, primaryColor),
-                  const SizedBox(height: 24),
-
-                  // Quick Actions Grid
+                  _buildStatusCard(context, surfaceDark, primaryColor, isDark),
+                  const SizedBox(height: 32),
                   Text(
                     "Acciones Rápidas",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  _buildQuickActionsGrid(context, surfaceDark, primaryColor),
-                  const SizedBox(height: 24),
-
-                  // Main Features
+                  _buildQuickActionsGrid(
+                      context, surfaceDark, primaryColor, isDark),
+                  const SizedBox(height: 32),
                   Text(
                     "Mis Herramientas",
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black87,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 16),
-                  _buildFeatureCards(context, surfaceDark, primaryColor),
+                  _buildFeatureCards(
+                      context, surfaceDark, primaryColor, isDark),
+                  const SizedBox(height: 32), // Bottom spacing
                 ],
               ),
             ),
     );
   }
 
-  Widget _buildVerificationBanner() {
-    final isPending = _authService.rucStatus == 'pending';
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.orange.withValues(alpha: 0.2),
-            Colors.orange.withValues(alpha: 0.1),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.orange.withValues(alpha: 0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            isPending ? Icons.hourglass_top : Icons.warning_amber,
-            color: Colors.orange,
-            size: 24,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isPending ? "Verificación Pendiente" : "Completa tu Perfil",
-                  style: const TextStyle(
-                    color: Colors.orange,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  isPending
-                      ? "Tu RUC está siendo verificado. Te notificaremos pronto."
-                      : "Agrega tu RUC para acceder a todas las funciones.",
-                  style: TextStyle(
-                    color: Colors.orange.withValues(alpha: 0.8),
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (!isPending)
-            TextButton(
-              onPressed: () => Navigator.pushNamed(context, '/profile'),
-              child: const Text("Completar"),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWelcomeHeader(Color primaryColor) {
-    final userName = _authService.userName ?? 'Usuario';
-    final email = _authService.userEmail ?? '';
+  Widget _buildWelcomeHeader(BuildContext context, Color surfaceDark,
+      Color primaryColor, bool isDark) {
+    final user = Provider.of<AuthService>(context).userData;
+    final userName = user?['first_name'] ?? 'Usuario';
+    final userEmail = _authService.userEmail ?? '';
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            primaryColor.withValues(alpha: 0.1),
-            primaryColor.withValues(alpha: 0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: isDark
+            ? AppColors.neonGreen.withAlpha(25)
+            : Colors.green.withAlpha(25), // Tinted background
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: primaryColor.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.neonGreen.withAlpha(51)),
       ),
       child: Row(
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
-              color: primaryColor.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
+              color: AppColors.neonGreen,
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Center(
               child: Text(
                 userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                style: TextStyle(
-                  color: primaryColor,
+                style: const TextStyle(
+                  color: Colors.black,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
@@ -203,27 +167,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text(
                   "¡Bienvenido!",
                   style: TextStyle(
-                    color: Colors.grey[400],
-                    fontSize: 14,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    fontSize: 12,
                   ),
                 ),
-                const SizedBox(height: 4),
                 Text(
                   userName,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (email.isNotEmpty)
-                  Text(
-                    email,
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 12,
-                    ),
+                const SizedBox(height: 4),
+                Text(
+                  userEmail,
+                  style: TextStyle(
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    fontSize: 12,
                   ),
+                ),
               ],
             ),
           ),
@@ -232,40 +195,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatusCard(Color surfaceDark, Color primaryColor) {
-    final rucStatus = _authService.rucStatus;
-    final isRucApproved = _authService.isRucApproved;
+  Widget _buildStatusCard(BuildContext context, Color surfaceDark,
+      Color primaryColor, bool isDark) {
+    // We can pull RUC status from provider or user data
+    final rucStatus = Provider.of<AuthService>(context).rucStatus;
 
-    String statusText;
+    // Config based on status
     Color statusColor;
+    String statusText;
     IconData statusIcon;
 
-    if (isRucApproved) {
+    if (rucStatus == 'approved') {
+      statusColor = AppColors.neonGreen;
       statusText = "RUC Aprobado";
-      statusColor = primaryColor;
       statusIcon = Icons.check_circle;
     } else if (rucStatus == 'pending') {
-      statusText = "RUC Pendiente de Aprobación";
       statusColor = Colors.orange;
-      statusIcon = Icons.hourglass_top;
+      statusText = "RUC En Revisión";
+      statusIcon = Icons.access_time_filled;
     } else {
-      statusText = "Completa tu perfil para continuar";
-      statusColor = Colors.amber;
-      statusIcon = Icons.warning_amber;
+      statusColor = Colors.red;
+      statusText = "Perfil Incompleto";
+      statusIcon = Icons.warning;
     }
 
     return GestureDetector(
       onTap: () => Navigator.pushNamed(context, '/profile'),
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          color: surfaceDark,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: statusColor.withValues(alpha: 0.3)),
-        ),
+            color: isDark ? surfaceDark : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+                color: isDark
+                    ? Colors.white.withAlpha(13)
+                    : Colors.grey.withAlpha(50)),
+            boxShadow: isDark
+                ? null
+                : [
+                    BoxShadow(
+                        color: Colors.black.withAlpha(13),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2))
+                  ]),
         child: Row(
           children: [
-            Icon(statusIcon, color: statusColor, size: 28),
+            Icon(statusIcon, color: statusColor, size: 20),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -273,99 +248,112 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text(
                     "Estado de tu cuenta",
-                    style: TextStyle(color: Colors.grey[400], fontSize: 12),
+                    style: TextStyle(
+                        color: isDark ? Colors.grey[400] : Colors.grey[600],
+                        fontSize: 10),
                   ),
-                  const SizedBox(height: 4),
                   Text(
                     statusText,
                     style: TextStyle(
-                      color: statusColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                    ),
+                        color: statusColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.grey[600], size: 16),
+            Icon(Icons.chevron_right,
+                color: isDark ? Colors.white : Colors.black54),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildQuickActionsGrid(
-      BuildContext context, Color surfaceDark, Color primaryColor) {
-    final isRucApproved = _authService.isRucApproved;
-
-    return Row(
-      children: [
-        Expanded(
-          child: _buildQuickActionCard(
-            icon: Icons.add_circle_outline,
-            title: "Nueva\nCotización",
-            color: primaryColor,
-            isLocked: !isRucApproved,
-            onTap: () => _handleFeatureAccess(context, '/quote_form'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildQuickActionCard(
-            icon: Icons.history,
-            title: "Mis\nCotizaciones",
-            color: Colors.blue,
-            isLocked: !isRucApproved,
-            onTap: () => _handleFeatureAccess(context, '/quote_history'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildQuickActionCard(
-            icon: Icons.local_shipping,
-            title: "Tracking\nEmbarques",
-            color: Colors.purple,
-            isLocked: !isRucApproved,
-            onTap: () => _handleFeatureAccess(context, '/tracking'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQuickActionCard({
-    required IconData icon,
-    required String title,
-    required Color color,
-    required VoidCallback onTap,
-    bool isLocked = false,
-  }) {
-    return HoverCard(
-      glowColor: color,
-      onTap: onTap,
-      isLocked: isLocked,
-      child: Column(
+  Widget _buildQuickActionsGrid(BuildContext context, Color surfaceDark,
+      Color primaryColor, bool isDark) {
+    return SizedBox(
+      height: 128, // Increased from 120 to fix overflow
+      child: Row(
         children: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Icon(icon, color: isLocked ? Colors.grey : color, size: 32),
-              if (isLocked)
-                Positioned(
-                  right: -8,
-                  bottom: -8,
-                  child: Icon(Icons.lock, color: Colors.grey[600], size: 14),
+          Expanded(
+            child: HoverCard(
+              onTap: () => _handleFeatureAccess(context, '/quote_form'),
+              glowColor: AppColors.neonGreen,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.neonGreen),
+                      ),
+                      child: const Icon(Icons.add_circle_outline,
+                          color: AppColors.neonGreen),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Nueva\nCotización",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: isDark ? Colors.grey[300] : Colors.grey[800],
+                          fontSize: 11,
+                          height: 1.2),
+                    )
+                  ],
                 ),
-            ],
+              ),
+            ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: isLocked ? Colors.grey : Colors.white,
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
+          const SizedBox(width: 16),
+          Expanded(
+            child: HoverCard(
+              onTap: () => _handleFeatureAccess(context, '/history'),
+              glowColor: Colors.blue,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.history, color: Colors.blue, size: 28),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Mis\nCotizaciones",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: isDark ? Colors.grey[300] : Colors.grey[800],
+                          fontSize: 11,
+                          height: 1.2),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: HoverCard(
+              onTap: () => _handleFeatureAccess(context, '/tracking'),
+              glowColor: Colors.purple,
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.local_shipping,
+                        color: Colors.purple, size: 28),
+                    const SizedBox(height: 12),
+                    Text(
+                      "Tracking\nEmbarques",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: isDark ? Colors.grey[300] : Colors.grey[800],
+                          fontSize: 11,
+                          height: 1.2),
+                    )
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -373,118 +361,139 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildFeatureCards(
-      BuildContext context, Color surfaceDark, Color primaryColor) {
-    final hasCompletedImport = _authService.hasCompletedImport;
-
+  Widget _buildFeatureCards(BuildContext context, Color surfaceDark,
+      Color primaryColor, bool isDark) {
     return Column(
       children: [
-        _buildFeatureCard(
-          icon: Icons.calculate,
+        HoverListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.teal.withAlpha(25),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.calculate, color: Colors.teal),
+          ),
           title: "Calculadora de Impuestos",
           subtitle: "Calcula aranceles y tributos de importación",
           color: Colors.teal,
           onTap: () => _handleFeatureAccess(context, '/tax_calculator'),
         ),
         const SizedBox(height: 12),
-        _buildFeatureCard(
-          icon: Icons.person,
+        HoverListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.indigo.withAlpha(25),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.person, color: Colors.indigo),
+          ),
           title: "Mi Perfil",
           subtitle: "Gestiona tus datos, RUC y empresa",
           color: Colors.indigo,
           onTap: () => Navigator.pushNamed(context, '/profile'),
         ),
         const SizedBox(height: 12),
-        // Premium AI Feature Card
-        _buildFeatureCard(
-          icon: Icons.smart_toy,
+        HoverListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.amber.withAlpha(25),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.smart_toy, color: Colors.amber),
+          ),
           title: "AduanaExpertoIA",
-          subtitle: hasCompletedImport
-              ? "Tu asistente experto en aduanas"
-              : "🔒 Completa tu primera importación para desbloquear",
-          color: hasCompletedImport ? primaryColor : Colors.grey,
-          isLocked: !hasCompletedImport,
+          subtitle: "Completa tu primera importación para desbloquear",
+          color: Colors.amber,
+          isLocked: true,
           onTap: () {
-            if (hasCompletedImport) {
-              Navigator.pushNamed(context, '/aduana_experto');
-            } else {
-              _showLockedFeatureDialog(context);
-            }
+            // Show premium dialog
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: isDark ? surfaceDark : Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                title: const Row(
+                  children: [
+                    Icon(Icons.lock, color: Colors.grey),
+                    SizedBox(width: 8),
+                    Text("Función Premium"),
+                  ],
+                ),
+                content: const Text(
+                    "Completa tu primera importación para desbloquear esta herramienta de IA."),
+              ),
+            );
           },
         ),
       ],
     );
   }
 
-  Widget _buildFeatureCard({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Color color,
-    required VoidCallback onTap,
-    bool isLocked = false,
-  }) {
-    return HoverListTile(
-      leading: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: isLocked ? 0.1 : 0.15),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(icon, color: color.withValues(alpha: isLocked ? 0.5 : 1), size: 24),
-            if (isLocked)
-              Positioned(
-                right: 2,
-                bottom: 2,
-                child: Icon(Icons.lock, color: Colors.grey[600], size: 14),
-              ),
-          ],
-        ),
-      ),
-      title: title,
-      subtitle: subtitle,
-      color: color,
-      isLocked: isLocked,
-      onTap: onTap,
-    );
+  void _handleFeatureAccess(BuildContext context, String route) async {
+    // Basic RUC check before navigation
+    final targetRoute = route == '/quote_form' ? '/quote_request' : route;
+
+    if (targetRoute == '/quote_request' || targetRoute == '/quote_form') {
+      final firebaseService = FirebaseService();
+      // Show loading indicator or non-blocking check could be better?
+      // For now, simple await
+      try {
+        final userData = await firebaseService.getUserProfile();
+        final rucStatus = userData?['ruc_status'] ?? '';
+
+        if (!context.mounted) return;
+
+        if (rucStatus == 'approved') {
+          Navigator.pushNamed(context, targetRoute);
+        } else {
+          _showProfileRequiredDialog(context, rucStatus);
+        }
+      } catch (e) {
+        // Fallback if network fails
+        if (context.mounted) Navigator.pushNamed(context, targetRoute);
+      }
+    } else {
+      Navigator.pushNamed(context, targetRoute);
+    }
   }
 
-  void _handleFeatureAccess(BuildContext context, String route) {
-    final isRucApproved = _authService.isRucApproved;
-    final rucStatus = _authService.rucStatus;
+  void _showProfileRequiredDialog(BuildContext context, String rucStatus) {
+    String message;
+    String title;
 
-    if (!isRucApproved) {
-      if (rucStatus == 'pending') {
-        _showPendingApprovalDialog(context);
-      } else {
-        _showCompleteProfileDialog(context);
-      }
-      return;
+    if (rucStatus == 'pending') {
+      title = 'RUC en revisión';
+      message =
+          'Tu RUC está siendo verificado por nuestro equipo. Te notificaremos cuando esté aprobado.';
+    } else if (rucStatus == 'rejected') {
+      title = 'RUC rechazado';
+      message =
+          'Tu RUC fue rechazado. Por favor actualiza la información en tu perfil.';
+    } else {
+      title = 'Perfil incompleto';
+      message = 'Completa tu perfil con tu RUC para acceder a esta función.';
     }
 
-    Navigator.pushNamed(context, route);
-  }
-
-  void _showCompleteProfileDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
+        backgroundColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
+        title: Row(
           children: [
-            Icon(Icons.warning_amber, color: Colors.amber),
-            SizedBox(width: 12),
-            Text("Completa tu perfil", style: TextStyle(color: Colors.white)),
+            Icon(Icons.warning_amber,
+                color: rucStatus == 'pending' ? Colors.blue : Colors.amber),
+            const SizedBox(width: 12),
+            Text(title),
           ],
         ),
-        content: const Text(
-          "Para acceder a esta función, primero debes completar tu perfil con el RUC de tu empresa.",
-          style: TextStyle(color: Colors.grey),
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.grey),
         ),
         actions: [
           TextButton(
@@ -501,76 +510,6 @@ class _HomeScreenState extends State<HomeScreen> {
               foregroundColor: Colors.black,
             ),
             child: const Text("Ir a Mi Perfil"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showPendingApprovalDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.hourglass_top, color: Colors.orange),
-            SizedBox(width: 12),
-            Text("RUC en revisión", style: TextStyle(color: Colors.white)),
-          ],
-        ),
-        content: const Text(
-          "Tu RUC está siendo revisado por nuestro equipo. Te notificaremos cuando sea aprobado para que puedas usar todas las funciones.",
-          style: TextStyle(color: Colors.grey),
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.neonGreen,
-              foregroundColor: Colors.black,
-            ),
-            child: const Text("Entendido"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showLockedFeatureDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Row(
-          children: [
-            Icon(Icons.lock, color: Colors.grey),
-            SizedBox(width: 12),
-            Text("Función Premium", style: TextStyle(color: Colors.white)),
-          ],
-        ),
-        content: const Text(
-          "AduanaExpertoIA es una función premium que se desbloquea después de completar tu primera importación con ImportaYA.ia.\n\n"
-          "Completa el ciclo: Cotización → Aprobación → Instrucciones de Embarque → RO → Arribo → Facturación",
-          style: TextStyle(color: Colors.grey),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cerrar"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/quote_form');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.neonGreen,
-              foregroundColor: Colors.black,
-            ),
-            child: const Text("Crear Cotización"),
           ),
         ],
       ),

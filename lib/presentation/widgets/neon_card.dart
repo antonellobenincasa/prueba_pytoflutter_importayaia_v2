@@ -27,6 +27,10 @@ class NeonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveGlowColor = glowColor ?? AppColors.neonGreen;
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final cardColor = theme.cardTheme.color ?? theme.cardColor;
+
     return Container(
       margin: margin,
       decoration: BoxDecoration(
@@ -35,12 +39,14 @@ class NeonCard extends StatelessWidget {
         boxShadow: enableGlow
             ? [
                 BoxShadow(
-                  color: effectiveGlowColor.withValues(alpha: glowIntensity * 0.4),
+                  color:
+                      effectiveGlowColor.withValues(alpha: glowIntensity * 0.4),
                   blurRadius: 20,
                   spreadRadius: -5,
                 ),
                 BoxShadow(
-                  color: effectiveGlowColor.withValues(alpha: glowIntensity * 0.2),
+                  color:
+                      effectiveGlowColor.withValues(alpha: glowIntensity * 0.2),
                   blurRadius: 40,
                   spreadRadius: -10,
                 ),
@@ -50,20 +56,25 @@ class NeonCard extends StatelessWidget {
       child: Container(
         padding: padding ?? const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.cardSurface,
+          color: cardColor,
           borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
-            color: effectiveGlowColor.withValues(alpha: 0.2),
+            color: effectiveGlowColor.withValues(alpha: isDark ? 0.2 : 0.5),
             width: 1,
           ),
           // Subtle inner gradient for depth
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppColors.cardSurface,
-              AppColors.surfaceDark,
-            ],
+            colors: isDark
+                ? [
+                    AppColors.cardSurface,
+                    AppColors.surfaceDark,
+                  ]
+                : [
+                    Colors.white,
+                    Colors.grey.shade50,
+                  ],
           ),
         ),
         child: child,

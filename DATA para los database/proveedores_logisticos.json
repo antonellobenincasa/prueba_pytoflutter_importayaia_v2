@@ -1,0 +1,234 @@
+[
+  {
+    "proveedor logistico": "MAERSK",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "MSC",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "CMA-CGM",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "EMC",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "HPL",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "OOCL",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "WHL",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "COSCO",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "DOLE",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "MARFRET",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "YANG MING",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "PIL",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "ZIM",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "SBM SEABOARD MARINE",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "HMM",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "KING OCEAN",
+    "Tipo de Transporte": "Maritimo FCL"
+  },
+  {
+    "proveedor logistico": "SACO SHIPPING S.A.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "CHARTER LINK LOGISTICS ECUADOR S.A.S.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "INCA LINES DEL ECUADOR INCALINES S.A.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "CRAFT ECUADOR MULTIMODAL CRAFTECMUL S.A.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "MARITIME SERVICES LINE DEL ECUADOR MSL DEL ECUADOR S.A.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "ECU - WORLDWIDE - (ECUADOR) S.A.",
+    "Tipo de Transporte": "Maritimo LCL"
+  },
+  {
+    "proveedor logistico": "AVIANCA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AMERICAN AIRLINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "COPA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "DHL EXPRESS ECUADOR S.A. - DHL AERO EXPRESO SA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "EQUINOXAIR S.A.S.",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "LAN CARGO S.A.",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "LATAM-AIRLINES ECUADOR S.A.",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "LUFTHANSA CARGO AKTIENGESELLSCHAFT",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "SANTA BARBARA AIRLINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "MARTIN AIR",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AEROTRANSPORTES MAS DE CARGA S.A. DE C.V. DBA MASAIR",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "TAM LINHAS AEREAS S.A. DBA LATAM AIRLINES BRASIL",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "CATHAY PACIFIC",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AIR EUROPA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AIR PORTUGAL",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "POLAR AIR CARGO",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "CARGOLUX GROUP / CARGOLUX AIRLINES INTERNATIONAL S.A",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "QATAR AIRLINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "TAP PORTGAL",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "PLUS ULTRA LÍNEAS AÉREAS S.A.",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "MASAIR CARGO AIRLINE",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "BRITISH AIRWAYS",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "EMIRATES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "TAMPA CARGO S.A.S.",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AIR FRANCE",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "CHINA AIRLINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "TURK HAVA YOLLARI ANONIM O. (Turkish Airlines)",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AIR CANADA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "DELTA AIR LINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "UNITED AIRLINES",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "UPS UNITED PARCEL SERVICE / UNITED PARCEL SERVICE",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "KLM",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "IBERIA",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "ATLAS AIR INC",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "AEROMEXICO",
+    "Tipo de Transporte": "Aereo"
+  },
+  {
+    "proveedor logistico": "PRIME AIR S.A.",
+    "Tipo de Transporte": "Aereo"
+  }
+]

@@ -1,0 +1,942 @@
+[
+  {
+    "pais": "China",
+    "region": "Asia",
+    "prioridad": "1"
+  },
+  {
+    "pais": "Estados Unidos",
+    "region": "Norteamérica",
+    "prioridad": "2"
+  },
+  {
+    "pais": "España",
+    "region": "Europa",
+    "prioridad": "3"
+  },
+  {
+    "pais": "Alemania",
+    "region": "Europa",
+    "prioridad": "4"
+  },
+  {
+    "pais": "Colombia",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "5"
+  },
+  {
+    "pais": "Panamá",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "6"
+  },
+  {
+    "pais": "Afganistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Albania",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Andorra",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Angola",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Antigua y Barbuda",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Arabia Saudita",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Argelia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Argentina",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Armenia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Australia",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Austria",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Azerbaiyán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bahamas",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bahréin",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bangladesh",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Barbados",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Belice",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Benín",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bielorrusia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bolivia",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bosnia y Herzegovina",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Botsuana",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Brasil",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Brunéi",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bulgaria",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Burkina Faso",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Burundi",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bután",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Bélgica",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Cabo Verde",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Camboya",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Camerún",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Canadá",
+    "region": "Norteamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Chad",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Chile",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Chipre",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Comoras",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Congo",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Corea del Norte",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Corea del Sur",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Costa Rica",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Costa de Marfil",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Croacia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Cuba",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Dinamarca",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Dominica",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Ecuador",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Egipto",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "El Salvador",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Emiratos Árabes Unidos",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Eritrea",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Eslovaquia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Eslovenia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Estonia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Etiopía",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Filipinas",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Finlandia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Fiyi",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Francia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Gabón",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Gambia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Georgia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Ghana",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Granada",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Grecia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Guatemala",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Guinea",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Guyana",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Haití",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Honduras",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Hungría",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "India",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Indonesia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Iraq",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Irlanda",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Irán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Islandia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Israel",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Italia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Jamaica",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Japón",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Jordania",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Kazajistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Kenia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Kirguistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Kiribati",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Kuwait",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Laos",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Lesoto",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Letonia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Liberia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Libia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Liechtenstein",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Lituania",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Luxemburgo",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Líbano",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Madagascar",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Malasia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Malawi",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Maldivas",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Malta",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Malí",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Marruecos",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Mauricio",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Mauritania",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Micronesia",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Moldavia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Mongolia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Montenegro",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Mozambique",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Myanmar",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "México",
+    "region": "Norteamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Mónaco",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Namibia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Nauru",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Nepal",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Nicaragua",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Nigeria",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Noruega",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Nueva Zelanda",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Níger",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Omán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Pakistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Palaos",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Palestina",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Papúa Nueva Guinea",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Paraguay",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Países Bajos",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Perú",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Polonia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Portugal",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Qatar",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Reino Unido",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "República Centroafricana",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "República Checa",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "República Dominicana",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Ruanda",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Rumania",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Rusia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Samoa",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "San Cristóbal y Nieves",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "San Marino",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "San Vicente y las Granadinas",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Santa Lucía",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Santo Tomé y Príncipe",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Senegal",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Serbia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Seychelles",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Sierra Leona",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Singapur",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Siria",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Somalia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Sri Lanka",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Sudáfrica",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Sudán",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Suecia",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Suiza",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Surinam",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Tailandia",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Taiwán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Tanzania",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Tayikistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Timor-Leste",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Togo",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Tonga",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Trinidad y Tobago",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Turkmenistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Turquía",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Tuvalu",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Túnez",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Ucrania",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Uganda",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Uruguay",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Uzbekistán",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Vanuatu",
+    "region": "Oceanía",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Vaticano",
+    "region": "Europa",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Venezuela",
+    "region": "Sudamérica y Centroamérica",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Vietnam",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Yemen",
+    "region": "Asia",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Yibuti",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Zambia",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  },
+  {
+    "pais": "Zimbabue",
+    "region": "Medio Oriente y África",
+    "prioridad": "7"
+  }
+]

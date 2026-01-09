@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../core/services/auth_service.dart';
 import '../../core/services/firebase_service.dart';
+import '../../core/services/theme_provider.dart';
 
 class AuthenticatedDrawer extends StatelessWidget {
   const AuthenticatedDrawer({super.key});
@@ -12,13 +13,18 @@ class AuthenticatedDrawer extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
     final userName = authService.userName ?? 'Usuario';
     final userEmail = authService.userEmail ?? '';
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Use drawerTheme or scaffoldBackgroundColor
+    final bgColor = theme.scaffoldBackgroundColor;
 
     return Drawer(
-      backgroundColor: AppColors.darkBlueBackground,
+      backgroundColor: bgColor,
       child: Column(
         children: [
           // Header con info del usuario
-          _buildUserHeader(context, userName, userEmail),
+          _buildUserHeader(context, userName, userEmail, theme, isDark),
 
           // Navigation Links
           Expanded(
@@ -29,6 +35,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.dashboard,
                   title: "Dashboard",
+                  isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushReplacementNamed(context, '/home');
@@ -37,41 +44,46 @@ class AuthenticatedDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
 
-                _buildSectionTitle("Cotizaciones"),
+                _buildSectionTitle("Cotizaciones", isDark),
                 _buildMenuItem(
                   context,
                   icon: Icons.add_circle_outline,
                   title: "Nueva Cotización",
+                  isDark: isDark,
                   onTap: () => _navigateWithCheck(context, '/quote_request'),
                 ),
                 _buildMenuItem(
                   context,
                   icon: Icons.history,
                   title: "Mis Cotizaciones",
+                  isDark: isDark,
                   onTap: () => _navigateWithCheck(context, '/history'),
                 ),
                 const SizedBox(height: 16),
 
-                _buildSectionTitle("Embarques"),
+                _buildSectionTitle("Embarques", isDark),
                 _buildMenuItem(
                   context,
                   icon: Icons.local_shipping,
                   title: "Tracking",
+                  isDark: isDark,
                   onTap: () => _navigateWithCheck(context, '/tracking'),
                 ),
                 const SizedBox(height: 16),
 
-                _buildSectionTitle("Herramientas"),
+                _buildSectionTitle("Herramientas", isDark),
                 _buildMenuItem(
                   context,
                   icon: Icons.calculate,
                   title: "Calculadora de Impuestos",
+                  isDark: isDark,
                   onTap: () => _navigateWithCheck(context, '/tax_calculator'),
                 ),
                 _buildMenuItem(
                   context,
                   icon: Icons.smart_toy,
                   title: "AduanaExpertoIA",
+                  isDark: isDark,
                   isLocked: true, // Locked until first import
                   onTap: () {
                     Navigator.pop(context);
@@ -80,11 +92,12 @@ class AuthenticatedDrawer extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
 
-                _buildSectionTitle("Mi Cuenta"),
+                _buildSectionTitle("Mi Cuenta", isDark),
                 _buildMenuItem(
                   context,
                   icon: Icons.person,
                   title: "Mi Perfil",
+                  isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/profile');
@@ -94,6 +107,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.notifications,
                   title: "Notificaciones",
+                  isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/notifications');
@@ -105,15 +119,9 @@ class AuthenticatedDrawer extends StatelessWidget {
                 Container(
                   height: 1,
                   margin: const EdgeInsets.symmetric(horizontal: 8),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.white.withValues(alpha: 0.1),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
+                  color: isDark
+                      ? Colors.white.withAlpha(25)
+                      : Colors.black.withAlpha(25),
                 ),
                 const SizedBox(height: 16),
 
@@ -122,6 +130,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.info_outline,
                   title: "Nosotros",
+                  isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/nosotros');
@@ -131,6 +140,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                   context,
                   icon: Icons.mail_outline,
                   title: "Contacto",
+                  isDark: isDark,
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.pushNamed(context, '/contacto');
@@ -141,20 +151,27 @@ class AuthenticatedDrawer extends StatelessWidget {
           ),
 
           // Footer con logout
-          _buildFooter(context, authService),
+          _buildFooter(context, authService, theme, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildUserHeader(
-      BuildContext context, String userName, String userEmail) {
+  Widget _buildUserHeader(BuildContext context, String userName,
+      String userEmail, ThemeData theme, bool isDark) {
+    final headerBg = isDark ? const Color(0xFF070E1A) : Colors.grey[200]!;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
       decoration: BoxDecoration(
-        color: const Color(0xFF070E1A),
+        color: headerBg,
         border: Border(
-          bottom: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          bottom: BorderSide(
+              color: isDark
+                  ? Colors.white.withAlpha(13)
+                  : Colors.black.withAlpha(13)),
         ),
       ),
       child: Row(
@@ -163,10 +180,10 @@ class AuthenticatedDrawer extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: AppColors.neonGreen.withValues(alpha: 0.15),
+              color: AppColors.neonGreen.withAlpha(38), // ~0.15
               shape: BoxShape.circle,
               border:
-                  Border.all(color: AppColors.neonGreen.withValues(alpha: 0.3)),
+                  Border.all(color: AppColors.neonGreen.withAlpha(76)), // ~0.3
             ),
             child: Center(
               child: Text(
@@ -186,8 +203,8 @@ class AuthenticatedDrawer extends StatelessWidget {
               children: [
                 Text(
                   userName,
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: textColor,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
@@ -198,7 +215,7 @@ class AuthenticatedDrawer extends StatelessWidget {
                 Text(
                   userEmail,
                   style: TextStyle(
-                    color: Colors.grey[400],
+                    color: subTextColor,
                     fontSize: 12,
                   ),
                   maxLines: 1,
@@ -212,13 +229,13 @@ class AuthenticatedDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, bool isDark) {
     return Padding(
       padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8),
       child: Text(
         title.toUpperCase(),
         style: TextStyle(
-          color: Colors.grey[600],
+          color: isDark ? Colors.grey[600] : Colors.grey[700],
           fontSize: 11,
           fontWeight: FontWeight.w600,
           letterSpacing: 1.2,
@@ -232,12 +249,20 @@ class AuthenticatedDrawer extends StatelessWidget {
     required IconData icon,
     required String title,
     required VoidCallback onTap,
+    required bool isDark,
     bool isActive = false,
     bool isLocked = false,
   }) {
+    final activeBg =
+        isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13);
+    final inactiveIcon = isDark ? Colors.grey[400] : Colors.grey[600];
+    final activeIcon = AppColors.neonGreen; // Green works for both usually
+    final textColor =
+        isLocked ? Colors.grey[600] : (isDark ? Colors.white : Colors.black87);
+    final fontWeight = isActive ? FontWeight.w600 : FontWeight.w400;
+
     return Material(
-      color:
-          isActive ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
+      color: isActive ? activeBg : Colors.transparent,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -251,8 +276,8 @@ class AuthenticatedDrawer extends StatelessWidget {
                 color: isLocked
                     ? Colors.grey[600]
                     : isActive
-                        ? AppColors.neonGreen
-                        : Colors.grey[400],
+                        ? activeIcon
+                        : inactiveIcon,
                 size: 22,
               ),
               const SizedBox(width: 16),
@@ -260,9 +285,9 @@ class AuthenticatedDrawer extends StatelessWidget {
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: isLocked ? Colors.grey[600] : Colors.white,
+                    color: textColor,
                     fontSize: 14,
-                    fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+                    fontWeight: fontWeight,
                   ),
                 ),
               ),
@@ -274,17 +299,68 @@ class AuthenticatedDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter(BuildContext context, AuthService authService) {
+  Widget _buildFooter(BuildContext context, AuthService authService,
+      ThemeData theme, bool isDark) {
+    final footerBg = isDark ? const Color(0xFF070E1A) : Colors.grey[200]!;
+    final borderColor =
+        isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13);
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF070E1A),
+        color: footerBg,
         border: Border(
-          top: BorderSide(color: Colors.white.withValues(alpha: 0.05)),
+          top: BorderSide(color: borderColor),
         ),
       ),
       child: Column(
         children: [
+          // Theme Switcher
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.white.withAlpha(13) : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: isDark
+                          ? Colors.white.withAlpha(25)
+                          : Colors.grey[300]!),
+                ),
+                child: SwitchListTile(
+                  title: Text(
+                    themeProvider.isDarkMode ? "Modo Oscuro" : "Modo Claro",
+                    style: TextStyle(
+                        color: isDark ? Colors.white : Colors.black87,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
+                  secondary: Icon(
+                    themeProvider.isDarkMode
+                        ? Icons.dark_mode
+                        : Icons.light_mode,
+                    color: themeProvider.isDarkMode
+                        ? Colors.purple[200]
+                        : Colors.orange,
+                  ),
+                  value: themeProvider.isDarkMode,
+                  activeThumbColor: AppColors.neonGreen,
+                  trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return AppColors.neonGreen.withAlpha(100);
+                    }
+                    return isDark ? Colors.grey[700]! : Colors.grey[400]!;
+                  }),
+                  onChanged: (_) => themeProvider.toggleTheme(),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                ),
+              );
+            },
+          ),
+
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
@@ -298,7 +374,7 @@ class AuthenticatedDrawer extends StatelessWidget {
               label: const Text("Cerrar Sesión"),
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.red[400],
-                side: BorderSide(color: Colors.red.withValues(alpha: 0.3)),
+                side: BorderSide(color: Colors.red.withAlpha(76)), // ~0.3
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -333,25 +409,30 @@ class AuthenticatedDrawer extends StatelessWidget {
   }
 
   Future<void> _navigateWithCheck(BuildContext context, String route) async {
-    Navigator.pop(context);
+    // 1. Capture the navigator and its context BEFORE popping the drawer
+    final navigator = Navigator.of(context);
+    final navContext = navigator.context;
 
-    // Check RUC status directly from Firebase to ensure accuracy
+    // 2. Pop the drawer
+    navigator.pop();
+
+    // 3. Check RUC status directly from Firebase
     final firebaseService = FirebaseService();
     try {
       final userData = await firebaseService.getUserProfile();
       final rucStatus = userData?['ruc_status'] ?? '';
 
-      if (!context.mounted) return;
-
+      // 4. Use the captured navigator
       if (rucStatus == 'approved') {
-        Navigator.pushNamed(context, route);
+        navigator.pushNamed(route);
       } else {
-        _showProfileRequiredDialog(context, rucStatus);
+        // Use the navigator's context to show the dialog
+        if (navContext.mounted) {
+          _showProfileRequiredDialog(navContext, rucStatus);
+        }
       }
     } catch (e) {
-      if (context.mounted) {
-        Navigator.pushNamed(context, route); // Fallback - allow access
-      }
+      navigator.pushNamed(route);
     }
   }
 
@@ -375,14 +456,14 @@ class AuthenticatedDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
+        backgroundColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
           children: [
             Icon(Icons.warning_amber,
                 color: rucStatus == 'pending' ? Colors.blue : Colors.amber),
             const SizedBox(width: 12),
-            Text(title, style: const TextStyle(color: Colors.white)),
+            Text(title), // Uses default content color (dynamic)
           ],
         ),
         content: Text(
@@ -414,13 +495,13 @@ class AuthenticatedDrawer extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF0A101D),
+        backgroundColor: Theme.of(context).cardColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
             Icon(Icons.lock, color: Colors.grey),
             SizedBox(width: 12),
-            Text("Función Premium", style: TextStyle(color: Colors.white)),
+            Text("Función Premium"),
           ],
         ),
         content: const Text(

@@ -1,0 +1,50 @@
+[
+  {
+    "Codigo": "KGM",
+    "nombre": "Kilogramo",
+    "tipo": "Peso",
+    "factor_conversion_base": "1"
+  },
+  {
+    "Codigo": "LBR",
+    "nombre": "Libra",
+    "tipo": "Peso",
+    "factor_conversion_base": "0.453592"
+  },
+  {
+    "Codigo": "TNE",
+    "nombre": "Tonelada Métrica",
+    "tipo": "Peso",
+    "factor_conversion_base": "1000"
+  },
+  {
+    "Codigo": "MTQ",
+    "nombre": "Metro Cúbico",
+    "tipo": "Volumen",
+    "factor_conversion_base": "1"
+  },
+  {
+    "Codigo": "FTQ",
+    "nombre": "Pie Cúbico",
+    "tipo": "Volumen",
+    "factor_conversion_base": "0.028317"
+  },
+  {
+    "Codigo": "USD",
+    "nombre": "Dólar Estadounidense",
+    "tipo": "Moneda",
+    "factor_conversion_base": "1"
+  },
+  {
+    "Codigo": "EUR",
+    "nombre": "Euro",
+    "tipo": "Moneda",
+    "factor_conversion_base": "1.21"
+  },
+  {
+    "Codigo": "GBP",
+    "nombre": "Libra Esterlina",
+    "tipo": "Moneda",
+    "factor_conversion_base": "1.39"
+  }
+]

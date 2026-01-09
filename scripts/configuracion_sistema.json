@@ -1,0 +1,122 @@
+[
+    {
+        "clave": "iva_rate",
+        "valor": 0.15,
+        "tipo_dato": "number",
+        "descripcion": "Tasa de IVA actual (15%)"
+    },
+    {
+        "clave": "fodinfa_rate",
+        "valor": 0.005,
+        "tipo_dato": "number",
+        "descripcion": "Tasa FODINFA (0.5%)"
+    },
+    {
+        "clave": "insurance_rate",
+        "valor": 0.0035,
+        "tipo_dato": "number",
+        "descripcion": "Tasa de seguro internacional (0.35%)"
+    },
+    {
+        "clave": "insurance_minimum",
+        "valor": 70.0,
+        "tipo_dato": "number",
+        "descripcion": "Costo mínimo de seguro ($70)"
+    },
+    {
+        "clave": "isd_rate",
+        "valor": 0.05,
+        "tipo_dato": "number",
+        "descripcion": "Impuesto Salida Divisas (5%)"
+    },
+    {
+        "clave": "ad_valorem_default",
+        "valor": 30.0,
+        "tipo_dato": "number",
+        "descripcion": "Ad-valorem de seguridad por defecto"
+    },
+    {
+        "clave": "aereo_corte_guia",
+        "valor": 35.0,
+        "tipo_dato": "number",
+        "descripcion": "Corte de Guía Aérea (Fijo)"
+    },
+    {
+        "clave": "aereo_admin_fee",
+        "valor": 50.0,
+        "tipo_dato": "number",
+        "descripcion": "Admin Fee Aéreo (Fijo)"
+    },
+    {
+        "clave": "aereo_handling",
+        "valor": 50.0,
+        "tipo_dato": "number",
+        "descripcion": "Handling Aéreo (Fijo)"
+    },
+    {
+        "clave": "aereo_desconsolidacion",
+        "valor": 15.0,
+        "tipo_dato": "number",
+        "descripcion": "Desconsolidación Aérea (Fijo)"
+    },
+    {
+        "clave": "aereo_fee_variable_rate",
+        "valor": 0.06,
+        "tipo_dato": "number",
+        "descripcion": "Tasa variable manejo import (6%)"
+    },
+    {
+        "clave": "aereo_fee_variable_min",
+        "valor": 25.0,
+        "tipo_dato": "number",
+        "descripcion": "Mínimo variable manejo import"
+    },
+    {
+        "clave": "lcl_desconsolidacion_rate",
+        "valor": 20.0,
+        "tipo_dato": "number",
+        "descripcion": "Costo LCL por CBM/Ton"
+    },
+    {
+        "clave": "lcl_desconsolidacion_min",
+        "valor": 135.0,
+        "tipo_dato": "number",
+        "descripcion": "Mínimo desconsolidación LCL por BL"
+    },
+    {
+        "clave": "lcl_locales_fijo",
+        "valor": 100.0,
+        "tipo_dato": "number",
+        "descripcion": "Locales Destino LCL (Fijo por BL)"
+    },
+    {
+        "clave": "lcl_admin_fee_rate",
+        "valor": 0.06,
+        "tipo_dato": "number",
+        "descripcion": "Tasa costo administrativo LCL (6%)"
+    },
+    {
+        "clave": "lcl_admin_fee_min",
+        "valor": 15.0,
+        "tipo_dato": "number",
+        "descripcion": "Mínimo costo administrativo LCL"
+    },
+    {
+        "clave": "bl_fee_fcl",
+        "valor": 100.0,
+        "tipo_dato": "number",
+        "descripcion": "Costo emisión BL FCL Referencial"
+    },
+    {
+        "clave": "handling_fee_import",
+        "valor": 50.0,
+        "tipo_dato": "number",
+        "descripcion": "Fee administrativo general"
+    },
+    {
+        "clave": "transmite_fee",
+        "valor": 35.0,
+        "tipo_dato": "number",
+        "descripcion": "Costo transmisión documentos"
+    }
+]

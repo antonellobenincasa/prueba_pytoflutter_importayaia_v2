@@ -45,8 +45,22 @@ class _LandingScreenState extends State<LandingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Theme Awareness
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final bgColor = theme.scaffoldBackgroundColor;
+
+    // Blob colors need to be subtle in light mode
+    final blobColor = isDark
+        ? AppColors.neonGreen.withAlpha(13) // ~0.05
+        : Colors.purple.withAlpha(25); // Purple blobs for light mode contrast
+
+    final blobShadowColor = isDark
+        ? AppColors.neonGreen.withAlpha(25) // ~0.1
+        : Colors.purple.withAlpha(38); // ~0.15
+
     return Scaffold(
-      backgroundColor: AppColors.darkBlueBackground,
+      backgroundColor: bgColor,
       drawer: const MainDrawer(),
       body: Stack(
         children: [
@@ -59,11 +73,11 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 500,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonGreen.withValues(alpha: 0.05),
+                color: blobColor,
               ),
               child: ClipOval(
                 child: Container(
-                  color: AppColors.neonGreen.withValues(alpha: 0.05),
+                  color: blobColor,
                 )
                     .animate(onPlay: (controller) => controller.repeat())
                     .blur(begin: const Offset(120, 120)),
@@ -79,10 +93,10 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 500,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.neonGreen.withValues(alpha: 0.05),
+                color: blobColor,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.neonGreen.withValues(alpha: 0.1),
+                    color: blobShadowColor,
                     blurRadius: 120,
                     spreadRadius: 50,
                   )
@@ -100,10 +114,14 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 300,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.blue.withValues(alpha: 0.05),
+                color: isDark
+                    ? Colors.blue.withAlpha(13)
+                    : Colors.blue.withAlpha(25),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.blue.withValues(alpha: 0.1),
+                    color: isDark
+                        ? Colors.blue.withAlpha(25)
+                        : Colors.blue.withAlpha(38),
                     blurRadius: 100,
                     spreadRadius: 20,
                   )
@@ -116,7 +134,8 @@ class _LandingScreenState extends State<LandingScreen> {
             child: Column(
               children: [
                 Builder(
-                  builder: (scaffoldContext) => _buildHeader(scaffoldContext),
+                  builder: (scaffoldContext) =>
+                      _buildHeader(scaffoldContext, isDark),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -125,8 +144,8 @@ class _LandingScreenState extends State<LandingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildHeroVideo(),
-                          _buildMainContent(context),
+                          _buildHeroVideo(isDark, bgColor),
+                          _buildMainContent(context, isDark),
                         ],
                       ),
                     ),
@@ -140,7 +159,11 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDark) {
+    // Text color logic
+    final textColor = isDark ? AppColors.textWhite : Colors.black87;
+    final iconColor = isDark ? AppColors.textWhite : Colors.black87;
+
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Row(
@@ -166,19 +189,19 @@ class _LandingScreenState extends State<LandingScreen> {
                   width: 32,
                   height: 32,
                   decoration: BoxDecoration(
-                    color: AppColors.neonGreen.withValues(alpha: 0.2),
+                    color: AppColors.neonGreen.withAlpha(51), // ~0.2
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                        color: AppColors.neonGreen.withValues(alpha: 0.3)),
+                        color: AppColors.neonGreen.withAlpha(76)), // ~0.3
                   ),
                   child: const Icon(Icons.inventory_2_outlined,
                       color: AppColors.neonGreen, size: 20),
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   "ImportaYAia",
                   style: TextStyle(
-                    color: AppColors.textWhite,
+                    color: textColor,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     letterSpacing: -0.5,
@@ -203,9 +226,9 @@ class _LandingScreenState extends State<LandingScreen> {
                 Scaffold.of(context).openDrawer();
               },
               borderRadius: BorderRadius.circular(50),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Icon(Icons.menu, color: AppColors.textWhite, size: 30),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Icon(Icons.menu, color: iconColor, size: 30),
               ),
             ),
           ),
@@ -214,7 +237,7 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  Widget _buildHeroVideo() {
+  Widget _buildHeroVideo(bool isDark, Color bgColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: SizedBox(
@@ -242,7 +265,9 @@ class _LandingScreenState extends State<LandingScreen> {
                           ),
                         )
                       : Container(
-                          color: AppColors.darkBlueBackground,
+                          color: isDark
+                              ? AppColors.darkBlueBackground
+                              : Colors.grey[200],
                           child: const Center(
                             child: CircularProgressIndicator(
                               color: AppColors.neonGreen,
@@ -251,16 +276,16 @@ class _LandingScreenState extends State<LandingScreen> {
                         ),
                   // Primary Overlay
                   Container(
-                    color: AppColors.neonGreen.withValues(alpha: 0.1),
+                    color: AppColors.neonGreen.withAlpha(25), // ~0.1
                   ),
-                  // Gradient Overlay
+                  // Gradient Overlay - To blend video into background
                   Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.bottomLeft,
                         end: Alignment.topRight,
                         colors: [
-                          AppColors.darkBlueBackground.withValues(alpha: 0.8),
+                          bgColor.withAlpha(204), // 0.8 opacity matching bg
                           Colors.transparent,
                         ],
                       ),
@@ -274,8 +299,8 @@ class _LandingScreenState extends State<LandingScreen> {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.transparent,
-                          AppColors.darkBlueBackground.withValues(alpha: 0.3),
-                          AppColors.darkBlueBackground.withValues(alpha: 0.9),
+                          bgColor.withAlpha(76), // 0.3
+                          bgColor.withAlpha(230), // 0.9
                         ],
                         stops: const [0.0, 0.7, 1.0],
                       ),
@@ -288,7 +313,10 @@ class _LandingScreenState extends State<LandingScreen> {
             Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(24)),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                border: Border.all(
+                    color: isDark
+                        ? Colors.white.withAlpha(13)
+                        : Colors.black.withAlpha(13)),
               ),
             ),
           ],
@@ -297,7 +325,17 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  Widget _buildMainContent(BuildContext context) {
+  Widget _buildMainContent(BuildContext context, bool isDark) {
+    // Text colors
+    final titleColor = isDark ? AppColors.textWhite : Colors.black87;
+    final bodyColor =
+        isDark ? AppColors.textGrey : const Color(0xFF4B5563); // Gray 600
+
+    // Badge colors
+    final badgeBg = isDark ? AppColors.surface : Colors.white;
+    final badgeBorder =
+        isDark ? Colors.white.withAlpha(25) : Colors.black.withAlpha(13);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
       child: Column(
@@ -309,10 +347,17 @@ class _LandingScreenState extends State<LandingScreen> {
               margin: const EdgeInsets.only(bottom: 16),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: AppColors.surface,
-                borderRadius: BorderRadius.circular(50),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-              ),
+                  color: badgeBg,
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: badgeBorder),
+                  boxShadow: isDark
+                      ? []
+                      : [
+                          BoxShadow(
+                              color: Colors.black.withAlpha(13),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2))
+                        ]),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -331,7 +376,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   const Text(
                     "LOGÍSTICA 4.0",
                     style: TextStyle(
-                      color: AppColors.textGrey,
+                      color: AppColors.textGrey, // Keep grey for neutral look
                       fontSize: 12,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 1.0,
@@ -345,15 +390,15 @@ class _LandingScreenState extends State<LandingScreen> {
           // H1 Title
           FadeInUp(
             child: RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 style: TextStyle(
                   fontFamily: 'Space Grotesk',
                   fontSize: 36,
                   fontWeight: FontWeight.bold,
                   height: 1.1,
-                  color: AppColors.textWhite,
+                  color: titleColor,
                 ),
-                children: [
+                children: const [
                   TextSpan(text: "Importa fácil, \n"),
                   TextSpan(
                     text: "sin complicaciones!",
@@ -369,10 +414,10 @@ class _LandingScreenState extends State<LandingScreen> {
           // Description
           FadeInUp(
             delay: const Duration(milliseconds: 200),
-            child: const Text(
+            child: Text(
               "Logística inteligente potenciada por IA para tu negocio. Trae tus productos del mundo a tu bodega con un solo clic.",
               style: TextStyle(
-                color: AppColors.textGrey,
+                color: bodyColor,
                 fontSize: 18,
                 height: 1.6,
                 fontWeight: FontWeight.normal,
@@ -393,8 +438,6 @@ class _LandingScreenState extends State<LandingScreen> {
                   height: 56,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Siempre redirigir a login/registro para usuarios no autenticados
-                      // El flujo es: Landing -> Login/Registro -> Dashboard (Home)
                       Navigator.pushNamed(
                         context,
                         '/login',
@@ -403,7 +446,8 @@ class _LandingScreenState extends State<LandingScreen> {
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.neonGreen,
-                      foregroundColor: AppColors.darkBlueBackground,
+                      foregroundColor:
+                          AppColors.darkBlueBackground, // Contrast text color
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
@@ -438,27 +482,34 @@ class _LandingScreenState extends State<LandingScreen> {
                       Navigator.pushNamed(context, '/login');
                     },
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: AppColors.surface,
-                      foregroundColor: AppColors.textWhite,
+                      backgroundColor:
+                          isDark ? AppColors.surface : Colors.white,
+                      foregroundColor:
+                          titleColor, // Dark text on light, White on dark
                       side: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.1)),
+                          color: isDark
+                              ? Colors.white.withAlpha(25)
+                              : Colors.grey.withAlpha(76)),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16),
                       ),
+                      elevation: isDark ? 0 : 1,
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           "Ya tengo Cuenta",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Icon(Icons.chevron_right,
-                            size: 20, color: AppColors.textGrey),
+                            size: 20,
+                            color:
+                                isDark ? AppColors.textGrey : Colors.black54),
                       ],
                     ),
                   ),
@@ -468,7 +519,10 @@ class _LandingScreenState extends State<LandingScreen> {
           ),
 
           const SizedBox(height: 40),
-          Divider(color: Colors.white.withValues(alpha: 0.05)),
+          Divider(
+              color: isDark
+                  ? Colors.white.withAlpha(13)
+                  : Colors.black.withAlpha(13)),
           const SizedBox(height: 24),
 
           // Footer / App Stores
@@ -476,10 +530,10 @@ class _LandingScreenState extends State<LandingScreen> {
             delay: const Duration(milliseconds: 600),
             child: Column(
               children: [
-                const Text(
+                Text(
                   "Descarga la App",
                   style: TextStyle(
-                    color: AppColors.textGrey,
+                    color: bodyColor,
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                   ),
@@ -489,16 +543,16 @@ class _LandingScreenState extends State<LandingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     _buildStoreButton(
-                      icon: Icons.phone_iphone,
-                      topText: "Consíguelo en el",
-                      bottomText: "App Store",
-                    ),
+                        icon: Icons.phone_iphone,
+                        topText: "Consíguelo en el",
+                        bottomText: "App Store",
+                        isDark: isDark),
                     const SizedBox(width: 16),
                     _buildStoreButton(
-                      icon: Icons.android,
-                      topText: "Disponible en",
-                      bottomText: "Google Play",
-                    ),
+                        icon: Icons.android,
+                        topText: "Disponible en",
+                        bottomText: "Google Play",
+                        isDark: isDark),
                   ],
                 )
               ],
@@ -509,31 +563,44 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  Widget _buildStoreButton({
-    required IconData icon,
-    required String topText,
-    required String bottomText,
-  }) {
+  Widget _buildStoreButton(
+      {required IconData icon,
+      required String topText,
+      required String bottomText,
+      required bool isDark}) {
+    final bg = isDark ? AppColors.surface : Colors.white;
+    final border =
+        isDark ? Colors.white.withAlpha(25) : Colors.grey.withAlpha(76);
+    final primaryText = isDark ? AppColors.textWhite : Colors.black87;
+    final secondaryText = isDark ? AppColors.textGrey : const Color(0xFF4B5563);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
-      ),
+          color: bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: border),
+          boxShadow: isDark
+              ? []
+              : [
+                  BoxShadow(
+                      color: Colors.black.withAlpha(13),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2))
+                ]),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.textWhite, size: 28),
+          Icon(icon, color: primaryText, size: 28),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(topText,
-                  style: const TextStyle(
-                      color: AppColors.textGrey, fontSize: 10, height: 1.0)),
+                  style: TextStyle(
+                      color: secondaryText, fontSize: 10, height: 1.0)),
               Text(bottomText,
-                  style: const TextStyle(
-                      color: AppColors.textWhite,
+                  style: TextStyle(
+                      color: primaryText,
                       fontSize: 12,
                       fontWeight: FontWeight.bold)),
             ],

@@ -1,0 +1,80 @@
+[
+  {
+    "partida_arancelaria": "8471.3",
+    "producto": "Laptops/Computadoras",
+    "ad_valorem": "0%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "8517.12",
+    "producto": "Teléfonos celulares",
+    "ad_valorem": "0%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "8528.72",
+    "producto": "Televisores",
+    "ad_valorem": "20%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "6403.99",
+    "producto": "Calzado con suela caucho",
+    "ad_valorem": "30%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "6204.62",
+    "producto": "Pantalones algodón mujer",
+    "ad_valorem": "30%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "8703.23",
+    "producto": "Vehículos 1500-3000cc",
+    "ad_valorem": "40%",
+    "ice": "15%"
+  },
+  {
+    "partida_arancelaria": "2203",
+    "producto": "Cerveza de malta",
+    "ad_valorem": "25%",
+    "ice": "12%"
+  },
+  {
+    "partida_arancelaria": "2208.3",
+    "producto": "Whisky",
+    "ad_valorem": "25%",
+    "ice": "75%"
+  },
+  {
+    "partida_arancelaria": "8418.1",
+    "producto": "Refrigeradores",
+    "ad_valorem": "30%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "8450.11",
+    "producto": "Lavadoras automáticas",
+    "ad_valorem": "30%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "9403.3",
+    "producto": "Muebles madera oficina",
+    "ad_valorem": "30%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "3304.99",
+    "producto": "Cosméticos/maquillaje",
+    "ad_valorem": "20%",
+    "ice": "0%"
+  },
+  {
+    "partida_arancelaria": "402.21",
+    "producto": "Leche en polvo",
+    "ad_valorem": "25%",
+    "ice": "0%"
+  }
+]

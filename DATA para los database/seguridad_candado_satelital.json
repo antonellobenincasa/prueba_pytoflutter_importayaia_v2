@@ -1,0 +1,18 @@
+[
+  {
+    "ciudad": "Guayaquil",
+    "tarifa": "$75"
+  },
+  {
+    "ciudad": "Quito",
+    "tarifa": "$90"
+  },
+  {
+    "ciudad": "Cuenca",
+    "tarifa": "$90"
+  },
+  {
+    "ciudad": "Loja",
+    "tarifa": "$105"
+  }
+]

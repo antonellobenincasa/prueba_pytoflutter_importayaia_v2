@@ -1,0 +1,52 @@
+[
+  {
+    "concepto": "AD_VALOREM",
+    "formula_logica": "CIF * TASA_AD_VALOREM",
+    "notas": "Tasa depende del HS Code"
+  },
+  {
+    "concepto": "FODINFA",
+    "formula_logica": "CIF * 0.005",
+    "notas": "Tasa fija del 0.5%"
+  },
+  {
+    "concepto": "BASE_ICE",
+    "formula_logica": "CIF + AD_VALOREM + FODINFA",
+    "notas": "Base imponible para el ICE"
+  },
+  {
+    "concepto": "ICE",
+    "formula_logica": "BASE_ICE * TASA_ICE",
+    "notas": "Solo si aplica al producto"
+  },
+  {
+    "concepto": "BASE_IVA",
+    "formula_logica": "CIF + AD_VALOREM + FODINFA + ICE",
+    "notas": "Base imponible para el IVA"
+  },
+  {
+    "concepto": "IVA",
+    "formula_logica": "BASE_IVA * 0.15",
+    "notas": "Tasa fija del 15%"
+  },
+  {
+    "concepto": "CIF",
+    "formula_logica": "FOB + FLETE + SEGURO_PRIMA",
+    "notas": "Solo la prima del seguro, sin IVA"
+  },
+  {
+    "concepto": "SEGURO_PRIMA",
+    "formula_logica": "MAX(CFR * 0.0035, 70.00)",
+    "notas": "Mínimo $70 o el 0.35% del CFR"
+  },
+  {
+    "concepto": "TOTAL_LANDED_COST",
+    "formula_logica": "CIF + TRIBUTOS + GASTOS_LOCALES + OTROS",
+    "notas": "Sumatoria final de costos"
+  },
+  {
+    "concepto": "PESO_TASABLE",
+    "formula_logica": "MAX(PESO_REAL, (VOLUMEN_CM3 / FACTOR))",
+    "notas": "Factor: 6000 (Aéreo), 1000 (LCL)"
+  }
+]

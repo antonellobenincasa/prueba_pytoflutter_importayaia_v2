@@ -1,0 +1,11 @@
+concepto,formula_logica,notas
+AD_VALOREM,CIF * TASA_AD_VALOREM,Tasa depende del HS Code
+FODINFA,CIF * 0.005,Tasa fija del 0.5%
+BASE_ICE,CIF + AD_VALOREM + FODINFA,Base imponible para el ICE
+ICE,BASE_ICE * TASA_ICE,Solo si aplica al producto
+BASE_IVA,CIF + AD_VALOREM + FODINFA + ICE,Base imponible para el IVA
+IVA,BASE_IVA * 0.15,Tasa fija del 15%
+CIF,FOB + FLETE + SEGURO_PRIMA,"Solo la prima del seguro, sin IVA"
+SEGURO_PRIMA,"MAX(CFR * 0.0035, 70.00)",Mínimo $70 o el 0.35% del CFR
+TOTAL_LANDED_COST,CIF + TRIBUTOS + GASTOS_LOCALES + OTROS,Sumatoria final de costos
+PESO_TASABLE,"MAX(PESO_REAL, (VOLUMEN_CM3 / FACTOR))","Factor: 6000 (Aéreo), 1000 (LCL)"

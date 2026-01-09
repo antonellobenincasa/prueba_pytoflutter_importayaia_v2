@@ -42,4 +42,18 @@ app.*.map.json
 # Android Studio will place build artifacts here
 /android/app/debug
 /android/app/profile
+/android/app/profile
 /android/app/release
+
+# --- FIREBASE & SCRIPTS (SEGURIDAD TOTAL) ---
+# Esta línea busca el archivo en CUALQUIER carpeta y lo ignora
+**/serviceAccount.json
+
+# Ignorar específicamente rutas conocidas (por si acaso)
+scripts/serviceAccount.json
+DATA para los database/serviceAccount.json
+
+# Ignorar dependencias de Node.js (no es necesario subirlas)
+scripts/node_modules/
+node_modules/
+package-lock.json

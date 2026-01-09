@@ -1,0 +1,55 @@
+partida arancelaria,descripcion general,advalorem,categoria,es_comun,notas_adicionales
+8517.13.00.90,Smartphones (Top Ventas),0%,Tecnología,TRUE,Top #6 Importación Q3 2025
+8517.14.00.00,Celulares básicos (No smart),15%,Tecnología,TRUE,
+8471.30.00.00,Laptops y Portátiles,0%,Tecnología,TRUE,Top #10 Importación Q3 2025
+8528.72.00.41,Televisores LED,Mixto,Hogar,TRUE,Top #16 Importación Q3 2025
+8517.62.20.00,Routers y Módems,10%,Tecnología,TRUE,
+8518.30.00.00,Audífonos y Diademas,25%,Tecnología,TRUE,
+8504.40.90.90,Cargadores y Powerbanks,0%,Tecnología,TRUE,
+8523.51.00.00,Memorias USB y SSD,10%,Tecnología,TRUE,
+9504.50.00.00,Consolas de Videojuegos,30%,Tecnología,TRUE,
+8443.31.00.00,Impresoras Multifunción,10%,Tecnología,TRUE,
+8525.89.00.00,Cámaras Digitales,5%,Tecnología,TRUE,
+8703.21.00.90,Auto Gasolina <= 1000cc,40%,Vehículos,TRUE,
+8703.22.90.90,Auto Gasolina 1000-1500cc,40%,Vehículos,TRUE,Top #9 Importación Q3 2025
+8703.23.90.90,Auto Gasolina 1500-3000cc,40%,Vehículos,TRUE,Top #14 Importación Q3 2025
+8703.40.90.91,Vehículos Híbridos <= 2000cc,0%,Vehículos,TRUE,Top #18 Importación Q3 2025
+8703.80.00.00,Vehículos Eléctricos,0%,Vehículos,TRUE,Exento IVA/ICE
+8704.21.10.99,Camionetas Carga Diésel <= 5t,40%,Vehículos,TRUE,Top #11 Importación Q3 2025
+8704.31.10.90,Camionetas Carga Gasolina <= 5t,40%,Vehículos,TRUE,
+8711.20.00.90,Motos 50-250cc,30%,Vehículos,TRUE,
+4011.10.00.00,Llantas de Turismo,Mixto,Vehículos,TRUE,Tasa Ecovalor
+8708.30.90.00,Repuestos (Frenos),10%,Vehículos,TRUE,
+6109.10.00.00,Camisetas Algodón,10% + $5.5/kg,Textiles,TRUE,Arancel Mixto
+6105.10.00.00,Camisas Hombre Algodón,10% + $5.5/kg,Textiles,TRUE,Arancel Mixto
+6203.42.00.00,Jeans Hombre,10% + $5.5/kg,Textiles,TRUE,Arancel Mixto
+6204.62.00.00,Jeans Mujer,10% + $5.5/kg,Textiles,TRUE,Arancel Mixto
+6115.95.00.00,Calcetines Algodón,10% + $5.5/kg,Textiles,TRUE,Arancel Mixto
+6403.99.90.00,Zapatos Cuero,10% + $6/par,Calzado,TRUE,Arancel Mixto
+6402.19.00.00,Zapatos Deportivos (Sintético),15%,Calzado,TRUE,
+6404.11.00.00,Tenis de Tela,15%,Calzado,TRUE,
+3304.99.00.00,Maquillaje y Skincare,20%,Hogar,TRUE,Reg. Sanitario req.
+3303.00.00.00,Perfumes,20%,Hogar,TRUE,ICE Aplica
+9503.00.00.00,Juguetes,30%,Hogar,TRUE,
+9403.30.00.00,Muebles Oficina,30%,Hogar,TRUE,
+9405.40.00.00,Lámparas LED,30%,Hogar,TRUE,
+3924.10.90.00,Vajilla Plástica,20%,Hogar,TRUE,
+4202.21.00.00,Bolsos de Cuero,30%,Hogar,TRUE,
+8429.52.00.90,Excavadoras 360°,0%,Maquinaria,TRUE,Top #15 Importación Q3 2025
+8427.10.00.00,Montacargas Eléctricos,0%,Maquinaria,TRUE,
+8501.10.00.00,Motores Eléctricos Pequeños,0%,Maquinaria,TRUE,
+8413.70.10.00,Bombas Centrífugas,0%,Maquinaria,TRUE,
+8418.50.00.00,Vitrinas Refrigeradas,15%,Maquinaria,TRUE,
+3004.90.29.00,Medicamentos uso humano,0%,Farmacéutico,TRUE,Top #5 Importación Q3 2025
+9807.10.30.00,Courier 4x4 (Categoría B),**$42**,E-commerce,TRUE,Top #7 Importación Q3 2025
+2304.00.00.00,Tortas de Soja (Alimento),Consultar,Industria,TRUE,Top #3 Importación Q3 2025
+1001.99.10.00,Trigos (Panadería),Consultar,Alimentos,TRUE,Top #8 Importación Q3 2025
+1001.19.00.00,Trigos Duros,Consultar,Alimentos,TRUE,Top #12 Importación Q3 2025
+7210.49.00.90,Acero/Hierro Laminado,Consultar,Industria,TRUE,Top #17 Importación Q3 2025
+2710.19.21.31,Diésel 2,Consultar,Energía,TRUE,Top #1 Importación Q3 2025
+2707.50.10.00,Nafta Disolvente,Consultar,Energía,TRUE,Top #2 Importación Q3 2025
+2711.12.00.00,Propano (Gas),Consultar,Energía,TRUE,Top #4 Importación Q3 2025
+2711.13.00.00,Butanos (Gas),Consultar,Energía,TRUE,Top #13 Importación Q3 2025
+2710.12.20.10,Gasolina Alto Octanaje,Consultar,Energía,TRUE,Top #19 Importación Q3 2025
+2710.19.38.90,Lubricantes Aviación,Consultar,Energía,TRUE,Top #20 Importación Q3 2025
+2710.19.15.20,Jet Fuel,Consultar,Energía,TRUE,Top #23 Importación Q3 2025

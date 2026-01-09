@@ -1,0 +1,61 @@
+naviera,puerto,concepto_rubro,monto_usd,aplica_iva_15,tipo_carga
+ONE,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+ONE,Guayaquil,THC Destino,200,NO,FCL
+ONE,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+ONE,Guayaquil,Handling Fee,50,SI,FCL
+Hapag-Lloyd,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+Hapag-Lloyd,Guayaquil,THC Destino,200,NO,FCL
+Hapag-Lloyd,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+Hapag-Lloyd,Guayaquil,Handling Fee,50,SI,FCL
+Maersk,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+Maersk,Guayaquil,THC Destino,200,NO,FCL
+Maersk,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+Maersk,Guayaquil,Handling Fee,50,SI,FCL
+Maersk,Posorja,Visto Bueno (MBL Fee),165,SI,FCL
+Maersk,Posorja,THC Destino,195,NO,FCL
+Maersk,Posorja,Locales Naviera (Cntr),440,SI,FCL
+Maersk,Posorja,Handling Fee,50,SI,FCL
+MSC,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+MSC,Guayaquil,THC Destino,200,NO,FCL
+MSC,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+MSC,Guayaquil,Handling Fee,50,SI,FCL
+HMM,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+HMM,Guayaquil,THC Destino,200,NO,FCL
+HMM,Guayaquil,Locales Naviera (Cntr),400,SI,FCL
+HMM,Guayaquil,Handling Fee,50,SI,FCL
+CMA-CGM,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+CMA-CGM,Guayaquil,THC Destino,200,NO,FCL
+CMA-CGM,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+CMA-CGM,Guayaquil,Handling Fee,50,SI,FCL
+Evergreen,Guayaquil,Visto Bueno (MBL Fee),125,SI,FCL
+Evergreen,Guayaquil,THC Destino,225,NO,FCL
+Evergreen,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+Evergreen,Guayaquil,Handling Fee,50,SI,FCL
+Wan Hai,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+Wan Hai,Guayaquil,THC Destino,200,NO,FCL
+Wan Hai,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+Wan Hai,Guayaquil,Handling Fee,50,SI,FCL
+COSCO,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+COSCO,Guayaquil,THC Destino,200,NO,FCL
+COSCO,Guayaquil,Locales Naviera (Cntr),400,SI,FCL
+COSCO,Guayaquil,Handling Fee,50,SI,FCL
+OOCL,Guayaquil,Visto Bueno (MBL Fee),125,SI,FCL
+OOCL,Guayaquil,THC Destino,200,NO,FCL
+OOCL,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+OOCL,Guayaquil,Handling Fee,100,SI,FCL
+Seaboard Marine,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+Seaboard Marine,Guayaquil,THC Destino,200,NO,FCL
+Seaboard Marine,Guayaquil,Locales Naviera (Cntr),450,SI,FCL
+Seaboard Marine,Guayaquil,Handling Fee,100,SI,FCL
+PIL,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+PIL,Guayaquil,THC Destino,200,NO,FCL
+PIL,Guayaquil,Locales Naviera (Cntr),500,SI,FCL
+PIL,Guayaquil,Handling Fee,50,SI,FCL
+Marfret,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+Marfret,Guayaquil,THC Destino,200,NO,FCL
+Marfret,Guayaquil,Locales Naviera (Cntr),500,SI,FCL
+Marfret,Guayaquil,Handling Fee,50,SI,FCL
+ZIM,Guayaquil,Visto Bueno (MBL Fee),100,SI,FCL
+ZIM,Guayaquil,THC Destino,200,NO,FCL
+ZIM,Guayaquil,Locales Naviera (Cntr),500,SI,FCL
+ZIM,Guayaquil,Handling Fee,50,SI,FCL

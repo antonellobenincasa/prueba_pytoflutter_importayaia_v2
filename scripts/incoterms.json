@@ -1,0 +1,74 @@
+[
+  {
+    "Incoterm": "EXW",
+    "Nombre Completo": "Ex Works",
+    "Vendedor Paga": "Mercancía en fábrica",
+    "Comprador Paga": "Todo el transporte"
+  },
+  {
+    "Incoterm": "FCA",
+    "Nombre Completo": "Free Carrier",
+    "Vendedor Paga": "Hasta transportista",
+    "Comprador Paga": "Flete, seguro, tributos "
+  },
+  {
+    "Incoterm": "FAS",
+    "Nombre Completo": "Free Alongside Ship",
+    "Vendedor Paga": "Gastos hasta muelle de carga",
+    "Comprador Paga": "Flete, seguro, tributos"
+  },
+  {
+    "Incoterm": "FOB",
+    "Nombre Completo": "Free On Board",
+    "Vendedor Paga": "Hasta a bordo del buque",
+    "Comprador Paga": "Flete, seguro, tributos "
+  },
+  {
+    "Incoterm": "CFR",
+    "Nombre Completo": "Cost and Freight",
+    "Vendedor Paga": "Hasta puerto destino",
+    "Comprador Paga": "Seguro y tributos"
+  },
+  {
+    "Incoterm": "CIF",
+    "Nombre Completo": "Cost, Insurance and Freight",
+    "Vendedor Paga": "Flete + Seguro",
+    "Comprador Paga": "Tributos y gastos locales"
+  },
+  {
+    "Incoterm": "CPT",
+    "Nombre Completo": "Carriage Paid To",
+    "Vendedor Paga": "Flete hasta destino",
+    "Comprador Paga": "Seguro y tributos"
+  },
+  {
+    "Incoterm": "CIP",
+    "Nombre Completo": "Carriage and Insurance Paid To",
+    "Vendedor Paga": "Flete y Seguro hasta destino",
+    "Comprador Paga": "Tributos y gastos locales"
+  },
+  {
+    "Incoterm": "DAP",
+    "Nombre Completo": "Delivered at Place",
+    "Vendedor Paga": "Hasta lugar destino",
+    "Comprador Paga": "Tributos y descarga"
+  },
+  {
+    "Incoterm": "DPU",
+    "Nombre Completo": "Delivered at Place Unloaded",
+    "Vendedor Paga": "Hasta lugar destino (incluye descarga)",
+    "Comprador Paga": "Tributos aduaneros"
+  },
+  {
+    "Incoterm": "DDP",
+    "Nombre Completo": "Delivered Duty Paid",
+    "Vendedor Paga": "TODO incluido",
+    "Comprador Paga": "Solo descarga"
+  },
+  {
+    "Incoterm": "DAT",
+    "Nombre Completo": "Delivered At Terminal",
+    "Vendedor Paga": "Transporte hasta terminal destino",
+    "Comprador Paga": "Tributos y gastos locales"
+  }
+]

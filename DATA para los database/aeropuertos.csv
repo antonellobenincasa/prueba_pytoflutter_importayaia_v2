@@ -1,0 +1,92 @@
+aeropuerto,codigo_iata,ciudad,pais,region
+Shanghai Pudong Int.,PVG,Shanghái,China,Asia
+Shanghai Hongqiao Int.,SHA,Shanghái,China,Asia
+Beijing Capital Int.,PEK,Pekín (Beijing),China,Asia
+Beijing Daxing Int.,PKX,Pekín (Beijing),China,Asia
+Guangzhou Baiyun Int.,CAN,Cantón (Guangzhou),China,Asia
+Shenzhen Bao'an Int.,SZX,Shenzhen,China,Asia
+Hong Kong Int.,HKG,Hong Kong,Hong Kong,Asia
+Chengdu Shuangliu Int.,CTU,Chengdu,China,Asia
+Xiamen Gaoqi Int.,XMN,Xiamen,China,Asia
+Incheon International,ICN,Seúl,Corea del Sur,Asia
+Narita International,NRT,Tokio,Japón,Asia
+Haneda International,HND,Tokio,Japón,Asia
+Kansai International,KIX,Osaka,Japón,Asia
+Taoyuan International,TPE,Taipéi,Taiwán,Asia
+Changi Airport,SIN,Singapur,Singapur,Asia
+Suvarnabhumi Airport,BKK,Bangkok,Tailandia,Asia
+Tan Son Nhat Int.,SGN,Ho Chi Minh,Vietnam,Asia
+Noi Bai International,HAN,Hanói,Vietnam,Asia
+Indira Gandhi Int.,DEL,Nueva Delhi,India,Asia
+Chhatrapati Shivaji Int.,BOM,Bombay (Mumbai),India,Asia
+Chennai International,MAA,Chennai,India,Asia
+Miami International,MIA,Miami,USA,Norteamérica
+John F. Kennedy Int.,JFK,Nueva York,USA,Norteamérica
+Newark Liberty Int.,EWR,Nueva York,USA,Norteamérica
+Los Angeles Int.,LAX,Los Ángeles,USA,Norteamérica
+O'Hare International,ORD,Chicago,USA,Norteamérica
+Hartsfield-Jackson,ATL,Atlanta,USA,Norteamérica
+George Bush Int.,IAH,Houston,USA,Norteamérica
+Dallas/Fort Worth Int.,DFW,Dallas,USA,Norteamérica
+San Francisco Int.,SFO,San Francisco,USA,Norteamérica
+Toronto Pearson Int.,YYZ,Toronto,Canadá,Norteamérica
+Vancouver International,YVR,Vancouver,Canadá,Norteamérica
+Pierre Elliott Trudeau,YUL,Montreal,Canadá,Norteamérica
+Benito Juárez Int.,MEX,Ciudad de México,México,Norteamérica
+Miguel Hidalgo y Costilla,GDL,Guadalajara,México,Norteamérica
+Frankfurt Airport,FRA,Fráncfort,Alemania,Europa
+Munich Airport,MUC,Múnich,Alemania,Europa
+Schiphol Airport,AMS,Ámsterdam,Países Bajos,Europa
+Charles de Gaulle,CDG,París,Francia,Europa
+Orly Airport,ORY,París,Francia,Europa
+Heathrow Airport,LHR,Londres,Reino Unido,Europa
+Gatwick Airport,LGW,Londres,Reino Unido,Europa
+Adolfo Suárez Barajas,MAD,Madrid,España,Europa
+Josep Tarradellas El Prat,BCN,Barcelona,España,Europa
+Malpensa Airport,MXP,Milán,Italia,Europa
+Fiumicino Airport,FCO,Roma,Italia,Europa
+Brussels Airport,BRU,Bruselas,Bélgica,Europa
+Liege Airport (Carga),LGG,Lieja,Bélgica,Europa
+Zurich Airport,ZRH,Zúrich,Suiza,Europa
+Istanbul Airport,IST,Estambul,Turquía,Europa
+Mariscal Sucre Int.,UIO,Quito,Ecuador,Sudamérica
+José Joaquín de Olmedo,GYE,Guayaquil,Ecuador,Sudamérica
+Eloy Alfaro Int.,MEC,Manta,Ecuador,Sudamérica
+El Dorado Int.,BOG,Bogotá,Colombia,Sudamérica
+José María Córdova,MDE,Medellín,Colombia,Sudamérica
+Tocumen Int.,PTY,Ciudad de Panamá,Panamá,Sudamérica
+Jorge Chávez Int.,LIM,Lima,Perú,Sudamérica
+Guarulhos Int.,GRU,Sao Paulo,Brasil,Sudamérica
+Viracopos (Carga),VCP,Campinas,Brasil,Sudamérica
+Arturo Merino Benítez,SCL,Santiago,Chile,Sudamérica
+Ezeiza Int.,EZE,Buenos Aires,Argentina,Sudamérica
+Dubai International,DXB,Dubái,EAU (Dubái),Medio Oriente
+Al Maktoum Int. (Carga),DWC,Dubái,EAU (Dubái),Medio Oriente
+Hamad International,DOH,Doha,Qatar,Medio Oriente
+Abu Dhabi Int.,AUH,Abu Dabi,EAU (Abu Dabi),Medio Oriente
+Memphis International,MEM,Memphis,USA,Norteamérica
+Ted Stevens Anchorage,ANC,Anchorage,USA,Norteamérica
+Muhammad Ali Int.,SDF,Louisville,USA,Norteamérica
+Cincinnati/N. Kentucky,CVG,Cincinnati,USA,Norteamérica
+Seattle-Tacoma Int.,SEA,Seattle,USA,Norteamérica
+Luxembourg Airport,LUX,Luxemburgo,Luxemburgo,Europa
+Leipzig/Halle Airport,LEJ,Leipzig,Alemania,Europa
+East Midlands Airport,EMA,Derby,Reino Unido,Europa
+Copenhagen Airport,CPH,Copenhague,Dinamarca,Europa
+Vienna International,VIE,Viena,Austria,Europa
+Humberto Delgado,LIS,Lisboa,Portugal,Europa
+Kuala Lumpur Int.,KUL,Kuala Lumpur,Malasia,Asia
+Soekarno-Hatta Int.,CGK,Yakarta,Indonesia,Asia
+Ninoy Aquino Int.,MNL,Manila,Filipinas,Asia
+Kingsford Smith,SYD,Sídney,Australia,Oceanía
+Melbourne Airport,MEL,Melbourne,Australia,Oceanía
+Auckland Airport,AKL,Auckland,Nueva Zelanda,Oceanía
+O.R. Tambo Int.,JNB,Johannesburgo,Sudáfrica,África
+Cairo International,CAI,El Cairo,Egipto,África
+Bole International,ADD,Adís Abeba,Etiopía,África
+Jomo Kenyatta Int.,NBO,Nairobi,Kenia,África
+Murtala Muhammed Int.,LOS,Lagos,Nigeria,África
+Carrasco Int.,MVD,Montevideo,Uruguay,Sudamérica
+Silvio Pettirossi Int.,ASU,Asunción,Paraguay,Sudamérica
+Viru Viru Int.,VVI,Santa Cruz,Bolivia,Sudamérica
+Eduardo Gomes Int.,MAO,Manaos,Brasil,Sudamérica

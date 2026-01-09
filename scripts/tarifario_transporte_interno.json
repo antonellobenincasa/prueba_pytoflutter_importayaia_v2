@@ -1,0 +1,38 @@
+[
+  {
+    "ruta_detalle": "GYE - Perímetro Urbano",
+    "ciudad_destino": "Guayaquil",
+    "tarifa_fcl_usd": "$275.00",
+    "origen": "Puerto GYE"
+  },
+  {
+    "ruta_detalle": "GYE - Manta - GYE",
+    "ciudad_destino": "Manta",
+    "tarifa_fcl_usd": "$585.00",
+    "origen": "Puerto GYE"
+  },
+  {
+    "ruta_detalle": "GYE - Machala - GYE",
+    "ciudad_destino": "Machala",
+    "tarifa_fcl_usd": "$595.00",
+    "origen": "Puerto GYE"
+  },
+  {
+    "ruta_detalle": "GYE - Cuenca - GYE",
+    "ciudad_destino": "Cuenca",
+    "tarifa_fcl_usd": "$795.00",
+    "origen": "Puerto GYE"
+  },
+  {
+    "ruta_detalle": "GYE - Ambato - GYE",
+    "ciudad_destino": "Ambato",
+    "tarifa_fcl_usd": "$895.00",
+    "origen": "Puerto GYE"
+  },
+  {
+    "ruta_detalle": "GYE - Quito (UIO) - GYE",
+    "ciudad_destino": "Quito",
+    "tarifa_fcl_usd": "$1,150.00",
+    "origen": "Puerto GYE"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "ciudad_destino": "Guayaquil (Urbano)",
+    "custodia_armada_usd": "$150.00",
+    "candado_satelital_usd": "$50.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  },
+  {
+    "ciudad_destino": "Manta",
+    "custodia_armada_usd": "$350.00",
+    "candado_satelital_usd": "$65.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  },
+  {
+    "ciudad_destino": "Machala",
+    "custodia_armada_usd": "$350.00",
+    "candado_satelital_usd": "$65.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  },
+  {
+    "ciudad_destino": "Cuenca",
+    "custodia_armada_usd": "$345.00",
+    "candado_satelital_usd": "$70.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  },
+  {
+    "ciudad_destino": "Ambato",
+    "custodia_armada_usd": "$405.00",
+    "candado_satelital_usd": "$75.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  },
+  {
+    "ciudad_destino": "Quito (UIO)",
+    "custodia_armada_usd": "$475.00",
+    "candado_satelital_usd": "$85.00",
+    "aplica_iva": "SI",
+    "notas_seguridad": "Tarifas por contenedor"
+  }
+]

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'config/theme.dart'; // Importar configuración de temas
 
 // --- NUEVOS IMPORTS DE FIREBASE ---
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +10,7 @@ import 'firebase_options.dart'; // Asegúrate de que este archivo exista (si no,
 import 'core/services/theme_provider.dart';
 import 'core/services/navigation_sound_service.dart';
 import 'core/services/auth_service.dart';
+import 'core/services/master_data_service.dart';
 
 // 2. Importamos TODAS tus pantallas existentes según tu estructura de carpetas
 import 'presentation/screens/landing_screen.dart';
@@ -46,6 +48,9 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  // --- INICIALIZAR MASTER DATA (CACHE) ---
+  await MasterDataService().init();
+
   runApp(
     MultiProvider(
       providers: [
@@ -70,8 +75,8 @@ class ImportaYaApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
 
           // Aplicamos el tema basado en la preferencia del usuario
-          theme: lightTheme(),
-          darkTheme: darkTheme(),
+          theme: appLightTheme(),
+          darkTheme: appTheme(),
           themeMode: themeProvider.themeMode,
 
           // --- DEFINICIÓN DE RUTAS Y NAVEGACIÓN ---

@@ -1,0 +1,434 @@
+[
+  {
+    "partida arancelaria": "8517.13.00.90",
+    "descripcion general": "Smartphones (Top Ventas)",
+    "advalorem": "0%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #6 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8517.14.00.00",
+    "descripcion general": "Celulares básicos (No smart)",
+    "advalorem": "15%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8471.30.00.00",
+    "descripcion general": "Laptops y Portátiles",
+    "advalorem": "0%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #10 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8528.72.00.41",
+    "descripcion general": "Televisores LED",
+    "advalorem": "Mixto",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #16 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8517.62.20.00",
+    "descripcion general": "Routers y Módems",
+    "advalorem": "10%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8518.30.00.00",
+    "descripcion general": "Audífonos y Diademas",
+    "advalorem": "25%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8504.40.90.90",
+    "descripcion general": "Cargadores y Powerbanks",
+    "advalorem": "0%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8523.51.00.00",
+    "descripcion general": "Memorias USB y SSD",
+    "advalorem": "10%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "9504.50.00.00",
+    "descripcion general": "Consolas de Videojuegos",
+    "advalorem": "30%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8443.31.00.00",
+    "descripcion general": "Impresoras Multifunción",
+    "advalorem": "10%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8525.89.00.00",
+    "descripcion general": "Cámaras Digitales",
+    "advalorem": "5%",
+    "categoria": "Tecnología",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8703.21.00.90",
+    "descripcion general": "Auto Gasolina <= 1000cc",
+    "advalorem": "40%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8703.22.90.90",
+    "descripcion general": "Auto Gasolina 1000-1500cc",
+    "advalorem": "40%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #9 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8703.23.90.90",
+    "descripcion general": "Auto Gasolina 1500-3000cc",
+    "advalorem": "40%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #14 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8703.40.90.91",
+    "descripcion general": "Vehículos Híbridos <= 2000cc",
+    "advalorem": "0%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #18 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8703.80.00.00",
+    "descripcion general": "Vehículos Eléctricos",
+    "advalorem": "0%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Exento IVA/ICE"
+  },
+  {
+    "partida arancelaria": "8704.21.10.99",
+    "descripcion general": "Camionetas Carga Diésel <= 5t",
+    "advalorem": "40%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #11 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8704.31.10.90",
+    "descripcion general": "Camionetas Carga Gasolina <= 5t",
+    "advalorem": "40%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8711.20.00.90",
+    "descripcion general": "Motos 50-250cc",
+    "advalorem": "30%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "4011.10.00.00",
+    "descripcion general": "Llantas de Turismo",
+    "advalorem": "Mixto",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Tasa Ecovalor"
+  },
+  {
+    "partida arancelaria": "8708.30.90.00",
+    "descripcion general": "Repuestos (Frenos)",
+    "advalorem": "10%",
+    "categoria": "Vehículos",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "6109.10.00.00",
+    "descripcion general": "Camisetas Algodón",
+    "advalorem": "10% + $5.5/kg",
+    "categoria": "Textiles",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6105.10.00.00",
+    "descripcion general": "Camisas Hombre Algodón",
+    "advalorem": "10% + $5.5/kg",
+    "categoria": "Textiles",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6203.42.00.00",
+    "descripcion general": "Jeans Hombre",
+    "advalorem": "10% + $5.5/kg",
+    "categoria": "Textiles",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6204.62.00.00",
+    "descripcion general": "Jeans Mujer",
+    "advalorem": "10% + $5.5/kg",
+    "categoria": "Textiles",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6115.95.00.00",
+    "descripcion general": "Calcetines Algodón",
+    "advalorem": "10% + $5.5/kg",
+    "categoria": "Textiles",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6403.99.90.00",
+    "descripcion general": "Zapatos Cuero",
+    "advalorem": "10% + $6/par",
+    "categoria": "Calzado",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Arancel Mixto"
+  },
+  {
+    "partida arancelaria": "6402.19.00.00",
+    "descripcion general": "Zapatos Deportivos (Sintético)",
+    "advalorem": "15%",
+    "categoria": "Calzado",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "6404.11.00.00",
+    "descripcion general": "Tenis de Tela",
+    "advalorem": "15%",
+    "categoria": "Calzado",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "3304.99.00.00",
+    "descripcion general": "Maquillaje y Skincare",
+    "advalorem": "20%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Reg. Sanitario req."
+  },
+  {
+    "partida arancelaria": "3303.00.00.00",
+    "descripcion general": "Perfumes",
+    "advalorem": "20%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": "ICE Aplica"
+  },
+  {
+    "partida arancelaria": "9503.00.00.00",
+    "descripcion general": "Juguetes",
+    "advalorem": "30%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "9403.30.00.00",
+    "descripcion general": "Muebles Oficina",
+    "advalorem": "30%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "9405.40.00.00",
+    "descripcion general": "Lámparas LED",
+    "advalorem": "30%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "3924.10.90.00",
+    "descripcion general": "Vajilla Plástica",
+    "advalorem": "20%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "4202.21.00.00",
+    "descripcion general": "Bolsos de Cuero",
+    "advalorem": "30%",
+    "categoria": "Hogar",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8429.52.00.90",
+    "descripcion general": "Excavadoras 360°",
+    "advalorem": "0%",
+    "categoria": "Maquinaria",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #15 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "8427.10.00.00",
+    "descripcion general": "Montacargas Eléctricos",
+    "advalorem": "0%",
+    "categoria": "Maquinaria",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8501.10.00.00",
+    "descripcion general": "Motores Eléctricos Pequeños",
+    "advalorem": "0%",
+    "categoria": "Maquinaria",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8413.70.10.00",
+    "descripcion general": "Bombas Centrífugas",
+    "advalorem": "0%",
+    "categoria": "Maquinaria",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "8418.50.00.00",
+    "descripcion general": "Vitrinas Refrigeradas",
+    "advalorem": "15%",
+    "categoria": "Maquinaria",
+    "es_comun": "TRUE",
+    "notas_adicionales": ""
+  },
+  {
+    "partida arancelaria": "3004.90.29.00",
+    "descripcion general": "Medicamentos uso humano",
+    "advalorem": "0%",
+    "categoria": "Farmacéutico",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #5 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "9807.10.30.00",
+    "descripcion general": "Courier 4x4 (Categoría B)",
+    "advalorem": "**$42**",
+    "categoria": "E-commerce",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #7 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2304.00.00.00",
+    "descripcion general": "Tortas de Soja (Alimento)",
+    "advalorem": "Consultar",
+    "categoria": "Industria",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #3 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "1001.99.10.00",
+    "descripcion general": "Trigos (Panadería)",
+    "advalorem": "Consultar",
+    "categoria": "Alimentos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #8 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "1001.19.00.00",
+    "descripcion general": "Trigos Duros",
+    "advalorem": "Consultar",
+    "categoria": "Alimentos",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #12 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "7210.49.00.90",
+    "descripcion general": "Acero/Hierro Laminado",
+    "advalorem": "Consultar",
+    "categoria": "Industria",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #17 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2710.19.21.31",
+    "descripcion general": "Diésel 2",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #1 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2707.50.10.00",
+    "descripcion general": "Nafta Disolvente",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #2 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2711.12.00.00",
+    "descripcion general": "Propano (Gas)",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #4 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2711.13.00.00",
+    "descripcion general": "Butanos (Gas)",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #13 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2710.12.20.10",
+    "descripcion general": "Gasolina Alto Octanaje",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #19 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2710.19.38.90",
+    "descripcion general": "Lubricantes Aviación",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #20 Importación Q3 2025"
+  },
+  {
+    "partida arancelaria": "2710.19.15.20",
+    "descripcion general": "Jet Fuel",
+    "advalorem": "Consultar",
+    "categoria": "Energía",
+    "es_comun": "TRUE",
+    "notas_adicionales": "Top #23 Importación Q3 2025"
+  }
+]

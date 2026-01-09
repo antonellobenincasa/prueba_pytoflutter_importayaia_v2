@@ -17,9 +17,15 @@ class MainDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // HTML uses 'bg-background-dark' for the drawer content.
+    // Theme logic
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    // Use the scaffold background color from the theme
+    final bgColor = theme.scaffoldBackgroundColor;
+
     return Drawer(
-      backgroundColor: AppColors.darkBlueBackground,
+      backgroundColor: bgColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
             topRight: Radius.circular(0), bottomRight: Radius.circular(0)),
@@ -27,47 +33,36 @@ class MainDrawer extends StatelessWidget {
       child: Column(
         children: [
           // Header
-          _buildHeader(context),
+          _buildHeader(context, isDark),
 
           // Navigation Links
           Expanded(
             child: ListView(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
               children: [
-                _buildMenuItem(
-                  context,
-                  icon: Icons.home, // material-symbols-filled home
-                  title: "Inicio",
-                  onTap: () => Navigator.pushReplacementNamed(context, '/'),
-                  isArrowVisible: true,
-                  isActive: true, // Simulated for 'Inicio', could be dynamic
-                ),
+                _buildMenuItem(context,
+                    icon: Icons.home, // material-symbols-filled home
+                    title: "Inicio",
+                    onTap: () => Navigator.pushReplacementNamed(context, '/'),
+                    isArrowVisible: true,
+                    isActive: true, // Simulated for 'Inicio', could be dynamic
+                    isDark: isDark),
                 const SizedBox(height: 8),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.groups, // groups
-                  title: "Nosotros",
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const AboutUsScreen()));
-                  },
-                ),
+                _buildMenuItem(context,
+                    icon: Icons.groups, // groups
+                    title: "Nosotros", onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const AboutUsScreen()));
+                }, isDark: isDark),
                 const SizedBox(height: 8),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.mail, // mail
-                  title: "Contacto",
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const ContactScreen()));
-                  },
-                ),
+                _buildMenuItem(context,
+                    icon: Icons.mail, // mail
+                    title: "Contacto", onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const ContactScreen()));
+                }, isDark: isDark),
 
                 // --- ADMIN PANEL ACCESS (Solo visible para admin/superuser) ---
                 Consumer<AuthService>(
@@ -78,17 +73,15 @@ class MainDrawer extends StatelessWidget {
                     return Column(
                       children: [
                         const SizedBox(height: 8),
-                        _buildMenuItem(
-                          context,
-                          icon: Icons.admin_panel_settings,
-                          title: "Panel Admin",
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.pushNamed(context, '/admin_dashboard');
-                          },
-                          isActive: false,
-                          isArrowVisible: true,
-                        ),
+                        _buildMenuItem(context,
+                            icon: Icons.admin_panel_settings,
+                            title: "Panel Admin", onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, '/admin_dashboard');
+                        },
+                            isActive: false,
+                            isArrowVisible: true,
+                            isDark: isDark),
                       ],
                     );
                   },
@@ -104,7 +97,9 @@ class MainDrawer extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         Colors.transparent,
-                        Colors.white.withValues(alpha: 0.1),
+                        isDark
+                            ? Colors.white.withAlpha(25)
+                            : Colors.black.withAlpha(25),
                         Colors.transparent
                       ],
                     ),
@@ -125,7 +120,7 @@ class MainDrawer extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.neonGreen.withValues(alpha: 0.4),
+                              color: AppColors.neonGreen.withAlpha(102), // ~0.4
                               blurRadius: 10, // Base glow
                               offset: const Offset(0, 4),
                             )
@@ -178,24 +173,25 @@ class MainDrawer extends StatelessWidget {
           ),
 
           // Footer
-          _buildFooter(context),
+          _buildFooter(context, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, bool isDark) {
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final iconBoxColor = isDark ? const Color(0xFF0A101D) : Colors.white;
+    final iconBoxBorder =
+        isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13);
+
     return Container(
       padding:
           const EdgeInsets.fromLTRB(24, 60, 24, 32), // pt-safe area adjusted
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Close button logic handled by Drawer overlay usually, but HTML has an absolute close button.
-          // Flutter's drawer gesture handles close. We can add a close button if explicitly needed, but
-          // standard drawer usage implies tapping outside or back.
-          // Let's stick to the visual content.
-
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -203,13 +199,14 @@ class MainDrawer extends StatelessWidget {
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                    color: const Color(0xFF0A101D),
+                    color: iconBoxColor,
                     borderRadius: BorderRadius.circular(12),
-                    border:
-                        Border.all(color: Colors.white.withValues(alpha: 0.05)),
+                    border: Border.all(color: iconBoxBorder),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
+                        color: Colors.black.withAlpha(51), // ~0.2
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       )
                     ]),
                 child: InkWell(
@@ -221,7 +218,7 @@ class MainDrawer extends StatelessWidget {
                             builder: (_) => const ProfileScreen()));
                   },
                   borderRadius: BorderRadius.circular(12),
-                  child: Center(
+                  child: const Center(
                     child: Icon(Icons.local_shipping,
                         size: 28, color: AppColors.neonGreen),
                   ),
@@ -247,16 +244,16 @@ class MainDrawer extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          const Text(
+                          Text(
                             "ImportaYAia",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: textColor,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               height: 1.0,
                             ),
                           ),
-                          Text(
+                          const Text(
                             ".com",
                             style: TextStyle(
                               color: AppColors.neonGreen,
@@ -271,7 +268,7 @@ class MainDrawer extends StatelessWidget {
                       Text(
                         "Logística Inteligente",
                         style: TextStyle(
-                          color: Colors.grey[400],
+                          color: subTextColor,
                           fontSize: 14,
                           fontWeight: FontWeight.w300,
                           letterSpacing: 0.5,
@@ -282,8 +279,7 @@ class MainDrawer extends StatelessWidget {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.notifications_outlined,
-                    color: Colors.white),
+                icon: Icon(Icons.notifications_outlined, color: textColor),
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.push(
@@ -303,47 +299,49 @@ class MainDrawer extends StatelessWidget {
       {required IconData icon,
       required String title,
       required VoidCallback onTap,
+      required bool isDark,
       bool isArrowVisible = false,
       bool isActive = false}) {
-    // HTML styles: p-4 rounded-xl hover:bg-white/5 transition-all
-    // Active style: bg-white/5 border border-white/5
+    final activeBg =
+        isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13);
+    final activeText = isDark ? Colors.white : Colors.black;
+    final inactiveText = isDark ? Colors.grey[300] : Colors.grey[700];
+    final arrowColor = isDark ? Colors.grey[500] : Colors.grey[400];
+    final hoverColor =
+        isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13);
+
+    final borderColor = isActive
+        ? (isDark ? Colors.white.withAlpha(13) : Colors.black.withAlpha(13))
+        : Colors.transparent;
 
     return Material(
-      color:
-          isActive ? Colors.white.withValues(alpha: 0.05) : Colors.transparent,
-      shape: isActive
-          ? RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-              side: BorderSide(color: Colors.white.withValues(alpha: 0.05)))
-          : RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: isActive ? activeBg : Colors.transparent,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(color: borderColor)),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        hoverColor: Colors.white.withValues(alpha: 0.05),
+        hoverColor: hoverColor,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
               Icon(icon,
-                  color: isActive
-                      ? Colors.white
-                      : Colors.grey[
-                          400], // group-hover:text-primary handled by click state in flutter usually or simplistic logic
-                  size: 24),
+                  color: isActive ? activeText : Colors.grey[400], size: 24),
               const SizedBox(width: 16),
               Expanded(
                 child: Text(
                   title,
                   style: TextStyle(
-                    color: isActive ? Colors.white : Colors.grey[300],
+                    color: isActive ? activeText : inactiveText,
                     fontSize: 16,
                     fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
                   ),
                 ),
               ),
               if (isArrowVisible)
-                Icon(Icons.arrow_forward_ios,
-                    size: 14, color: Colors.grey[500]),
+                Icon(Icons.arrow_forward_ios, size: 14, color: arrowColor),
             ],
           ),
         ),
@@ -351,13 +349,20 @@ class MainDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter(BuildContext context) {
+  Widget _buildFooter(BuildContext context, bool isDark) {
+    final footerBg = isDark ? const Color(0xFF070E1A) : Colors.grey[100]!;
+    final borderTop = isDark ? Colors.white.withAlpha(13) : Colors.grey[300]!;
+    final buttonBg = isDark ? const Color(0xFF0A101D) : Colors.white;
+    final buttonBorder =
+        isDark ? Colors.white.withAlpha(25) : Colors.grey[300]!;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final subTextColor = isDark ? const Color(0xFF6B7280) : Colors.grey[600];
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       decoration: BoxDecoration(
-        color: const Color(0xFF070E1A), // bg-[#070E1A]
-        border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
+        color: footerBg,
+        border: Border(top: BorderSide(color: borderTop)),
       ),
       child: Column(
         children: [
@@ -372,31 +377,34 @@ class MainDrawer extends StatelessWidget {
                   width: 40,
                   height: 40, // size-10
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0A101D), // bg-surface-dark
-                    shape: BoxShape.circle,
-                    border:
-                        Border.all(color: Colors.white.withValues(alpha: 0.1)),
-                  ),
+                      color: buttonBg,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: buttonBorder),
+                      boxShadow: [
+                        if (!isDark)
+                          BoxShadow(
+                              color: Colors.black.withAlpha(13), blurRadius: 4)
+                      ]),
                   child: const Center(
                     child:
                         Icon(Icons.login, size: 20, color: AppColors.neonGreen),
                   ),
                 ),
                 const SizedBox(width: 16),
-                const Column(
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       "Iniciar Sesión",
                       style: TextStyle(
-                        color: Colors.white,
+                        color: textColor,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                     Text(
                       "Accede a tu cuenta",
                       style: TextStyle(
-                        color: Color(0xFF6B7280), // text-gray-500
+                        color: subTextColor, // text-gray-500
                         fontSize: 12,
                       ),
                     ),
@@ -418,11 +426,15 @@ class MainDrawer extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0A101D),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.1)),
-                      ),
+                          color: buttonBg,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: buttonBorder),
+                          boxShadow: [
+                            if (!isDark)
+                              BoxShadow(
+                                  color: Colors.black.withAlpha(13),
+                                  blurRadius: 4)
+                          ]),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -437,7 +449,10 @@ class MainDrawer extends StatelessWidget {
                           Text(
                             themeProvider.isDarkMode ? 'Claro' : 'Oscuro',
                             style: TextStyle(
-                                color: Colors.grey[400], fontSize: 11),
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[800],
+                                fontSize: 11),
                           ),
                         ],
                       ),
@@ -455,11 +470,15 @@ class MainDrawer extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0A101D),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.1)),
-                      ),
+                          color: buttonBg,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: buttonBorder),
+                          boxShadow: [
+                            if (!isDark)
+                              BoxShadow(
+                                  color: Colors.black.withAlpha(13),
+                                  blurRadius: 4)
+                          ]),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -476,7 +495,10 @@ class MainDrawer extends StatelessWidget {
                           Text(
                             'Sonido',
                             style: TextStyle(
-                                color: Colors.grey[400], fontSize: 11),
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[800],
+                                fontSize: 11),
                           ),
                         ],
                       ),

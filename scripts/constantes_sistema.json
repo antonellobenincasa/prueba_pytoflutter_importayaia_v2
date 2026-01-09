@@ -1,0 +1,92 @@
+[
+  {
+    "constante": "IVA_RATE",
+    "valor": "0.15",
+    "unidad": "Porcentaje",
+    "descripcion": "Tasa de Impuesto al Valor Agregado (15%)"
+  },
+  {
+    "constante": "FODINFA_RATE",
+    "valor": "0.005",
+    "unidad": "Porcentaje",
+    "descripcion": "Fondo de Desarrollo para la Infancia (0.5%)"
+  },
+  {
+    "constante": "ISD_RATE",
+    "valor": "0.05",
+    "unidad": "Porcentaje",
+    "descripcion": "Impuesto Salida de Divisas (5%)"
+  },
+  {
+    "constante": "INSURANCE_RATE",
+    "valor": "0.0035",
+    "unidad": "Porcentaje",
+    "descripcion": "Tasa de seguro internacional (0.35%)"
+  },
+  {
+    "constante": "INSURANCE_MINIMUM",
+    "valor": "70",
+    "unidad": "USD",
+    "descripcion": "Prima mínima aplicable de seguro"
+  },
+  {
+    "constante": "BL_FEE_FCL",
+    "valor": "100",
+    "unidad": "USD",
+    "descripcion": "Fee de emisión de BL para FCL"
+  },
+  {
+    "constante": "THC_FCL_DESTINO",
+    "valor": "200",
+    "unidad": "USD/Cntr",
+    "descripcion": "Terminal Handling Charge destino FCL"
+  },
+  {
+    "constante": "OTROS_LOCALES_FCL",
+    "valor": "550",
+    "unidad": "USD/Cntr",
+    "descripcion": "Otros gastos locales naviera FCL"
+  },
+  {
+    "constante": "BL_FEE_LCL",
+    "valor": "50",
+    "unidad": "USD",
+    "descripcion": "Fee de emisión de BL para LCL"
+  },
+  {
+    "constante": "ADMIN_LCL_DESTINO",
+    "valor": "50",
+    "unidad": "USD",
+    "descripcion": "Admin Charge destino LCL"
+  },
+  {
+    "constante": "OTROS_LOCALES_LCL",
+    "valor": "250",
+    "unidad": "USD",
+    "descripcion": "Otros gastos locales consolidadora LCL"
+  },
+  {
+    "constante": "ALMACENAJE_PUERTO",
+    "valor": "400",
+    "unidad": "USD/Cntr",
+    "descripcion": "Costo estimado almacenaje puerto arribo"
+  },
+  {
+    "constante": "AGENCIAMIENTO_ADUANERO",
+    "valor": "295",
+    "unidad": "USD",
+    "descripcion": "Honorarios despachante de aduana"
+  },
+  {
+    "constante": "FACTOR_VOL_AEREO",
+    "valor": "6000",
+    "unidad": "Factor",
+    "descripcion": "Divisor para peso volumétrico aéreo"
+  },
+  {
+    "constante": "FACTOR_VOL_LCL",
+    "valor": "1000",
+    "unidad": "Factor",
+    "descripcion": "Divisor para peso volumétrico marítimo"
+  }
+]

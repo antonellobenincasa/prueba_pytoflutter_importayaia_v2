@@ -1,0 +1,16 @@
+constante,valor,unidad,descripcion
+IVA_RATE,0.15,Porcentaje,Tasa de Impuesto al Valor Agregado (15%)
+FODINFA_RATE,0.005,Porcentaje,Fondo de Desarrollo para la Infancia (0.5%)
+ISD_RATE,0.05,Porcentaje,Impuesto Salida de Divisas (5%)
+INSURANCE_RATE,0.0035,Porcentaje,Tasa de seguro internacional (0.35%)
+INSURANCE_MINIMUM,70,USD,Prima mínima aplicable de seguro
+BL_FEE_FCL,100,USD,Fee de emisión de BL para FCL
+THC_FCL_DESTINO,200,USD/Cntr,Terminal Handling Charge destino FCL
+OTROS_LOCALES_FCL,550,USD/Cntr,Otros gastos locales naviera FCL
+BL_FEE_LCL,50,USD,Fee de emisión de BL para LCL
+ADMIN_LCL_DESTINO,50,USD,Admin Charge destino LCL
+OTROS_LOCALES_LCL,250,USD,Otros gastos locales consolidadora LCL
+ALMACENAJE_PUERTO,400,USD/Cntr,Costo estimado almacenaje puerto arribo
+AGENCIAMIENTO_ADUANERO,295,USD,Honorarios despachante de aduana
+FACTOR_VOL_AEREO,6000,Factor,Divisor para peso volumétrico aéreo
+FACTOR_VOL_LCL,1000,Factor,Divisor para peso volumétrico marítimo

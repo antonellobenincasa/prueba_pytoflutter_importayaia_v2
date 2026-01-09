@@ -1,0 +1,8 @@
+concepto,valor_regla,unidad,aplica_iva,descripcion_legal
+Turno Devolución Vacío,56,USD,SI (15%),Costo por gestión de entrega de contenedor vacío
+Excepción Naviera EMC,Variable,USD,SI,No incluye Handling en Tasesa/Aretina (Evergreen)
+Tiempo Espera (Libre),6,Horas,N/A,Horas gratuitas en bodega para carga/descarga
+Tiempo Espera (7-10h),35,USD/Hora,SI,Recargo por hora o fracción tras horas libres
+Tiempo Espera (11h+),90%,% Flete,SI,Recargo sobre el valor del viaje pactado
+Tiempo Espera (Siguiente día),100%,% Flete,SI,Se cobra flete completo a partir del mediodía
+Falso Flete,85%,% Flete GYE,SI,Cobro si no cargan el contenedor por causas ajenas

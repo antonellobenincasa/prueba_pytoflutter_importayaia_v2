@@ -1,0 +1,30 @@
+[
+  {
+    "tasa_porcentaje": "0%",
+    "productos_tipicos": "Computadoras, teléfonos, maquinaria industrial, insumos médicos"
+  },
+  {
+    "tasa_porcentaje": "5%",
+    "productos_tipicos": "Materias primas, algunos insumos agrícolas"
+  },
+  {
+    "tasa_porcentaje": "15%",
+    "productos_tipicos": "Partes y repuestos, cables, componentes"
+  },
+  {
+    "tasa_porcentaje": "20%",
+    "productos_tipicos": "Electrodomésticos, plásticos, cosméticos"
+  },
+  {
+    "tasa_porcentaje": "25%",
+    "productos_tipicos": "Bebidas alcohólicas, lácteos"
+  },
+  {
+    "tasa_porcentaje": "30%",
+    "productos_tipicos": "Calzado, ropa, muebles, refrigeradores"
+  },
+  {
+    "tasa_porcentaje": "45%",
+    "productos_tipicos": "Vehículos, algunos productos de lujo"
+  }
+]

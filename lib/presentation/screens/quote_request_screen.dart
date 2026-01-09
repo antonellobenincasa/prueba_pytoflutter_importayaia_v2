@@ -3,6 +3,7 @@ import 'package:animate_do/animate_do.dart';
 import '../../config/theme.dart';
 import '../../core/services/firebase_service.dart';
 import '../../core/services/auth_service.dart';
+import '../../core/services/master_data_service.dart'; // IMPORTANTE
 import '../widgets/neon_card.dart';
 import '../widgets/port_autocomplete_field.dart';
 
@@ -17,6 +18,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final FirebaseService _firebaseService = FirebaseService();
+
+  // Acceso a la Data Maestra (Cerebro)
+  final MasterDataService _masterData = MasterDataService();
 
   // -- Shared Controllers --
   final TextEditingController _fobController = TextEditingController();
@@ -33,32 +37,15 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
   // -- Shared Fields --
   String? _selectedOriginCountry;
-  final List<String> _originCountries = [
-    'China',
-    'Estados Unidos',
-    'Alemania',
-    'Japón',
-    'Corea del Sur',
-    'India',
-    'Vietnam',
-    'Tailandia',
-    'Italia',
-    'España',
-    'Francia',
-    'Reino Unido',
-    'Brasil',
-    'México',
-    'Colombia',
-    'Otro'
-  ];
+  // NOTA: _originCountries ya no es fijo, viene de _masterData.countries
 
   // -- LCL Specific: Dynamic Bultos List --
   final List<Map<String, dynamic>> _bultosList = [];
 
   // -- LCL New Features --
-  bool _lclUseInches = false; // Toggle between cm and inches
-  String? _lclIsStackable; // null, 'Si', 'No', 'Si, es apilable'
-  String? _lclIsDangerous; // null, 'No', 'Si'
+  bool _lclUseInches = false;
+  String? _lclIsStackable;
+  String? _lclIsDangerous;
   final TextEditingController _lclCommentsController = TextEditingController();
   final List<String> _embalajeTypes = [
     'Caja',
@@ -70,7 +57,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
   ];
 
   // -- LCL Manual Mode --
-  bool _lclManualMode = false; // Toggle between bultos detail and manual input
+  bool _lclManualMode = false;
   final TextEditingController _lclPiecesController = TextEditingController();
   final TextEditingController _lclTotalCbmController = TextEditingController();
   final TextEditingController _lclTotalWeightController =
@@ -78,9 +65,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
   // -- Air Specific --
   final List<Map<String, dynamic>> _airPiezasList = [];
-  bool _airUseInches = false; // Toggle between cm and inches
-  String? _airIsStackable; // null, 'Si', 'No'
-  String? _airIsDangerous; // null, 'No', 'Si'
+  bool _airUseInches = false;
+  String? _airIsStackable;
+  String? _airIsDangerous;
   final TextEditingController _airCommentsController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _volumeController = TextEditingController();
@@ -95,15 +82,18 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_onTabChanged);
-    _addBulto(); // Start with one bulto for LCL
+    _addBulto();
     _fetchContainerTypes();
+
+    // Inicializar Incoterm por defecto si existe en la base de datos
+    if (_masterData.incoterms.isNotEmpty) {
+      _incoterm = _masterData.incoterms.first.code;
+    }
   }
 
   void _onTabChanged() {
     if (_tabController.indexIsChanging) return;
-    // Rebuild to update port/airport labels and behavior
     setState(() {
-      // Clear origin when switching between maritime and air modes
       final wasAirMode = _tabController.previousIndex == 2;
       final isAirMode = _tabController.index == 2;
       if (wasAirMode != isAirMode) {
@@ -117,25 +107,23 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     _tabController.removeListener(_onTabChanged);
     _tabController.dispose();
     _fobController.dispose();
-    // _freightController removed - backend calculates freight
     _productController.dispose();
     _hsCodeController.dispose();
     _originController.dispose();
     _destinationController.dispose();
     _weightController.dispose();
     _volumeController.dispose();
-    // LCL Manual Mode controllers
     _lclPiecesController.dispose();
     _lclTotalCbmController.dispose();
     _lclTotalWeightController.dispose();
     _lclCommentsController.dispose();
+    // Limpieza de controladores en listas
     for (var bulto in _bultosList) {
       (bulto['length'] as TextEditingController?)?.dispose();
       (bulto['width'] as TextEditingController?)?.dispose();
       (bulto['height'] as TextEditingController?)?.dispose();
       (bulto['weight'] as TextEditingController?)?.dispose();
     }
-    // Air controllers
     _airCommentsController.dispose();
     for (var pieza in _airPiezasList) {
       (pieza['length'] as TextEditingController?)?.dispose();
@@ -161,7 +149,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
         });
       }
     } catch (e) {
-      // Error fetching containers - using fallback
       if (mounted) {
         setState(() {
           _containerTypes = _getDefaultContainers();
@@ -176,34 +163,13 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
   List<Map<String, dynamic>> _getDefaultContainers() {
     return [
-      {
-        "code": "20GP",
-        "name": "20ft Standard",
-        "volume_capacity_cbm": 28,
-        "weight_capacity_kg": 21700
-      },
-      {
-        "code": "40GP",
-        "name": "40ft Standard",
-        "volume_capacity_cbm": 56,
-        "weight_capacity_kg": 26500
-      },
-      {
-        "code": "40HC",
-        "name": "40ft High Cube",
-        "volume_capacity_cbm": 67,
-        "weight_capacity_kg": 26500
-      },
-      {
-        "code": "40NOR",
-        "name": "40ft NOR Reefer",
-        "volume_capacity_cbm": 54,
-        "weight_capacity_kg": 27500
-      },
+      {"code": "20GP", "name": "20ft Standard", "volume_capacity_cbm": 28},
+      {"code": "40GP", "name": "40ft Standard", "volume_capacity_cbm": 56},
+      {"code": "40HC", "name": "40ft High Cube", "volume_capacity_cbm": 67},
+      {"code": "40NOR", "name": "40ft NOR Reefer", "volume_capacity_cbm": 54},
     ];
   }
 
-  /// Add a new FCL container row
   void _addFCLContainer() {
     setState(() {
       _fclContainerList.add({
@@ -215,7 +181,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     });
   }
 
-  /// Remove FCL container row
   void _removeFCLContainer(int index) {
     if (_fclContainerList.length > 1) {
       setState(() {
@@ -225,11 +190,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     }
   }
 
-  /// Get total containers count
   int get _totalContainersCount =>
       _fclContainerList.fold<int>(0, (sum, c) => sum + (c['quantity'] as int));
 
-  /// Get total weight estimate
   double get _totalWeightEstimate {
     double total = 0;
     for (var c in _fclContainerList) {
@@ -265,7 +228,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     }
   }
 
-  /// Calculate total LCL CBM from bultos
   double get _totalLclCbm {
     double total = 0;
     for (var bulto in _bultosList) {
@@ -276,15 +238,13 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
       double h =
           double.tryParse((bulto['height'] as TextEditingController).text) ?? 0;
       int qty = bulto['cantidad'] as int;
-      double cbm = _lclUseInches
-          ? (l * w * h * 0.0000164) // Cubic inches to CBM
-          : (l * w * h / 1000000); // cm to CBM
+      double cbm =
+          _lclUseInches ? (l * w * h * 0.0000164) : (l * w * h / 1000000);
       total += cbm * qty;
     }
     return total;
   }
 
-  /// Calculate total LCL weight from bultos
   double get _totalLclWeight {
     double total = 0;
     for (var bulto in _bultosList) {
@@ -296,7 +256,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     return total;
   }
 
-  // ============ AIR HELPERS ============
   void _addAirPieza() {
     setState(() {
       _airPiezasList.add({
@@ -322,7 +281,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     }
   }
 
-  /// Calculate total Air CBM from piezas
   double get _totalAirCbm {
     double total = 0;
     for (var pieza in _airPiezasList) {
@@ -333,15 +291,13 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
       double h =
           double.tryParse((pieza['height'] as TextEditingController).text) ?? 0;
       int qty = pieza['cantidad'] as int;
-      double cbm = _airUseInches
-          ? (l * w * h * 0.0000164) // Cubic inches to CBM
-          : (l * w * h / 1000000); // cm to CBM
+      double cbm =
+          _airUseInches ? (l * w * h * 0.0000164) : (l * w * h / 1000000);
       total += cbm * qty;
     }
     return total;
   }
 
-  /// Calculate total Air weight from piezas (actual weight)
   double get _totalAirWeight {
     double total = 0;
     for (var pieza in _airPiezasList) {
@@ -353,7 +309,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     return total;
   }
 
-  /// Calculate volumetric weight for air cargo
   double get _airVolumetricWeight {
     double total = 0;
     for (var pieza in _airPiezasList) {
@@ -364,18 +319,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
       double h =
           double.tryParse((pieza['height'] as TextEditingController).text) ?? 0;
       int qty = pieza['cantidad'] as int;
-      double vol = _airUseInches
-          ? (l * w * h / 366) // Cubic inches / 366
-          : (l * w * h / 6000); // cm³ / 6000
+      double vol = _airUseInches ? (l * w * h / 366) : (l * w * h / 6000);
       total += vol * qty;
     }
     return total;
   }
 
-  /// Submit quote to backend
   Future<void> _submitQuote() async {
     setState(() => _isSubmitting = true);
-
     try {
       String transportType;
       double totalWeight = 0;
@@ -383,7 +334,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
       if (_tabController.index == 0) {
         transportType = 'FCL';
-        // For FCL, calculate from container list
         for (var container in _fclContainerList) {
           final type = _containerTypes.firstWhere(
             (c) => c['code'] == container['type'],
@@ -400,22 +350,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
         }
       } else if (_tabController.index == 1) {
         transportType = 'LCL';
-        // Calculate from bultos
-        for (var bulto in _bultosList) {
-          double l = double.tryParse(bulto['length']?.text ?? '') ?? 0;
-          double w = double.tryParse(bulto['width']?.text ?? '') ?? 0;
-          double h = double.tryParse(bulto['height']?.text ?? '') ?? 0;
-          double wt = double.tryParse(bulto['weight']?.text ?? '') ?? 0;
-          totalVolume += (l * w * h) / 1000000; // cm to CBM
-          totalWeight += wt;
-        }
+        totalVolume = _totalLclCbm;
+        totalWeight = _totalLclWeight;
       } else {
         transportType = 'AIR';
-        totalWeight = double.tryParse(_weightController.text) ?? 0;
-        totalVolume = double.tryParse(_volumeController.text) ?? 0;
+        totalVolume = _totalAirCbm;
+        totalWeight = _totalAirWeight;
       }
 
-      // Get user data from AuthService
       final authService = AuthService();
       final userData = authService.userData;
 
@@ -427,6 +369,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
         'cargo_weight_kg': totalWeight,
         'cargo_volume_cbm': totalVolume,
         'fob_value_usd': double.tryParse(_fobController.text) ?? 0,
+        'origin_country': _selectedOriginCountry, // Campo importante
+        'incoterm': _incoterm,
+        'insurance_requested': _includeInsurance,
         'company_name': userData?['company_name'] ?? 'Sin especificar',
         'contact_name':
             '${userData?['first_name'] ?? ''} ${userData?['last_name'] ?? ''}'
@@ -437,11 +382,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                 : 'Usuario',
         'contact_email': authService.userEmail ?? 'sin@email.com',
         'contact_phone': userData?['phone'] ?? '0000000000',
-        'city': _destinationController.text,
       };
 
       if (transportType == 'FCL') {
-        // Send container configuration as list
         payload['container_config'] = _fclContainerList
             .map((c) => {
                   'type': c['type'],
@@ -453,9 +396,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             .toList();
       }
 
-      // Submitting quote to Firebase
       final quoteId = await _firebaseService.createQuote(payload);
-      // Quote submitted successfully
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -467,13 +408,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
         Navigator.pop(context);
       }
     } catch (e) {
-      // Error submitting quote
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
         );
       }
     } finally {
@@ -483,23 +420,22 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     const primaryColor = AppColors.neonGreen;
-    const bgDark = Color(0xFF050A14);
-    const surfaceDark = Color(0xFF0F1623);
+    final bgBackgroundColor = theme.scaffoldBackgroundColor;
+    final surfaceColor = theme.cardColor;
 
     return Scaffold(
-      backgroundColor: bgDark,
+      backgroundColor: bgBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
-            // AppBar
             _buildAppBar(primaryColor),
-
-            // Tab Bar
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color: surfaceDark,
+                color: surfaceColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: TabBar(
@@ -508,7 +444,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                   color: primaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                labelColor: Colors.black,
+                labelColor: isDark ? Colors.black : Colors.white,
                 unselectedLabelColor: Colors.grey,
                 labelStyle:
                     const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
@@ -519,36 +455,37 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                 ],
               ),
             ),
-
-            // Tab Content
             Expanded(
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildFCLTab(surfaceDark, primaryColor),
-                  _buildLCLTab(surfaceDark, primaryColor),
-                  _buildAirTab(surfaceDark, primaryColor),
+                  _buildFCLTab(surfaceColor, primaryColor),
+                  _buildLCLTab(surfaceColor, primaryColor),
+                  _buildAirTab(surfaceColor, primaryColor),
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomSheet: _buildSubmitButton(primaryColor, bgDark),
+      bottomSheet: _buildSubmitButton(primaryColor, bgBackgroundColor),
     );
   }
 
   Widget _buildAppBar(Color primaryColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.white10)),
+      decoration: BoxDecoration(
+        color: Theme.of(context).appBarTheme.backgroundColor,
+        border:
+            Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            icon: Icon(Icons.arrow_back,
+                color: Theme.of(context).iconTheme.color),
             onPressed: () => Navigator.pop(context),
           ),
           Column(
@@ -563,20 +500,23 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                       letterSpacing: 1)),
             ],
           ),
-          const SizedBox(width: 48), // Balance
+          const SizedBox(width: 48),
         ],
       ),
     );
   }
 
-  // ============ FCL TAB ============
+  // ============ TABS ============
   Widget _buildFCLTab(Color surfaceDark, Color primaryColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final infoTextColor = isDark ? Colors.amber[200] : Colors.brown[700];
+    final labelColor = isDark ? Colors.grey[400] : Colors.grey[600];
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Container Configuration Section
           FadeInDown(
             child: NeonCard(
               child: Column(
@@ -611,9 +551,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
-                            "Peso máximo: 27,000 Kg por contenedor (aplica a todos los tipos). La línea naviera puede cobrar OWS (Overweight Surcharges) por sobrepeso.",
-                            style: TextStyle(
-                                color: Colors.amber[200], fontSize: 11),
+                            "Peso máximo: 27,000 Kg por contenedor. Posible cobro OWS por sobrepeso.",
+                            style:
+                                TextStyle(color: infoTextColor, fontSize: 11),
                           ),
                         ),
                       ],
@@ -623,15 +563,11 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                   if (_isLoadingContainers)
                     const Center(child: CircularProgressIndicator())
                   else ...[
-                    // Container Rows
                     ..._fclContainerList.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final container = entry.value;
                       return _buildFCLContainerRow(
-                          index, container, surfaceDark, primaryColor);
+                          entry.key, entry.value, surfaceDark, primaryColor);
                     }),
                     const SizedBox(height: 16),
-                    // Totals Summary
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -648,7 +584,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                             children: [
                               Text("Total Contenedores",
                                   style: TextStyle(
-                                      color: Colors.grey[400], fontSize: 11)),
+                                      color: labelColor, fontSize: 11)),
                               Text("$_totalContainersCount",
                                   style: TextStyle(
                                       color: primaryColor,
@@ -661,7 +597,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                             children: [
                               Text("Peso Total Estimado",
                                   style: TextStyle(
-                                      color: Colors.grey[400], fontSize: 11)),
+                                      color: labelColor, fontSize: 11)),
                               Text(
                                   "${_totalWeightEstimate.toStringAsFixed(0)} Kg",
                                   style: TextStyle(
@@ -685,40 +621,40 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     );
   }
 
-  /// Build a single FCL container row with type, quantity, weight
   Widget _buildFCLContainerRow(int index, Map<String, dynamic> container,
       Color surfaceDark, Color primaryColor) {
+    final textColor =
+        Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: surfaceDark,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white10),
+        border: Border.all(
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Contenedor ${index + 1}",
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(color: textColor, fontWeight: FontWeight.bold)),
               if (_fclContainerList.length > 1)
                 IconButton(
                   icon: const Icon(Icons.remove_circle,
                       color: Colors.red, size: 20),
                   onPressed: () => _removeFCLContainer(index),
-                  constraints: const BoxConstraints(),
                   padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              // Container Type Dropdown
               Expanded(
                 flex: 2,
                 child: Column(
@@ -731,25 +667,22 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+                          color: surfaceDark,
+                          borderRadius: BorderRadius.circular(6)),
                       child: DropdownButtonHideUnderline(
                         child: DropdownButton<String>(
                           value: container['type'] as String,
                           isExpanded: true,
-                          dropdownColor: const Color(0xFF0F1623),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 13),
+                          dropdownColor: surfaceDark,
+                          style: TextStyle(color: textColor, fontSize: 13),
                           items: _containerTypes.map((type) {
-                            return DropdownMenuItem<String>(
-                              value: type['code'] as String,
-                              child: Text("${type['code']} - ${type['name']}"),
-                            );
+                            return DropdownMenuItem(
+                                value: type['code'] as String,
+                                child:
+                                    Text("${type['code']} - ${type['name']}"));
                           }).toList(),
-                          onChanged: (value) {
-                            setState(() => container['type'] = value);
-                          },
+                          onChanged: (value) =>
+                              setState(() => container['type'] = value),
                         ),
                       ),
                     ),
@@ -757,7 +690,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                 ),
               ),
               const SizedBox(width: 8),
-              // Quantity
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -768,9 +700,8 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     const SizedBox(height: 4),
                     Container(
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+                          color: surfaceDark,
+                          borderRadius: BorderRadius.circular(6)),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -782,17 +713,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                               });
                             },
                             child: const Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Icon(Icons.remove,
-                                  color: Colors.grey, size: 16),
-                            ),
+                                padding: EdgeInsets.all(6),
+                                child: Icon(Icons.remove,
+                                    color: Colors.grey, size: 16)),
                           ),
-                          Text(
-                            '${container['quantity']}',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
+                          Text('${container['quantity']}',
+                              style: TextStyle(
+                                  color: textColor,
+                                  fontWeight: FontWeight.bold)),
                           InkWell(
                             onTap: () {
                               setState(() {
@@ -801,10 +729,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                               });
                             },
                             child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Icon(Icons.add,
-                                  color: primaryColor, size: 16),
-                            ),
+                                padding: const EdgeInsets.all(6),
+                                child: Icon(Icons.add,
+                                    color: primaryColor, size: 16)),
                           ),
                         ],
                       ),
@@ -813,7 +740,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                 ),
               ),
               const SizedBox(width: 8),
-              // Weight
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -825,21 +751,20 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     TextField(
                       controller: container['weight'] as TextEditingController,
                       keyboardType: TextInputType.number,
-                      style: const TextStyle(color: Colors.white, fontSize: 13),
+                      style: TextStyle(color: textColor, fontSize: 13),
                       decoration: InputDecoration(
                         hintText: "10000",
                         hintStyle:
                             const TextStyle(color: Colors.grey, fontSize: 12),
                         filled: true,
-                        fillColor: const Color(0xFF0F1623),
+                        fillColor: surfaceDark,
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 10),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6),
-                          borderSide: BorderSide.none,
-                        ),
+                            borderRadius: BorderRadius.circular(6),
+                            borderSide: BorderSide.none),
                       ),
-                      onChanged: (_) => setState(() {}), // Update totals
+                      onChanged: (_) => setState(() {}),
                     ),
                   ],
                 ),
@@ -851,14 +776,16 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     );
   }
 
-  // ============ LCL TAB ============
   Widget _buildLCLTab(Color surfaceDark, Color primaryColor) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final infoTextColor = isDark ? Colors.blue[200] : Colors.blue[800];
+    final labelColor = isDark ? Colors.grey[400] : Colors.grey[600];
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Toggle between detail and manual mode
           FadeInDown(
             child: NeonCard(
               glowColor: Colors.blue,
@@ -870,14 +797,12 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     children: [
                       _buildCardTitle(Icons.inventory_2,
                           "Información de la Carga", Colors.blue),
-                      // Unit Toggle (cm/inches)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: surfaceDark,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(8)),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -895,12 +820,11 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                                 ),
                                 child: Text("CM",
                                     style: TextStyle(
-                                      color: !_lclUseInches
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                                        color: !_lclUseInches
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ),
                             GestureDetector(
@@ -916,12 +840,11 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                                 ),
                                 child: Text("IN",
                                     style: TextStyle(
-                                      color: _lclUseInches
-                                          ? Colors.white
-                                          : Colors.grey,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                                        color: _lclUseInches
+                                            ? Colors.white
+                                            : Colors.grey,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ),
                           ],
@@ -930,15 +853,12 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     ],
                   ),
                   const SizedBox(height: 16),
-
-                  // Mode toggle: Detallado / Manual
                   Center(
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: surfaceDark,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                          color: surfaceDark,
+                          borderRadius: BorderRadius.circular(8)),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -955,12 +875,11 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                               ),
                               child: Text("Detallado",
                                   style: TextStyle(
-                                    color: !_lclManualMode
-                                        ? Colors.white
-                                        : Colors.grey,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  )),
+                                      color: !_lclManualMode
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500)),
                             ),
                           ),
                           GestureDetector(
@@ -976,12 +895,11 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                               ),
                               child: Text("Manual",
                                   style: TextStyle(
-                                    color: _lclManualMode
-                                        ? Colors.white
-                                        : Colors.grey,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  )),
+                                      color: _lclManualMode
+                                          ? Colors.white
+                                          : Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500)),
                             ),
                           ),
                         ],
@@ -989,10 +907,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     ),
                   ),
                   const SizedBox(height: 16),
-
-                  // Conditional content based on mode
                   if (!_lclManualMode) ...[
-                    // DETAILED MODE - Piezas with dimensions
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1010,13 +925,9 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                       ],
                     ),
                     ..._bultosList.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final bulto = entry.value;
                       return _buildBultoItem(
-                          index, bulto, surfaceDark, primaryColor);
+                          entry.key, entry.value, surfaceDark, primaryColor);
                     }),
-
-                    // CBM Summary Banner
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(12),
@@ -1034,7 +945,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                             children: [
                               Text("Total CBM",
                                   style: TextStyle(
-                                      color: Colors.grey[400], fontSize: 10)),
+                                      color: labelColor, fontSize: 10)),
                               Text("${_totalLclCbm.toStringAsFixed(3)} m³",
                                   style: const TextStyle(
                                       color: Colors.blue,
@@ -1047,7 +958,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                             children: [
                               Text("Peso Total",
                                   style: TextStyle(
-                                      color: Colors.grey[400], fontSize: 10)),
+                                      color: labelColor, fontSize: 10)),
                               Text("${_totalLclWeight.toStringAsFixed(0)} Kg",
                                   style: const TextStyle(
                                       color: Colors.blue,
@@ -1059,7 +970,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                       ),
                     ),
                   ] else ...[
-                    // MANUAL MODE - Direct input of totals
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
@@ -1076,8 +986,8 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                           Expanded(
                             child: Text(
                               "Si no conoces las dimensiones exactas, ingresa los totales directamente",
-                              style: TextStyle(
-                                  color: Colors.blue[200], fontSize: 12),
+                              style:
+                                  TextStyle(color: infoTextColor, fontSize: 12),
                             ),
                           ),
                         ],
@@ -1091,104 +1001,60 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     Row(
                       children: [
                         Expanded(
-                          child: _buildInputField("Total CBM",
-                              _lclTotalCbmController, surfaceDark, Colors.blue,
-                              keyboardType: TextInputType.number, suffix: "m³"),
-                        ),
+                            child: _buildInputField(
+                                "Total CBM",
+                                _lclTotalCbmController,
+                                surfaceDark,
+                                Colors.blue,
+                                keyboardType: TextInputType.number,
+                                suffix: "m³")),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: _buildInputField(
-                              "Peso Total (Kg)",
-                              _lclTotalWeightController,
-                              surfaceDark,
-                              Colors.blue,
-                              keyboardType: TextInputType.number,
-                              suffix: "kg"),
-                        ),
+                            child: _buildInputField(
+                                "Peso Total (Kg)",
+                                _lclTotalWeightController,
+                                surfaceDark,
+                                Colors.blue,
+                                keyboardType: TextInputType.number,
+                                suffix: "kg")),
                       ],
                     ),
                   ],
-
-                  // Cargo Options Section
                   const SizedBox(height: 20),
                   const Divider(color: Colors.white10),
                   const SizedBox(height: 12),
-
-                  // Stackable dropdown
                   _buildLabel("¿La carga es APILABLE?"),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: surfaceDark,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _lclIsStackable,
-                        isExpanded: true,
-                        dropdownColor: surfaceDark,
-                        hint: const Text("Seleccione una opción...",
-                            style: TextStyle(color: Colors.grey)),
-                        style: const TextStyle(color: Colors.white),
-                        items: const [
-                          DropdownMenuItem(
-                              value: 'Si', child: Text('Sí, es apilable')),
-                          DropdownMenuItem(
-                              value: 'No', child: Text('No, no es apilable')),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _lclIsStackable = value),
-                      ),
-                    ),
-                  ),
+                  _buildDropdown(_lclIsStackable,
+                      (v) => setState(() => _lclIsStackable = v), surfaceDark, [
+                    const DropdownMenuItem(
+                        value: 'Si', child: Text('Sí, es apilable')),
+                    const DropdownMenuItem(
+                        value: 'No', child: Text('No, no es apilable')),
+                  ]),
                   const SizedBox(height: 12),
-
-                  // Dangerous goods dropdown
                   _buildLabel("¿Es carga PELIGROSA/DG CARGO/IMO?"),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: surfaceDark,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _lclIsDangerous,
-                        isExpanded: true,
-                        dropdownColor: surfaceDark,
-                        hint: const Text("Seleccione una opción...",
-                            style: TextStyle(color: Colors.grey)),
-                        style: const TextStyle(color: Colors.white),
-                        items: const [
-                          DropdownMenuItem(value: 'No', child: Text('No')),
-                          DropdownMenuItem(
-                              value: 'Si',
-                              child: Text('Sí, es carga peligrosa')),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _lclIsDangerous = value),
-                      ),
-                    ),
-                  ),
+                  _buildDropdown(_lclIsDangerous,
+                      (v) => setState(() => _lclIsDangerous = v), surfaceDark, [
+                    const DropdownMenuItem(value: 'No', child: Text('No')),
+                    const DropdownMenuItem(
+                        value: 'Si', child: Text('Sí, es carga peligrosa')),
+                  ]),
                   const SizedBox(height: 12),
-
-                  // Additional comments
                   _buildLabel("Comentarios Adicionales (Opcional)"),
                   TextField(
                     controller: _lclCommentsController,
                     maxLines: 2,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
-                      hintText:
-                          "Ingrese cualquier comentario adicional sobre la carga...",
+                      hintText: "Ingrese cualquier comentario adicional...",
                       hintStyle:
                           const TextStyle(color: Colors.grey, fontSize: 12),
                       filled: true,
                       fillColor: surfaceDark,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none),
                     ),
                   ),
                 ],
@@ -1205,14 +1071,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
   Widget _buildBultoItem(int index, Map<String, dynamic> bulto,
       Color surfaceDark, Color primaryColor) {
     String unitLabel = _lclUseInches ? 'in' : 'cm';
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: surfaceDark,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white10),
-      ),
+          color: surfaceDark,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.white10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1220,20 +1086,19 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Pieza ${index + 1}",
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(color: textColor, fontWeight: FontWeight.bold)),
               if (_bultosList.length > 1)
                 IconButton(
                   icon: const Icon(Icons.remove_circle,
                       color: Colors.red, size: 20),
                   onPressed: () => _removeBulto(index),
-                  constraints: const BoxConstraints(),
                   padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
             ],
           ),
           const SizedBox(height: 12),
-          // Row 1: Dimensions
           Row(
             children: [
               Expanded(
@@ -1254,102 +1119,80 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             ],
           ),
           const SizedBox(height: 12),
-          // Row 2: Cantidad, Embalaje
           Row(
             children: [
-              // Cantidad with +/- buttons
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Cantidad",
-                        style:
-                            TextStyle(color: Colors.grey[400], fontSize: 10)),
-                    const SizedBox(height: 4),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Cantidad",
+                          style:
+                              TextStyle(color: Colors.grey[400], fontSize: 10)),
+                      const SizedBox(height: 4),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(6)),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () => setState(() => bulto['cantidad'] =
+                                    ((bulto['cantidad'] as int) - 1)
+                                        .clamp(1, 999)),
+                                child: const Padding(
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(Icons.remove,
+                                        color: Colors.grey, size: 16)),
+                              ),
+                              Text('${bulto['cantidad']}',
+                                  style: TextStyle(
+                                      color: textColor,
+                                      fontWeight: FontWeight.bold)),
+                              InkWell(
+                                onTap: () => setState(() => bulto['cantidad'] =
+                                    ((bulto['cantidad'] as int) + 1)
+                                        .clamp(1, 999)),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Icon(Icons.add,
+                                        color: primaryColor, size: 16)),
+                              ),
+                            ]),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                int qty = bulto['cantidad'] as int;
-                                bulto['cantidad'] = (qty - 1).clamp(1, 999);
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Icon(Icons.remove,
-                                  color: Colors.grey, size: 16),
-                            ),
-                          ),
-                          Text(
-                            '${bulto['cantidad']}',
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                int qty = bulto['cantidad'] as int;
-                                bulto['cantidad'] = (qty + 1).clamp(1, 999);
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child: Icon(Icons.add,
-                                  color: primaryColor, size: 16),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    ]),
               ),
               const SizedBox(width: 12),
-              // Embalaje dropdown
               Expanded(
                 flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Embalaje",
-                        style:
-                            TextStyle(color: Colors.grey[400], fontSize: 10)),
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: bulto['embalaje'] as String,
-                          isExpanded: true,
-                          dropdownColor: const Color(0xFF0F1623),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 13),
-                          items: _embalajeTypes.map((type) {
-                            return DropdownMenuItem<String>(
-                              value: type,
-                              child: Text(type),
-                            );
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() => bulto['embalaje'] = value);
-                          },
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Embalaje",
+                          style:
+                              TextStyle(color: Colors.grey[400], fontSize: 10)),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(6)),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: bulto['embalaje'] as String,
+                            isExpanded: true,
+                            dropdownColor: surfaceDark,
+                            style: TextStyle(color: textColor, fontSize: 13),
+                            items: _embalajeTypes
+                                .map((type) => DropdownMenuItem(
+                                    value: type, child: Text(type)))
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => bulto['embalaje'] = value),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ]),
               ),
             ],
           ),
@@ -1358,32 +1201,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     );
   }
 
-  Widget _buildSmallInput(
-      String hint, TextEditingController controller, Color bg) {
-    return TextField(
-      controller: controller,
-      keyboardType: TextInputType.number,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey, fontSize: 12),
-        filled: true,
-        fillColor: bg,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(6),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
   // ============ AIR TAB ============
   Widget _buildAirTab(Color surfaceDark, Color primaryColor) {
-    // Initialize air piezas list if empty
     if (_airPiezasList.isEmpty) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _addAirPieza());
     }
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final infoTextColor = isDark ? Colors.amber[200] : Colors.brown[700];
+    final labelColor = isDark ? Colors.grey[400] : Colors.grey[600];
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -1401,14 +1226,12 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     children: [
                       _buildCardTitle(Icons.flight, "Información de la Carga",
                           Colors.amber),
-                      // Unit Toggle (cm/inches)
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: surfaceDark,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(8)),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -1419,19 +1242,17 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: !_airUseInches
-                                      ? Colors.amber
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                                    color: !_airUseInches
+                                        ? Colors.amber
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(4)),
                                 child: Text("CM",
                                     style: TextStyle(
-                                      color: !_airUseInches
-                                          ? Colors.black
-                                          : Colors.grey,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                                        color: !_airUseInches
+                                            ? Colors.black
+                                            : Colors.grey,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ),
                             GestureDetector(
@@ -1440,19 +1261,17 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: _airUseInches
-                                      ? Colors.amber
-                                      : Colors.transparent,
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
+                                    color: _airUseInches
+                                        ? Colors.amber
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(4)),
                                 child: Text("IN",
                                     style: TextStyle(
-                                      color: _airUseInches
-                                          ? Colors.black
-                                          : Colors.grey,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w600,
-                                    )),
+                                        color: _airUseInches
+                                            ? Colors.black
+                                            : Colors.grey,
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w600)),
                               ),
                             ),
                           ],
@@ -1461,8 +1280,6 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     ],
                   ),
                   const SizedBox(height: 16),
-
-                  // Pieza rows header
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -1479,16 +1296,10 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                       ),
                     ],
                   ),
-
-                  // Pieza rows
                   ..._airPiezasList.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final pieza = entry.value;
                     return _buildAirPiezaItem(
-                        index, pieza, surfaceDark, Colors.amber);
+                        entry.key, entry.value, surfaceDark, Colors.amber);
                   }),
-
-                  // CBM/Weight Summary Banner
                   const SizedBox(height: 12),
                   Container(
                     padding: const EdgeInsets.all(12),
@@ -1504,136 +1315,88 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Total CBM",
-                                    style: TextStyle(
-                                        color: Colors.grey[400], fontSize: 10)),
-                                Text("${_totalAirCbm.toStringAsFixed(3)} m³",
-                                    style: const TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14)),
-                              ],
-                            ),
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Total CBM",
+                                      style: TextStyle(
+                                          color: labelColor, fontSize: 10)),
+                                  Text("${_totalAirCbm.toStringAsFixed(3)} m³",
+                                      style: const TextStyle(
+                                          color: Colors.amber,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14)),
+                                ]),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("Peso Real",
-                                    style: TextStyle(
-                                        color: Colors.grey[400], fontSize: 10)),
-                                Text("${_totalAirWeight.toStringAsFixed(0)} Kg",
-                                    style: const TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14)),
-                              ],
-                            ),
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text("Peso Real",
+                                      style: TextStyle(
+                                          color: labelColor, fontSize: 10)),
+                                  Text(
+                                      "${_totalAirWeight.toStringAsFixed(0)} Kg",
+                                      style: const TextStyle(
+                                          color: Colors.amber,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14)),
+                                ]),
                             Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text("Peso Vol.",
-                                    style: TextStyle(
-                                        color: Colors.grey[400], fontSize: 10)),
-                                Text(
-                                    "${_airVolumetricWeight.toStringAsFixed(1)} Kg",
-                                    style: const TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14)),
-                              ],
-                            ),
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text("Peso Vol.",
+                                      style: TextStyle(
+                                          color: labelColor, fontSize: 10)),
+                                  Text(
+                                      "${_airVolumetricWeight.toStringAsFixed(1)} Kg",
+                                      style: const TextStyle(
+                                          color: Colors.amber,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14)),
+                                ]),
                           ],
                         ),
                         const SizedBox(height: 6),
                         Text(
                             "Se cobra el mayor: peso real vs volumétrico (L×A×H/${_airUseInches ? '366' : '6000'})",
-                            style: TextStyle(
-                                color: Colors.amber[200], fontSize: 10)),
+                            style:
+                                TextStyle(color: infoTextColor, fontSize: 10)),
                       ],
                     ),
                   ),
-
-                  // Cargo Options Section
                   const SizedBox(height: 20),
                   const Divider(color: Colors.white10),
                   const SizedBox(height: 12),
-
-                  // Stackable dropdown
                   _buildLabel("¿La carga es APILABLE?"),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: surfaceDark,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _airIsStackable,
-                        isExpanded: true,
-                        dropdownColor: surfaceDark,
-                        hint: const Text("Seleccione una opción...",
-                            style: TextStyle(color: Colors.grey)),
-                        style: const TextStyle(color: Colors.white),
-                        items: const [
-                          DropdownMenuItem(
-                              value: 'Si', child: Text('Sí, es apilable')),
-                          DropdownMenuItem(
-                              value: 'No', child: Text('No, no es apilable')),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _airIsStackable = value),
-                      ),
-                    ),
-                  ),
+                  _buildDropdown(_airIsStackable,
+                      (v) => setState(() => _airIsStackable = v), surfaceDark, [
+                    const DropdownMenuItem(
+                        value: 'Si', child: Text('Sí, es apilable')),
+                    const DropdownMenuItem(
+                        value: 'No', child: Text('No, no es apilable')),
+                  ]),
                   const SizedBox(height: 12),
-
-                  // Dangerous goods dropdown
                   _buildLabel("¿Es carga PELIGROSA/DG CARGO/IMO?"),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: surfaceDark,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<String>(
-                        value: _airIsDangerous,
-                        isExpanded: true,
-                        dropdownColor: surfaceDark,
-                        hint: const Text("Seleccione una opción...",
-                            style: TextStyle(color: Colors.grey)),
-                        style: const TextStyle(color: Colors.white),
-                        items: const [
-                          DropdownMenuItem(value: 'No', child: Text('No')),
-                          DropdownMenuItem(
-                              value: 'Si',
-                              child: Text('Sí, es carga peligrosa')),
-                        ],
-                        onChanged: (value) =>
-                            setState(() => _airIsDangerous = value),
-                      ),
-                    ),
-                  ),
+                  _buildDropdown(_airIsDangerous,
+                      (v) => setState(() => _airIsDangerous = v), surfaceDark, [
+                    const DropdownMenuItem(value: 'No', child: Text('No')),
+                    const DropdownMenuItem(
+                        value: 'Si', child: Text('Sí, es carga peligrosa')),
+                  ]),
                   const SizedBox(height: 12),
-
-                  // Additional comments
                   _buildLabel("Comentarios Adicionales (Opcional)"),
                   TextField(
                     controller: _airCommentsController,
                     maxLines: 2,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
-                      hintText:
-                          "Ingrese cualquier comentario adicional sobre la carga...",
+                      hintText: "Ingrese cualquier comentario adicional...",
                       hintStyle:
                           const TextStyle(color: Colors.grey, fontSize: 12),
                       filled: true,
                       fillColor: surfaceDark,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide.none),
                     ),
                   ),
                 ],
@@ -1647,18 +1410,17 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     );
   }
 
-  /// Build Air pieza item (similar to LCL bulto but with amber theme)
   Widget _buildAirPiezaItem(int index, Map<String, dynamic> pieza,
       Color surfaceDark, Color accentColor) {
     String unitLabel = _airUseInches ? 'in' : 'cm';
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: surfaceDark,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.white10),
-      ),
+          color: surfaceDark,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.white10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1666,20 +1428,19 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Pieza ${index + 1}",
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+                  style:
+                      TextStyle(color: textColor, fontWeight: FontWeight.bold)),
               if (_airPiezasList.length > 1)
                 IconButton(
                   icon: const Icon(Icons.remove_circle,
                       color: Colors.red, size: 20),
                   onPressed: () => _removeAirPieza(index),
-                  constraints: const BoxConstraints(),
                   padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
                 ),
             ],
           ),
           const SizedBox(height: 12),
-          // Row 1: Dimensions
           Row(
             children: [
               Expanded(
@@ -1700,97 +1461,80 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
             ],
           ),
           const SizedBox(height: 12),
-          // Row 2: Cantidad, Embalaje
           Row(
             children: [
-              // Cantidad with +/- buttons
               Expanded(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Cantidad",
-                        style:
-                            TextStyle(color: Colors.grey[400], fontSize: 10)),
-                    const SizedBox(height: 4),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Cantidad",
+                          style:
+                              TextStyle(color: Colors.grey[400], fontSize: 10)),
+                      const SizedBox(height: 4),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(6)),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () => setState(() => pieza['cantidad'] =
+                                    ((pieza['cantidad'] as int) - 1)
+                                        .clamp(1, 999)),
+                                child: const Padding(
+                                    padding: EdgeInsets.all(6),
+                                    child: Icon(Icons.remove,
+                                        color: Colors.grey, size: 16)),
+                              ),
+                              Text('${pieza['cantidad']}',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold)),
+                              InkWell(
+                                onTap: () => setState(() => pieza['cantidad'] =
+                                    ((pieza['cantidad'] as int) + 1)
+                                        .clamp(1, 999)),
+                                child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Icon(Icons.add,
+                                        color: accentColor, size: 16)),
+                              ),
+                            ]),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                int qty = pieza['cantidad'] as int;
-                                pieza['cantidad'] = (qty - 1).clamp(1, 999);
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(6),
-                              child: Icon(Icons.remove,
-                                  color: Colors.grey, size: 16),
-                            ),
-                          ),
-                          Text('${pieza['cantidad']}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
-                          InkWell(
-                            onTap: () {
-                              setState(() {
-                                int qty = pieza['cantidad'] as int;
-                                pieza['cantidad'] = (qty + 1).clamp(1, 999);
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(6),
-                              child:
-                                  Icon(Icons.add, color: accentColor, size: 16),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                    ]),
               ),
               const SizedBox(width: 12),
-              // Embalaje dropdown
               Expanded(
                 flex: 2,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Embalaje",
-                        style:
-                            TextStyle(color: Colors.grey[400], fontSize: 10)),
-                    const SizedBox(height: 4),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF0F1623),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: pieza['embalaje'] as String,
-                          isExpanded: true,
-                          dropdownColor: const Color(0xFF0F1623),
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 13),
-                          items: _embalajeTypes.map((type) {
-                            return DropdownMenuItem<String>(
-                                value: type, child: Text(type));
-                          }).toList(),
-                          onChanged: (value) =>
-                              setState(() => pieza['embalaje'] = value),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Embalaje",
+                          style:
+                              TextStyle(color: Colors.grey[400], fontSize: 10)),
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        decoration: BoxDecoration(
+                            color: surfaceDark,
+                            borderRadius: BorderRadius.circular(6)),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            value: pieza['embalaje'] as String,
+                            isExpanded: true,
+                            dropdownColor: surfaceDark,
+                            style: TextStyle(color: textColor, fontSize: 13),
+                            items: _embalajeTypes
+                                .map((type) => DropdownMenuItem(
+                                    value: type, child: Text(type)))
+                                .toList(),
+                            onChanged: (value) =>
+                                setState(() => pieza['embalaje'] = value),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ]),
               ),
             ],
           ),
@@ -1801,8 +1545,10 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
 
   // ============ SHARED FIELDS ============
   Widget _buildSharedFields(Color surfaceDark, Color primaryColor) {
-    // Determine if we're in Air mode based on tab index
-    final bool isAirMode = _tabController.index == 2;
+    final isAirMode = _tabController.index == 2;
+    // NUEVO: Usar países reales desde MasterDataService
+    final countriesList = _masterData.countries;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
 
     return Column(
       children: [
@@ -1813,12 +1559,12 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
               _buildCardTitle(isAirMode ? Icons.flight : Icons.route,
                   isAirMode ? "Ruta Aérea" : "Ruta Marítima", primaryColor),
               const SizedBox(height: 16),
-              // Origin POL - Worldwide ports/airports
+              // Origin POL (CONECTADO A PUERTOS REALES)
               PortAutocompleteField(
                 label: isAirMode ? "Aeropuerto Origen" : "Puerto Origen (POL)",
                 hint: isAirMode
-                    ? "Ej: Miami, Shanghai, Frankfurt..."
-                    : "Ej: Shanghai, Los Angeles, Rotterdam...",
+                    ? "Ej: Miami, Shanghai..."
+                    : "Ej: Shanghai, Ningbo...",
                 controller: _originController,
                 isAirport: isAirMode,
                 isDestination: false,
@@ -1826,14 +1572,14 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                 backgroundColor: surfaceDark,
               ),
               const SizedBox(height: 12),
-              // Destination POD - Ecuador only
+              // Destination POD (CONECTADO A CIUDADES/PUERTOS REALES)
               PortAutocompleteField(
                 label: isAirMode
                     ? "Aeropuerto Destino (Ecuador)"
                     : "Puerto Destino (POD - Ecuador)",
                 hint: isAirMode
-                    ? "Guayaquil (GYE), Quito (UIO)..."
-                    : "Guayaquil (ECGYE), Manta...",
+                    ? "Quito (UIO), Guayaquil (GYE)..."
+                    : "Guayaquil (GYE), Manta...",
                 controller: _destinationController,
                 isAirport: isAirMode,
                 isDestination: true,
@@ -1844,15 +1590,12 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
               _buildInputField("Descripción del Producto", _productController,
                   surfaceDark, primaryColor),
               const SizedBox(height: 12),
-
-              // Country of Origin Dropdown
+              // Country Dropdown (CONECTADO A PAÍSES REALES)
               _buildLabel("País de Origen/Fabricación"),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: surfaceDark,
-                  borderRadius: BorderRadius.circular(8),
-                ),
+                    color: surfaceDark, borderRadius: BorderRadius.circular(8)),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _selectedOriginCountry,
@@ -1860,157 +1603,165 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
                     dropdownColor: surfaceDark,
                     hint: const Text("Seleccione país de origen...",
                         style: TextStyle(color: Colors.grey)),
-                    style: const TextStyle(color: Colors.white),
-                    items: _originCountries.map((country) {
-                      return DropdownMenuItem(
-                          value: country, child: Text(country));
-                    }).toList(),
+                    style: TextStyle(color: textColor),
+                    // AQUÍ ESTÁ LA MAGIA:
+                    items: countriesList.isEmpty
+                        ? [] // Si carga, vacío o loader
+                        : countriesList.map((country) {
+                            return DropdownMenuItem(
+                                value: country.nombre,
+                                child: Text(country.nombre));
+                          }).toList(),
                     onChanged: (value) =>
                         setState(() => _selectedOriginCountry = value),
                   ),
                 ),
               ),
               const SizedBox(height: 12),
-
-              // HS Code (Optional)
               _buildInputField("Código HS (Opcional)", _hsCodeController,
                   surfaceDark, primaryColor,
                   keyboardType: TextInputType.number),
-
               const SizedBox(height: 8),
               const Text(
-                "Si conoce el código arancelario de su producto, ingréselo aquí. De lo contrario, nuestra IA lo clasificará automáticamente.",
-                style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 10,
-                    fontStyle: FontStyle.italic),
-              ),
+                  "Si conoce el código arancelario, ingréselo aquí. De lo contrario, nuestra IA lo clasificará.",
+                  style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 10,
+                      fontStyle: FontStyle.italic)),
             ],
           ),
         ),
-
         const SizedBox(height: 16),
-
         NeonCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildCardTitle(Icons.payments, "Valores", primaryColor),
               const SizedBox(height: 16),
-              // Solo Valor FOB - El flete lo calcula el backend con IA
               _buildCurrencyInput(
                   "Valor FOB (USD)", _fobController, surfaceDark, primaryColor),
               const SizedBox(height: 12),
+              // Incoterms (CONECTADO A MASTERDATA)
               _buildIncotermDropdown(surfaceDark, primaryColor),
               const SizedBox(height: 12),
               _buildInsuranceToggle(primaryColor),
             ],
           ),
         ),
-
-        const SizedBox(height: 100), // Space for bottom button
+        const SizedBox(height: 100),
       ],
     );
   }
 
   // ============ HELPER WIDGETS ============
   Widget _buildCardTitle(IconData icon, String text, Color color) {
-    return Row(
-      children: [
-        Icon(icon, color: color, size: 20),
-        const SizedBox(width: 8),
-        Text(text, style: Theme.of(context).textTheme.titleSmall),
-      ],
-    );
+    return Row(children: [
+      Icon(icon, color: color, size: 20),
+      const SizedBox(width: 8),
+      Text(text, style: Theme.of(context).textTheme.titleSmall)
+    ]);
   }
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child:
-          Text(text, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-    );
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Text(text,
+            style: const TextStyle(color: Colors.grey, fontSize: 12)));
   }
 
   Widget _buildInputField(
       String label, TextEditingController controller, Color bg, Color accent,
       {TextInputType? keyboardType, String? suffix}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel(label),
-        TextField(
-          controller: controller,
-          keyboardType: keyboardType,
-          style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _buildLabel(label),
+      TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
             filled: true,
             fillColor: bg,
             hintStyle: const TextStyle(color: Colors.grey),
             suffixText: suffix,
             suffixStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: accent),
-            ),
-          ),
-        ),
-      ],
-    );
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: accent))),
+      ),
+    ]);
   }
 
   Widget _buildCurrencyInput(
       String label, TextEditingController controller, Color bg, Color accent) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel(label),
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          style: const TextStyle(color: Colors.white),
-          decoration: InputDecoration(
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _buildLabel(label),
+      TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        style: TextStyle(color: textColor),
+        decoration: InputDecoration(
             prefixText: "\$ ",
             prefixStyle: const TextStyle(color: Colors.grey),
             filled: true,
             fillColor: bg,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide.none,
-            ),
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide.none),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: accent),
-            ),
-          ),
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: accent))),
+      ),
+    ]);
+  }
+
+  Widget _buildDropdown(String? value, ValueChanged<String?> onChanged,
+      Color bg, List<DropdownMenuItem<String>> items) {
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration:
+          BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          isExpanded: true,
+          dropdownColor: bg,
+          style: TextStyle(color: textColor),
+          items: items,
+          onChanged: onChanged,
         ),
-      ],
+      ),
     );
   }
 
   Widget _buildIncotermDropdown(Color bg, Color accent) {
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    // Usar datos reales de MasterDataService si existen, sino fallback
+    final incotermList = _masterData.incoterms.isNotEmpty
+        ? _masterData.incoterms.map((i) => i.code).toList()
+        : ["FOB", "CIF", "EXW", "DDP", "CFR"];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildLabel("Incoterm"),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(8),
-          ),
+          decoration:
+              BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<String>(
               value: _incoterm,
               isExpanded: true,
               dropdownColor: bg,
               icon: Icon(Icons.expand_more, color: accent),
-              style: const TextStyle(color: Colors.white),
-              items: ["FOB", "CIF", "EXW", "DDP", "CFR"]
+              style: TextStyle(color: textColor),
+              items: incotermList
                   .map((e) => DropdownMenuItem(value: e, child: Text(e)))
                   .toList(),
               onChanged: (v) => setState(() => _incoterm = v!),
@@ -2022,6 +1773,7 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
   }
 
   Widget _buildInsuranceToggle(Color accent) {
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
     return GestureDetector(
       onTap: () => setState(() => _includeInsurance = !_includeInsurance),
       child: Container(
@@ -2032,27 +1784,43 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color:
-                _includeInsurance ? accent : Colors.grey.withValues(alpha: 0.3),
-          ),
+              color: _includeInsurance
+                  ? accent
+                  : Colors.grey.withValues(alpha: 0.3)),
         ),
         child: Row(
           children: [
             Icon(
-              _includeInsurance
-                  ? Icons.check_box
-                  : Icons.check_box_outline_blank,
-              color: _includeInsurance ? accent : Colors.grey,
-            ),
+                _includeInsurance
+                    ? Icons.check_box
+                    : Icons.check_box_outline_blank,
+                color: _includeInsurance ? accent : Colors.grey),
             const SizedBox(width: 12),
-            const Expanded(
-              child: Text(
-                "Incluir Seguro Internacional (0.35% del CFR)",
-                style: TextStyle(color: Colors.white, fontSize: 14),
-              ),
-            ),
+            Expanded(
+                child: Text("Incluir Seguro Internacional (0.35% del CFR)",
+                    style: TextStyle(color: textColor, fontSize: 14))),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildSmallInput(
+      String hint, TextEditingController controller, Color bg) {
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      style: TextStyle(color: textColor, fontSize: 14),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: const TextStyle(color: Colors.grey, fontSize: 12),
+        filled: true,
+        fillColor: bg,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(6),
+            borderSide: BorderSide.none),
       ),
     );
   }
@@ -2061,33 +1829,29 @@ class _QuoteRequestScreenState extends State<QuoteRequestScreen>
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgDark.withValues(alpha: 0.95),
-        border: Border(
-            top: BorderSide(color: Colors.white.withValues(alpha: 0.05))),
-      ),
+          color: bgDark.withValues(alpha: 0.95),
+          border: Border(
+              top: BorderSide(color: Colors.white.withValues(alpha: 0.05)))),
       child: SizedBox(
         width: double.infinity,
         height: 56,
         child: ElevatedButton.icon(
           onPressed: _isSubmitting ? null : _submitQuote,
           style: ElevatedButton.styleFrom(
-            backgroundColor: primaryColor,
-            foregroundColor: Colors.black,
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          ),
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16))),
           icon: _isSubmitting
               ? const SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
-                      strokeWidth: 2, color: Colors.black),
-                )
+                      strokeWidth: 2, color: Colors.black))
               : const Icon(Icons.send),
-          label: Text(
-            _isSubmitting ? "Enviando..." : "Solicitar Cotización",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
+          label: Text(_isSubmitting ? "Enviando..." : "Solicitar Cotización",
+              style:
+                  const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         ),
       ),
     );

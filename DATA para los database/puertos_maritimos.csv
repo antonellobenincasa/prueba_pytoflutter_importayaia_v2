@@ -1,0 +1,130 @@
+Puerto en origen POL,PAIS ,REGION,TIPO ,un_locode
+Shanghai,China,Asia,Maritimo,CNSHA
+Ningbo,China,Asia,Maritimo,CNNGB
+Shenzhen,China,Asia,Maritimo,CNSZN
+Shekou,China,Asia,Maritimo,CNSHK
+Yantian,China,Asia,Maritimo,CNYTN
+DaChan Bay,China,Asia,Maritimo,CNDcB
+Guangzhou,China,Asia,Maritimo,CNGZG
+Huangpu,China,Asia,Maritimo,CNHUA
+Qingdao,China,Asia,Maritimo,CNQDA
+Tianjin,China,Asia,Maritimo,CNTXG
+Xingang,China,Asia,Maritimo,CNXGG
+Hong Kong,Hong Kong,Asia,Maritimo,HKHKG
+Xiamen,China,Asia,Maritimo,CNXMN
+Fuzhou,China,Asia,Maritimo,CNFOC
+Nansha,China,Asia,Maritimo,CNNSA
+Jiangmen,China,Asia,Maritimo,CNJMN
+Gaosha,China,Asia,Maritimo,CNGSA
+Foshan,China,Asia,Maritimo,CNFOS
+Nanjing,China,Asia,Maritimo,CNNKG
+Zhanjiang,China,Asia,Maritimo,CNZHA
+Zhangjiang,China,Asia,Maritimo,CNZJG
+Chongqing,China,Asia,Maritimo,CNCKG
+Bahrain,Bahrein,Asia,Maritimo,BHKBS
+Ahmedabad,India,Asia,Maritimo,INAMD
+Anhui,China,Asia,Maritimo,CNANH
+Bangalore,India,Asia,Maritimo,INBLR
+Beihai,China,Asia,Maritimo,CNBHY
+Beijiao,China,Asia,Maritimo,CNBEJ
+Beijing,China,Asia,Maritimo,CNBJS
+Beirut,Libano,Asia,Maritimo,LBBEY
+Belawan,Indonesia,Asia,Maritimo,IDBLW
+Calcutta (Kolkata),India,Asia,Maritimo,INCCU
+Bintulu,Malasia,Asia,Maritimo,MYBTU
+Chittagong,Bangladesh,Asia,Maritimo,BDHZP
+Gaoming,China,Asia,Maritimo,CNGMG
+Singapur,Singapur,Asia,Maritimo,SGSIN
+Busan,Corea del Sur,Asia,Maritimo,KRPUS
+Jebel Ali (Dubai),EAU,Asia,Maritimo,AEJEA
+Port Klang,Malasia,Asia,Maritimo,MYPKG
+Tanjung Pelepas,Malasia,Asia,Maritimo,MYTPP
+Nhava Sheva (Mumbai),India,Asia,Maritimo,INNSA
+Mundra,India,Asia,Maritimo,INMUN
+Chennai,India,Asia,Maritimo,INMAA
+Tuticorin,India,Asia,Maritimo,INTUT
+Tokio,Japon,Asia,Maritimo,JPTYO
+Nagoya,Japon,Asia,Maritimo,JPNGO
+Kobe,Japon,Asia,Maritimo,JPUKB
+Yokohama,Japon,Asia,Maritimo,JPYOK
+Kaohsiung,Taiwan,Asia,Maritimo,TWKHH
+Keelung,Taiwan,Asia,Maritimo,TWKEL
+Taichung,Taiwan,Asia,Maritimo,TWTXG
+Bangkok,Tailandia,Asia,Maritimo,THBKK
+Rotterdam,Paises Bajos,Europa,Maritimo,NLRTM
+Amberes-Brujas,Belgica,Europa,Maritimo,BEANR
+Bremerhaven,Alemania,Europa,Maritimo,DEBRV
+Hamburgo,Alemania,Europa,Maritimo,DEHAM
+Algeciras,España,Europa,Maritimo,ESALG
+Barcelona,España,Europa,Maritimo,ESBCN
+Valencia,España,Europa,Maritimo,ESVLC
+Southampton,Reino Unido,Europa,Maritimo,GBSOU
+Londres (Gateway/Tilbury),Reino Unido,Europa,Maritimo,GBLON
+Felixstowe,Reino Unido,Europa,Maritimo,GBFXT
+Marsella,Francia,Europa,Maritimo,FRMRS
+Le Havre,Francia,Europa,Maritimo,FRLEH
+Genova,Italia,Europa,Maritimo,ITGOA
+Livorno,Italia,Europa,Maritimo,ITLIV
+La Spezia,Italia,Europa,Maritimo,ITSPE
+Gioia Tauro,Italia,Europa,Maritimo,ITGIT
+El Pireo,Grecia,Europa,Maritimo,GRPIR
+Estambul (Istanbul),Turquia,Europa,Maritimo,TRIST
+Mersin,Turquia,Europa,Maritimo,TRMER
+Los Angeles,USA,Norteamerica,Maritimo,USLAX
+Long Beach,USA,Norteamerica,Maritimo,USLGB
+Nueva York,USA,Norteamerica,Maritimo,USNYC
+Nueva Jersey,USA,Norteamerica,Maritimo,USNWK
+Savannah,USA,Norteamerica,Maritimo,USSAV
+Houston,USA,Norteamerica,Maritimo,USHOU
+Virginia (Norfolk),USA,Norteamerica,Maritimo,USORF
+Seattle,USA,Norteamerica,Maritimo,USSEA
+Tacoma,USA,Norteamerica,Maritimo,USTAC
+Miami,USA,Norteamerica,Maritimo,USMIA
+Port Everglades,USA,Norteamerica,Maritimo,USPEF
+Baltimore,USA,Norteamerica,Maritimo,USBAL
+Lazaro Cardenas,Mexico,Norteamerica,Maritimo,MXLZC
+Veracruz,Mexico,Norteamerica,Maritimo,MXVER
+Manzanillo,Mexico,Norteamerica,Maritimo,MXZLO
+Altamira,Mexico,Norteamerica,Maritimo,MXATM
+Montreal,Canada,Norteamerica,Maritimo,CAMTR
+Prince Rupert,Canada,Norteamerica,Maritimo,CAPRR
+Vancouver,Canada,Norteamerica,Maritimo,CAVAN
+Balboa,Panama,Centroamerica,Maritimo,PABLB
+Colon / Manzanillo,Panama,Centroamerica,Maritimo,PAONX
+Rodman,Panama,Centroamerica,Maritimo,PAROD
+Moin,Costa Rica,Centroamerica,Maritimo,CRPMO
+Paranagua,Brasil,Sudamerica,Maritimo,BRPNG
+Rio Grande,Brasil,Sudamerica,Maritimo,BRRIG
+Pecem,Brasil,Sudamerica,Maritimo,BRPEC
+Itapoa,Brasil,Sudamerica,Maritimo,BRIOA
+Itajai,Brasil,Sudamerica,Maritimo,BRITJ
+Navegantes,Brasil,Sudamerica,Maritimo,BRNVT
+Imbituba,Brasil,Sudamerica,Maritimo,BRBBX
+Suape,Brasil,Sudamerica,Maritimo,BRSUA
+Rio de Janeiro,Brasil,Sudamerica,Maritimo,BRRIO
+Vitoria,Brasil,Sudamerica,Maritimo,BRVIX
+Salvador,Brasil,Sudamerica,Maritimo,BRSSA
+San Antonio,Chile,Sudamerica,Maritimo,CLSAI
+Valparaiso,Chile,Sudamerica,Maritimo,CLVAP
+Callao,Peru,Sudamerica,Maritimo,PECAL
+Chancay,Peru,Sudamerica,Maritimo,PECHY
+Cartagena,Colombia,Sudamerica,Maritimo,COCTG
+Buenaventura,Colombia,Sudamerica,Maritimo,COBUN
+Barranquilla,Colombia,Sudamerica,Maritimo,COBAQ
+Buenos Aires,Argentina,Sudamerica,Maritimo,ARBUE
+Rosario,Argentina,Sudamerica,Maritimo,ARROS
+Montevideo,Uruguay,Sudamerica,Maritimo,UYMVD
+Asuncion,Paraguay,Sudamerica,Maritimo,PYASU
+Tanger Med,Marruecos,Africa,Maritimo,MAPTM
+Puerto Said,Egipto,Africa,Maritimo,EGPSD
+Alejandria,Egipto,Africa,Maritimo,EGALY
+Durban,Sudafrica,Africa,Maritimo,ZADUR
+Ciudad del Cabo,Sudafrica,Africa,Maritimo,ZACPT
+Lagos (Apapa),Nigeria,Africa,Maritimo,NGLOS
+Mombasa,Kenia,Africa,Maritimo,KEMBA
+Port Hedland,Australia,Oceania,Maritimo,AUPHE
+Melbourne,Australia,Oceania,Maritimo,AUMEL
+Sydney,Australia,Oceania,Maritimo,AUSYD
+Port Botany,Australia,Oceania,Maritimo,AUPBT
+Tauranga,Nueva Zelanda,Oceania,Maritimo,NZTRG
+Auckland,Nueva Zelanda,Oceania,Maritimo,NZAKL

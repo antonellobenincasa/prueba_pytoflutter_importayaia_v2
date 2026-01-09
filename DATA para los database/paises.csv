@@ -1,0 +1,189 @@
+pais,region,prioridad
+China,Asia,1
+Estados Unidos,Norteamérica,2
+España,Europa,3
+Alemania,Europa,4
+Colombia,Sudamérica y Centroamérica,5
+Panamá,Sudamérica y Centroamérica,6
+Afganistán,Asia,7
+Albania,Europa,7
+Andorra,Europa,7
+Angola,Medio Oriente y África,7
+Antigua y Barbuda,Sudamérica y Centroamérica,7
+Arabia Saudita,Medio Oriente y África,7
+Argelia,Medio Oriente y África,7
+Argentina,Sudamérica y Centroamérica,7
+Armenia,Asia,7
+Australia,Oceanía,7
+Austria,Europa,7
+Azerbaiyán,Asia,7
+Bahamas,Sudamérica y Centroamérica,7
+Bahréin,Asia,7
+Bangladesh,Asia,7
+Barbados,Sudamérica y Centroamérica,7
+Belice,Sudamérica y Centroamérica,7
+Benín,Medio Oriente y África,7
+Bielorrusia,Europa,7
+Bolivia,Sudamérica y Centroamérica,7
+Bosnia y Herzegovina,Europa,7
+Botsuana,Medio Oriente y África,7
+Brasil,Sudamérica y Centroamérica,7
+Brunéi,Asia,7
+Bulgaria,Europa,7
+Burkina Faso,Medio Oriente y África,7
+Burundi,Medio Oriente y África,7
+Bután,Asia,7
+Bélgica,Europa,7
+Cabo Verde,Medio Oriente y África,7
+Camboya,Asia,7
+Camerún,Medio Oriente y África,7
+Canadá,Norteamérica,7
+Chad,Medio Oriente y África,7
+Chile,Sudamérica y Centroamérica,7
+Chipre,Europa,7
+Comoras,Medio Oriente y África,7
+Congo,Medio Oriente y África,7
+Corea del Norte,Asia,7
+Corea del Sur,Asia,7
+Costa Rica,Sudamérica y Centroamérica,7
+Costa de Marfil,Medio Oriente y África,7
+Croacia,Europa,7
+Cuba,Sudamérica y Centroamérica,7
+Dinamarca,Europa,7
+Dominica,Sudamérica y Centroamérica,7
+Ecuador,Sudamérica y Centroamérica,7
+Egipto,Medio Oriente y África,7
+El Salvador,Sudamérica y Centroamérica,7
+Emiratos Árabes Unidos,Medio Oriente y África,7
+Eritrea,Medio Oriente y África,7
+Eslovaquia,Europa,7
+Eslovenia,Europa,7
+Estonia,Europa,7
+Etiopía,Medio Oriente y África,7
+Filipinas,Asia,7
+Finlandia,Europa,7
+Fiyi,Oceanía,7
+Francia,Europa,7
+Gabón,Medio Oriente y África,7
+Gambia,Medio Oriente y África,7
+Georgia,Asia,7
+Ghana,Medio Oriente y África,7
+Granada,Sudamérica y Centroamérica,7
+Grecia,Europa,7
+Guatemala,Sudamérica y Centroamérica,7
+Guinea,Medio Oriente y África,7
+Guyana,Sudamérica y Centroamérica,7
+Haití,Sudamérica y Centroamérica,7
+Honduras,Sudamérica y Centroamérica,7
+Hungría,Europa,7
+India,Asia,7
+Indonesia,Asia,7
+Iraq,Asia,7
+Irlanda,Europa,7
+Irán,Asia,7
+Islandia,Europa,7
+Israel,Asia,7
+Italia,Europa,7
+Jamaica,Sudamérica y Centroamérica,7
+Japón,Asia,7
+Jordania,Asia,7
+Kazajistán,Asia,7
+Kenia,Medio Oriente y África,7
+Kirguistán,Asia,7
+Kiribati,Oceanía,7
+Kuwait,Asia,7
+Laos,Asia,7
+Lesoto,Medio Oriente y África,7
+Letonia,Europa,7
+Liberia,Medio Oriente y África,7
+Libia,Medio Oriente y África,7
+Liechtenstein,Europa,7
+Lituania,Europa,7
+Luxemburgo,Europa,7
+Líbano,Asia,7
+Madagascar,Medio Oriente y África,7
+Malasia,Asia,7
+Malawi,Medio Oriente y África,7
+Maldivas,Asia,7
+Malta,Europa,7
+Malí,Medio Oriente y África,7
+Marruecos,Medio Oriente y África,7
+Mauricio,Medio Oriente y África,7
+Mauritania,Medio Oriente y África,7
+Micronesia,Oceanía,7
+Moldavia,Europa,7
+Mongolia,Asia,7
+Montenegro,Europa,7
+Mozambique,Medio Oriente y África,7
+Myanmar,Asia,7
+México,Norteamérica,7
+Mónaco,Europa,7
+Namibia,Medio Oriente y África,7
+Nauru,Oceanía,7
+Nepal,Asia,7
+Nicaragua,Sudamérica y Centroamérica,7
+Nigeria,Medio Oriente y África,7
+Noruega,Europa,7
+Nueva Zelanda,Oceanía,7
+Níger,Medio Oriente y África,7
+Omán,Asia,7
+Pakistán,Asia,7
+Palaos,Oceanía,7
+Palestina,Asia,7
+Papúa Nueva Guinea,Oceanía,7
+Paraguay,Sudamérica y Centroamérica,7
+Países Bajos,Europa,7
+Perú,Sudamérica y Centroamérica,7
+Polonia,Europa,7
+Portugal,Europa,7
+Qatar,Medio Oriente y África,7
+Reino Unido,Europa,7
+República Centroafricana,Medio Oriente y África,7
+República Checa,Europa,7
+República Dominicana,Sudamérica y Centroamérica,7
+Ruanda,Medio Oriente y África,7
+Rumania,Europa,7
+Rusia,Europa,7
+Samoa,Oceanía,7
+San Cristóbal y Nieves,Sudamérica y Centroamérica,7
+San Marino,Europa,7
+San Vicente y las Granadinas,Sudamérica y Centroamérica,7
+Santa Lucía,Sudamérica y Centroamérica,7
+Santo Tomé y Príncipe,Medio Oriente y África,7
+Senegal,Medio Oriente y África,7
+Serbia,Europa,7
+Seychelles,Medio Oriente y África,7
+Sierra Leona,Medio Oriente y África,7
+Singapur,Asia,7
+Siria,Asia,7
+Somalia,Medio Oriente y África,7
+Sri Lanka,Asia,7
+Sudáfrica,Medio Oriente y África,7
+Sudán,Medio Oriente y África,7
+Suecia,Europa,7
+Suiza,Europa,7
+Surinam,Sudamérica y Centroamérica,7
+Tailandia,Asia,7
+Taiwán,Asia,7
+Tanzania,Medio Oriente y África,7
+Tayikistán,Asia,7
+Timor-Leste,Asia,7
+Togo,Medio Oriente y África,7
+Tonga,Oceanía,7
+Trinidad y Tobago,Sudamérica y Centroamérica,7
+Turkmenistán,Asia,7
+Turquía,Europa,7
+Tuvalu,Oceanía,7
+Túnez,Medio Oriente y África,7
+Ucrania,Europa,7
+Uganda,Medio Oriente y África,7
+Uruguay,Sudamérica y Centroamérica,7
+Uzbekistán,Asia,7
+Vanuatu,Oceanía,7
+Vaticano,Europa,7
+Venezuela,Sudamérica y Centroamérica,7
+Vietnam,Asia,7
+Yemen,Asia,7
+Yibuti,Medio Oriente y África,7
+Zambia,Medio Oriente y África,7
+Zimbabue,Medio Oriente y África,7

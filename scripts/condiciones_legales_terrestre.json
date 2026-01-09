@@ -1,0 +1,51 @@
+[
+  {
+    "concepto": "Turno Devolución Vacío",
+    "valor_regla": "56",
+    "unidad": "USD",
+    "aplica_iva": "SI (15%)",
+    "descripcion_legal": "Costo por gestión de entrega de contenedor vacío"
+  },
+  {
+    "concepto": "Excepción Naviera EMC",
+    "valor_regla": "Variable",
+    "unidad": "USD",
+    "aplica_iva": "SI",
+    "descripcion_legal": "No incluye Handling en Tasesa/Aretina (Evergreen)"
+  },
+  {
+    "concepto": "Tiempo Espera (Libre)",
+    "valor_regla": "6",
+    "unidad": "Horas",
+    "aplica_iva": "N/A",
+    "descripcion_legal": "Horas gratuitas en bodega para carga/descarga"
+  },
+  {
+    "concepto": "Tiempo Espera (7-10h)",
+    "valor_regla": "35",
+    "unidad": "USD/Hora",
+    "aplica_iva": "SI",
+    "descripcion_legal": "Recargo por hora o fracción tras horas libres"
+  },
+  {
+    "concepto": "Tiempo Espera (11h+)",
+    "valor_regla": "90%",
+    "unidad": "% Flete",
+    "aplica_iva": "SI",
+    "descripcion_legal": "Recargo sobre el valor del viaje pactado"
+  },
+  {
+    "concepto": "Tiempo Espera (Siguiente día)",
+    "valor_regla": "100%",
+    "unidad": "% Flete",
+    "aplica_iva": "SI",
+    "descripcion_legal": "Se cobra flete completo a partir del mediodía"
+  },
+  {
+    "concepto": "Falso Flete",
+    "valor_regla": "85%",
+    "unidad": "% Flete GYE",
+    "aplica_iva": "SI",
+    "descripcion_legal": "Cobro si no cargan el contenedor por causas ajenas"
+  }
+]

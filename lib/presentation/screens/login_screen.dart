@@ -61,7 +61,11 @@ class _LoginScreenState extends State<LoginScreen> {
           redirectTo = args['redirectTo'] ?? '/dashboard';
         }
 
-        Navigator.pushReplacementNamed(context, redirectTo);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          redirectTo,
+          (route) => false,
+        );
       }
     } else {
       setState(() => _errorMessage = result.message);

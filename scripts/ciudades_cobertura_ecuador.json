@@ -1,0 +1,163 @@
+[
+  {
+    "ciudad": "Guayaquil",
+    "provincia": "Guayas",
+    "region": "Costa",
+    "es_capital": "TRUE",
+    "id_logistico": "GYE"
+  },
+  {
+    "ciudad": "Quito",
+    "provincia": "Pichincha",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "UIO"
+  },
+  {
+    "ciudad": "Santo Domingo",
+    "provincia": "Santo Domingo",
+    "region": "Costa/Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "STO"
+  },
+  {
+    "ciudad": "Cuenca",
+    "provincia": "Azuay",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "CUE"
+  },
+  {
+    "ciudad": "Ambato",
+    "provincia": "Tungurahua",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "AMB"
+  },
+  {
+    "ciudad": "Portoviejo",
+    "provincia": "Manabí",
+    "region": "Costa",
+    "es_capital": "TRUE",
+    "id_logistico": "PVO"
+  },
+  {
+    "ciudad": "Machala",
+    "provincia": "El Oro",
+    "region": "Costa",
+    "es_capital": "TRUE",
+    "id_logistico": "MCH"
+  },
+  {
+    "ciudad": "Riobamba",
+    "provincia": "Chimborazo",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "RIO"
+  },
+  {
+    "ciudad": "Manta",
+    "provincia": "Manabí",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "MEC"
+  },
+  {
+    "ciudad": "Durán",
+    "provincia": "Guayas",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "DUR"
+  },
+  {
+    "ciudad": "Loja",
+    "provincia": "Loja",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "LOH"
+  },
+  {
+    "ciudad": "Esmeraldas",
+    "provincia": "Esmeraldas",
+    "region": "Costa",
+    "es_capital": "TRUE",
+    "id_logistico": "ESM"
+  },
+  {
+    "ciudad": "Quevedo",
+    "provincia": "Los Ríos",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "QVD"
+  },
+  {
+    "ciudad": "Milagro",
+    "provincia": "Guayas",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "MIL"
+  },
+  {
+    "ciudad": "Ibarra",
+    "provincia": "Imbabura",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "IBR"
+  },
+  {
+    "ciudad": "Latacunga",
+    "provincia": "Cotopaxi",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "LAT"
+  },
+  {
+    "ciudad": "La Libertad",
+    "provincia": "Santa Elena",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "LIB"
+  },
+  {
+    "ciudad": "Babahoyo",
+    "provincia": "Los Ríos",
+    "region": "Costa",
+    "es_capital": "TRUE",
+    "id_logistico": "BAB"
+  },
+  {
+    "ciudad": "Tulcán",
+    "provincia": "Carchi",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "TUL"
+  },
+  {
+    "ciudad": "Huaquillas",
+    "provincia": "El Oro",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "HUA"
+  },
+  {
+    "ciudad": "Nueva Loja",
+    "provincia": "Sucumbíos",
+    "region": "Amazonía",
+    "es_capital": "TRUE",
+    "id_logistico": "LGO"
+  },
+  {
+    "ciudad": "Santa Rosa",
+    "provincia": "El Oro",
+    "region": "Costa",
+    "es_capital": "FALSE",
+    "id_logistico": "SRO"
+  },
+  {
+    "ciudad": "Guaranda",
+    "provincia": "Bolívar",
+    "region": "Sierra",
+    "es_capital": "TRUE",
+    "id_logistico": "GUA"
+  }
+]

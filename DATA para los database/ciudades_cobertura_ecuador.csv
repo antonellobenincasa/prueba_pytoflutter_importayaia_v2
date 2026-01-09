@@ -1,0 +1,24 @@
+ciudad,provincia,region,es_capital,id_logistico
+Guayaquil,Guayas,Costa,TRUE,GYE
+Quito,Pichincha,Sierra,TRUE,UIO
+Santo Domingo,Santo Domingo,Costa/Sierra,TRUE,STO
+Cuenca,Azuay,Sierra,TRUE,CUE
+Ambato,Tungurahua,Sierra,TRUE,AMB
+Portoviejo,Manabí,Costa,TRUE,PVO
+Machala,El Oro,Costa,TRUE,MCH
+Riobamba,Chimborazo,Sierra,TRUE,RIO
+Manta,Manabí,Costa,FALSE,MEC
+Durán,Guayas,Costa,FALSE,DUR
+Loja,Loja,Sierra,TRUE,LOH
+Esmeraldas,Esmeraldas,Costa,TRUE,ESM
+Quevedo,Los Ríos,Costa,FALSE,QVD
+Milagro,Guayas,Costa,FALSE,MIL
+Ibarra,Imbabura,Sierra,TRUE,IBR
+Latacunga,Cotopaxi,Sierra,TRUE,LAT
+La Libertad,Santa Elena,Costa,FALSE,LIB
+Babahoyo,Los Ríos,Costa,TRUE,BAB
+Tulcán,Carchi,Sierra,TRUE,TUL
+Huaquillas,El Oro,Costa,FALSE,HUA
+Nueva Loja,Sucumbíos,Amazonía,TRUE,LGO
+Santa Rosa,El Oro,Costa,FALSE,SRO
+Guaranda,Bolívar,Sierra,TRUE,GUA

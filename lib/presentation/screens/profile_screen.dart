@@ -185,10 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
 
       // Saving profile to Firebase (Firestore)
-
-      // Call Firebase to update profile
       await _firebaseService.updateUserProfile(profileData);
-      // Profile saved successfully
 
       // If RUC was provided and is new, request approval
       if (!_rucIsReadOnly && _rucController.text.isNotEmpty) {
@@ -222,8 +219,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _requestRucApproval() async {
-    // En Firebase, el RUC ya se guarda en el perfil del usuario
-    // No necesitamos una llamada separada
     await _firebaseService.updateUserProfile({
       'ruc': _rucController.text.trim(),
       'ruc_status': 'pending',
@@ -233,20 +228,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const bgDark = Color(0xFF050A14);
-    const surfaceDark = Color(0xFF0A101D);
-    const primaryColor = AppColors.neonGreen;
+    // Theme Awareness
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final backgroundColor = theme.scaffoldBackgroundColor;
+    final surfaceColor = theme.cardColor;
+    final textColor = theme.textTheme.bodyLarge?.color ?? Colors.black;
+    final primaryColor = AppColors.neonGreen;
 
     return Scaffold(
-      backgroundColor: bgDark,
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: const Text("Mi Perfil"),
-        backgroundColor: bgDark,
+        title: Text("Mi Perfil", style: TextStyle(color: textColor)),
+        backgroundColor: backgroundColor,
         elevation: 0,
+        iconTheme:
+            IconThemeData(color: textColor), // Ensures Back button is visible
       ),
       body: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.neonGreen))
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Form(
@@ -260,53 +261,65 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 24),
 
                     // Información Personal
-                    _buildSectionTitle("Información Personal"),
+                    _buildSectionTitle("Información Personal", textColor),
                     const SizedBox(height: 16),
                     Row(
                       children: [
                         Expanded(
                           child: _buildTextField(
-                            controller: _nombreController,
-                            label: "Nombre",
-                            icon: Icons.person_outline,
-                          ),
+                              controller: _nombreController,
+                              label: "Nombre",
+                              icon: Icons.person_outline,
+                              isDark: isDark,
+                              surfaceColor: surfaceColor,
+                              textColor: textColor),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: _buildTextField(
-                            controller: _apellidoController,
-                            label: "Apellido",
-                            icon: Icons.person_outline,
-                          ),
+                              controller: _apellidoController,
+                              label: "Apellido",
+                              icon: Icons.person_outline,
+                              isDark: isDark,
+                              surfaceColor: surfaceColor,
+                              textColor: textColor),
                         ),
                       ],
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
-                      controller: _telefonoController,
-                      label: "Teléfono",
-                      icon: Icons.phone_outlined,
-                      keyboardType: TextInputType.phone,
-                    ),
+                        controller: _telefonoController,
+                        label: "Teléfono",
+                        icon: Icons.phone_outlined,
+                        keyboardType: TextInputType.phone,
+                        isDark: isDark,
+                        surfaceColor: surfaceColor,
+                        textColor: textColor),
                     const SizedBox(height: 16),
 
                     // City Autocomplete
-                    _buildCityAutocomplete(surfaceDark, primaryColor),
+                    _buildCityAutocomplete(
+                        surfaceColor, primaryColor, isDark, textColor),
 
                     const SizedBox(height: 32),
 
                     // Información Empresarial
-                    _buildSectionTitle("Información Empresarial"),
+                    _buildSectionTitle("Información Empresarial", textColor),
                     const SizedBox(height: 8),
                     Text(
                       "Estos datos son requeridos para habilitar las funciones de cotización e importación.",
-                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                      style: TextStyle(
+                          color: isDark ? Colors.grey[500] : Colors.grey[600],
+                          fontSize: 12),
                     ),
                     const SizedBox(height: 16),
                     _buildTextField(
                       controller: _empresaController,
                       label: "Nombre de Empresa",
                       icon: Icons.business_outlined,
+                      isDark: isDark,
+                      surfaceColor: surfaceColor,
+                      textColor: textColor,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'El nombre de empresa es requerido';
@@ -324,6 +337,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       keyboardType: TextInputType.number,
                       maxLength: 13,
                       readOnly: _rucIsReadOnly,
+                      isDark: isDark,
+                      surfaceColor: surfaceColor,
+                      textColor: textColor,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'El RUC es requerido';
@@ -346,6 +362,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       label: "Dirección Comercial",
                       icon: Icons.location_on_outlined,
                       maxLines: 2,
+                      isDark: isDark,
+                      surfaceColor: surfaceColor,
+                      textColor: textColor,
                     ),
                     const SizedBox(height: 32),
 
@@ -356,10 +375,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: Colors.red.withValues(alpha: 0.1),
+                          color: Colors.red.withAlpha(25),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.3)),
+                          border: Border.all(color: Colors.red.withAlpha(76)),
                         ),
                         child: Row(
                           children: [
@@ -380,10 +398,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         padding: const EdgeInsets.all(12),
                         margin: const EdgeInsets.only(bottom: 16),
                         decoration: BoxDecoration(
-                          color: primaryColor.withValues(alpha: 0.1),
+                          color: primaryColor.withAlpha(25),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                              color: primaryColor.withValues(alpha: 0.3)),
+                          border: Border.all(color: primaryColor.withAlpha(76)),
                         ),
                         child: Row(
                           children: [
@@ -406,28 +423,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         onPressed: _isSaving ? null : _saveProfile,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
-                          foregroundColor: bgDark,
+                          foregroundColor:
+                              isDark ? const Color(0xFF050A14) : Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
                         ),
                         child: _isSaving
-                            ? const SizedBox(
+                            ? SizedBox(
                                 width: 24,
                                 height: 24,
                                 child: CircularProgressIndicator(
-                                    strokeWidth: 2, color: Colors.black),
+                                    strokeWidth: 2,
+                                    color:
+                                        isDark ? Colors.black : Colors.white),
                               )
-                            : const Row(
+                            : Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.save),
-                                  SizedBox(width: 8),
+                                  Icon(Icons.save,
+                                      color:
+                                          isDark ? Colors.black : Colors.white),
+                                  const SizedBox(width: 8),
                                   Text(
                                     "Guardar Cambios",
                                     style: TextStyle(
                                         fontSize: 16,
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                        color: isDark
+                                            ? Colors.black
+                                            : Colors.white),
                                   ),
                                 ],
                               ),
@@ -441,7 +466,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildCityAutocomplete(Color surfaceDark, Color primaryColor) {
+  Widget _buildCityAutocomplete(
+      Color surfaceColor, Color primaryColor, bool isDark, Color textColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -466,7 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return TextFormField(
               controller: controller,
               focusNode: focusNode,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: textColor),
               onChanged: (value) {
                 // Update selected city as user types
                 if (ecuadorCities
@@ -477,22 +503,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               decoration: InputDecoration(
                 labelText: "Ciudad",
-                labelStyle: TextStyle(color: Colors.grey[400]),
+                labelStyle: TextStyle(
+                    color: isDark ? Colors.grey[400] : Colors.grey[600]),
                 prefixIcon:
                     Icon(Icons.location_city_outlined, color: Colors.grey[500]),
                 suffixIcon:
                     Icon(Icons.arrow_drop_down, color: Colors.grey[500]),
                 filled: true,
-                fillColor: surfaceDark,
+                fillColor: surfaceColor,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                  borderSide: BorderSide(
+                      color: isDark
+                          ? Colors.white.withAlpha(25)
+                          : Colors.grey.withAlpha(30)),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                  borderSide:
-                      BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+                  borderSide: BorderSide(
+                      color: isDark
+                          ? Colors.white.withAlpha(25)
+                          : Colors.grey.withAlpha(30)),
                 ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -505,7 +536,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             return Align(
               alignment: Alignment.topLeft,
               child: Material(
-                color: surfaceDark,
+                color: surfaceColor,
                 elevation: 8,
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
@@ -520,10 +551,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       return ListTile(
                         leading: Icon(Icons.location_on,
                             color: primaryColor, size: 20),
-                        title: Text(option,
-                            style: const TextStyle(color: Colors.white)),
+                        title: Text(option, style: TextStyle(color: textColor)),
                         onTap: () => onSelected(option),
-                        hoverColor: primaryColor.withValues(alpha: 0.1),
+                        hoverColor: primaryColor.withAlpha(25),
                       );
                     },
                   ),
@@ -561,9 +591,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
+        color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
+        border: Border.all(color: color.withAlpha(76)),
       ),
       child: Row(
         children: [
@@ -580,11 +610,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, Color textColor) {
     return Text(
       title,
-      style: const TextStyle(
-        color: Colors.white,
+      style: TextStyle(
+        color: textColor,
         fontSize: 18,
         fontWeight: FontWeight.bold,
       ),
@@ -595,6 +625,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required TextEditingController controller,
     required String label,
     required IconData icon,
+    required bool isDark,
+    required Color surfaceColor,
+    required Color textColor,
     TextInputType? keyboardType,
     int? maxLength,
     int maxLines = 1,
@@ -608,26 +641,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
       maxLines: maxLines,
       readOnly: readOnly,
       validator: validator,
-      style: TextStyle(color: readOnly ? Colors.grey : Colors.white),
+      style: TextStyle(color: readOnly ? Colors.grey : textColor),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey[400]),
+        labelStyle:
+            TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600]),
         prefixIcon: Icon(icon, color: Colors.grey[500]),
         counterStyle: TextStyle(color: Colors.grey[600]),
         filled: true,
         fillColor: readOnly
-            ? const Color(0xFF0A101D).withValues(alpha: 0.5)
-            : const Color(0xFF0A101D),
+            ? (isDark
+                ? const Color(0xFF0A101D).withAlpha(128)
+                : Colors.grey[200])
+            : surfaceColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: BorderSide(
+              color: isDark
+                  ? Colors.white.withAlpha(25)
+                  : Colors.grey.withAlpha(30)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(
               color: readOnly
-                  ? Colors.green.withValues(alpha: 0.3)
-                  : Colors.white.withValues(alpha: 0.1)),
+                  ? Colors.green.withAlpha(76)
+                  : (isDark
+                      ? Colors.white.withAlpha(25)
+                      : Colors.grey.withAlpha(30))),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

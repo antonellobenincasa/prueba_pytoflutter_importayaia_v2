@@ -1,0 +1,50 @@
+[
+  {
+    "incoterm": "EXW",
+    "nombre": "Ex Works",
+    "vendedor_paga": "Mercancía en fábrica",
+    "comprador_paga": "Todo el transporte"
+  },
+  {
+    "incoterm": "FCA",
+    "nombre": "Free Carrier",
+    "vendedor_paga": "Hasta transportista",
+    "comprador_paga": "Flete, seguro, tributos"
+  },
+  {
+    "incoterm": "FOB",
+    "nombre": "Free On Board",
+    "vendedor_paga": "Hasta bordo buque",
+    "comprador_paga": "Flete, seguro, tributos"
+  },
+  {
+    "incoterm": "CFR",
+    "nombre": "Cost and Freight",
+    "vendedor_paga": "Hasta puerto destino",
+    "comprador_paga": "Seguro, tributos"
+  },
+  {
+    "incoterm": "CIF",
+    "nombre": "Cost, Ins., Freight",
+    "vendedor_paga": "Flete + Seguro",
+    "comprador_paga": "Tributos, locales"
+  },
+  {
+    "incoterm": "CPT",
+    "nombre": "Carriage Paid To",
+    "vendedor_paga": "Flete hasta destino",
+    "comprador_paga": "Seguro, tributos"
+  },
+  {
+    "incoterm": "DAP",
+    "nombre": "Delivered at Place",
+    "vendedor_paga": "Hasta lugar destino",
+    "comprador_paga": "Tributos, descarga"
+  },
+  {
+    "incoterm": "DDP",
+    "nombre": "Delivered Duty Paid",
+    "vendedor_paga": "TODO incluido",
+    "comprador_paga": "Solo descarga"
+  }
+]

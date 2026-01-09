@@ -1,0 +1,9 @@
+Codigo,nombre,tipo,factor_conversion_base
+KGM,Kilogramo,Peso,1
+LBR,Libra,Peso,0.453592
+TNE,Tonelada Métrica,Peso,1000
+MTQ,Metro Cúbico,Volumen,1
+FTQ,Pie Cúbico,Volumen,0.028317
+USD,Dólar Estadounidense,Moneda,1
+EUR,Euro,Moneda,1.21
+GBP,Libra Esterlina,Moneda,1.39

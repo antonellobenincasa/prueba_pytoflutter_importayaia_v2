@@ -1,0 +1,27 @@
+[
+  {
+    "producto": "Vehículos 1500-3000cc",
+    "codigo_hs_referencia": "8703.23",
+    "tasa_ice": "15%"
+  },
+  {
+    "producto": "Cerveza de malta",
+    "codigo_hs_referencia": "2203",
+    "tasa_ice": "12%"
+  },
+  {
+    "producto": "Whisky",
+    "codigo_hs_referencia": "2208.3",
+    "tasa_ice": "75%"
+  },
+  {
+    "producto": "Cigarrillos",
+    "codigo_hs_referencia": "2402.2",
+    "tasa_ice": "150%"
+  },
+  {
+    "producto": "Perfumes",
+    "codigo_hs_referencia": "3303",
+    "tasa_ice": "20%"
+  }
+]
